@@ -87,7 +87,8 @@ const ArtistSearch = ({ label, onSelect, disabled }) => {
       setShowDropdown(true);
     };
     const delayDebounce = setTimeout(fetchResults, 300);
-    return () => clearTimeout(delayDebounce);
+    return (
+  <>) => clearTimeout(delayDebounce);
   }, [query]);
 
   return (
@@ -127,6 +128,7 @@ const ArtistSearch = ({ label, onSelect, disabled }) => {
 const LineupSlot = ({ artist, label }) => (
   <div className="flex flex-col items-center">
  <div
+  className={'${
   className={
     (label === "Headliner"
       ? "w-51 h-51 shadow-[0_0_15px_4px_rgba(253,224,71,0.8)]"
@@ -326,5 +328,6 @@ export default function BestConcertEver() {
 </div>
 </div>
     </div>
-  );
+  
+  </>);
 }
