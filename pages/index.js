@@ -129,8 +129,6 @@ const LineupSlot = ({ artist, label }) => (
  <div
   className={'${
   className={`${label === "Headliner" ? "w-51 h-51 shadow-[0_0_15px_4px_rgba(253,224,71,0.8)]" : "w-32 h-32"} bg-gray-200 border-2 border-black rounded-md overflow-hidden flex items-center justify-center`}
-  {artist?.image ? (
-    <img
       src={'/api/image-proxy?url=${encodeURIComponent(artist.image)}'}
       alt={artist.name}
       className="w-full h-full object-cover"
