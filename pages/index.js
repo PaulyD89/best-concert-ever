@@ -81,7 +81,7 @@ const ArtistSearch = ({ label, onSelect, disabled }) => {
   useEffect(() => {
     const fetchResults = async () => {
       if (!query) return;
-      const res = await fetch(`/api/search?q=${query}`);
+      const res = await fetch('/api/search?q=${query}');
       const data = await res.json();
       setResults(data);
       setShowDropdown(true);
@@ -127,13 +127,13 @@ const ArtistSearch = ({ label, onSelect, disabled }) => {
 const LineupSlot = ({ artist, label }) => (
   <div className="flex flex-col items-center">
  <div
-  className={`${
+  className={'${
     label === "Headliner" ? "w-51 h-51 shadow-[0_0_15px_4px_rgba(253,224,71,0.8)]" : "w-32 h-32"
-  } bg-gray-200 border-2 border-black rounded-md overflow-hidden flex items-center justify-center`}
+  } bg-gray-200 border-2 border-black rounded-md overflow-hidden flex items-center justify-center'}
 >
   {artist?.image ? (
     <img
-      src={`/api/image-proxy?url=${encodeURIComponent(artist.image)}`}
+      src={'/api/image-proxy?url=${encodeURIComponent(artist.image)}'}
       alt={artist.name}
       className="w-full h-full object-cover"
     />
@@ -164,7 +164,7 @@ export default function BestConcertEver() {
       const countMap = {};
 
       data.forEach((lineup) => {
-        const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+        const key = '${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}';
         countMap[key] = (countMap[key] || 0) + 1;
       });
 
@@ -234,7 +234,7 @@ export default function BestConcertEver() {
                 onClick={() => setShowHowToPlay(false)}
                 className="inline-block bg-black text-white text-lg px-6 py-2 rounded-full border-2 border-black shadow-md hover:bg-yellow-300 hover:text-black"
               >
-                Let’s Play!
+                Let's Play!
               </button>
             </div>
           </div>
@@ -271,11 +271,11 @@ export default function BestConcertEver() {
           <button
             onClick={handleSubmit}
             disabled={submitted || !(headliner && opener && secondOpener)}
-            className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide transition shadow ${
+            className={'px-6 py-2 rounded-full font-bold uppercase tracking-wide transition shadow ${
               submitted || !(headliner && opener && secondOpener)
                 ? "bg-gray-400 cursor-not-allowed text-white"
                 : "bg-black text-yellow-300 hover:bg-yellow-400 hover:text-black"
-            }`}
+            }'}
           >
             Submit Lineup
           </button>
@@ -287,7 +287,7 @@ export default function BestConcertEver() {
                   htmlToImage.toJpeg(flyerRef.current, { quality: 0.95 })
                   .then((dataUrl) => {
                     const link = document.createElement("a");
-                    link.download = `best-concert-ever.jpg`;
+                    link.download = 'best-concert-ever.jpg';
                     link.href = dataUrl;
                     link.click();
                   });
@@ -296,11 +296,11 @@ export default function BestConcertEver() {
             }}
                  
             disabled={!submitted}
-            className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide border transition ${
+            className={'px-6 py-2 rounded-full font-bold uppercase tracking-wide border transition ${
               submitted
                 ? "border-black bg-white text-black hover:bg-yellow-100"
                 : "text-gray-400 border-gray-500 cursor-not-allowed"
-            }`}
+            }'}
           >
             Download Lineup
           </button>
