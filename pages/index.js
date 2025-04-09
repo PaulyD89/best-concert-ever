@@ -316,9 +316,11 @@ export default function BestConcertEver() {
   <hr className="border-t-2 border-yellow-400 w-3/4 mx-auto my-4" />
   <ul className="list-none text-white/90 space-y-2 text-lg text-center">
   {lineups.map((lineup, index) => (
-    <li key={index} className="flex justify-center">
-      <span>{lineup.headliner?.name}</span> / 
-      <span>{lineup.opener?.name}</span> / 
+    <li key={index} className="flex justify-center gap-1">
+      <span>{lineup.headliner?.name}</span>
+      <span>/</span>
+      <span>{lineup.opener?.name}</span>
+      <span>/</span>
       <span>{lineup.second_opener?.name}</span>
     </li>
   ))}
