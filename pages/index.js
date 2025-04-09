@@ -1,113 +1,331 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
+import React, { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+const prompts = [
+  "Best 90s Band Lineup",
+  "Best Bands from the 2000s",
+  "Best Festival Headliners",
+  "Best One-Hit Wonders",
+  "Best Indie Bands of the 2010s",
+  "Best Garage Rock Revival Bands",
+  "Best LA Punk Bands",
+  "Best Bands You Saw in High School",
+  "Best Synth-Pop Acts",
+  "Best British Invasion Artists",
+  "Best Grunge Acts",
+  "Best Pop-Punk Lineup",
+  "Best Supergroups",
+  "Best Bands with Only 2 Members",
+  "Best Bands with Horn Sections",
+  "Best Live Bands Ever",
+  "Best Bands That Broke Up Too Soon",
+  "Best Comeback Tours",
+  "Best Bands Fronted by Women",
+  "Best Alt-Rock Artists of the 2000s",
+  "Best Bands from New York",
+  "Best Bands from the Midwest",
+  "Best Summer Festival Lineup",
+  "Best Underground Hip-Hop Artists",
+  "Best Country Crossover Acts",
+  "Best Shoegaze Bands",
+  "Best Folk Rock Acts",
+  "Best Bands with Wild Stage Shows",
+  "Best Bands for a Road Trip",
+  "Best Reunion Lineup",
+  "Best Scandinavian Artists",
+  "Best Emo Bands",
+  "Best Acoustic Sets",
+  "Best Songs to Cry To Live",
+  "Best Arena Rock Bands",
+  "Best Punk Revival Acts",
+  "Best Bands Who Only Released One Album",
+  "Best Funk Fusion Groups",
+  "Best Bands from the UK",
+  "Best Tiny Desk-Style Lineup",
+  "Best Jazz Fusion Acts",
+  "Best Experimental Artists",
+  "Best Lo-Fi Indie Acts",
+  "Best Power Trios",
+  "Best MTV Unplugged Artists",
+  "Best Cover Bands Ever",
+  "Best Pop Acts of the 80s",
+  "Best Bands to See at Night",
+  "Best College Radio Legends",
+  "Best World Music Lineups"
+  // ... You can add up to 1000+ prompts here
+];
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+function getDailyPrompt() {
+  // Convert to Pacific Time (automatically handles PST/PDT)
+  const now = new Date();
+  const pacificDate = new Date(
+    now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
+  );
+  const today = pacificDate.toISOString().split("T")[0];
 
-export default function Home() {
+  let hash = 0;
+  for (let i = 0; i < today.length; i++) {
+    hash = today.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  return prompts[Math.abs(hash) % prompts.length];
+}
+
+const dailyPrompt = getDailyPrompt();
+
+const ArtistSearch = ({ label, onSelect, disabled }) => {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      if (!query) return;
+      const res = await fetch(`/api/search?q=${query}`);
+      const data = await res.json();
+      setResults(data);
+      setShowDropdown(true);
+    };
+    const delayDebounce = setTimeout(fetchResults, 300);
+    return () => clearTimeout(delayDebounce);
+  }, [query]);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              pages/index.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="relative w-full">
+      <input
+        type="text"
+        placeholder={label}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        disabled={disabled}
+        className="w-full px-4 py-3 border-2 border-black rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black font-semibold text-sm"
+      />
+      {showDropdown && results.length > 0 && (
+        <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-y-scroll shadow-xl">
+          {results.map((artist) => (
+            <li
+              key={artist.id}
+              onClick={() => {
+              onSelect({ name: artist.name, image: artist.images?.[0]?.url });
+              setQuery("");
+              setShowDropdown(false);
+            }}
+              className="p-2 hover:bg-yellow-100 cursor-pointer flex items-center gap-2 text-sm"
+            >
+              {artist.images?.[0]?.url && (
+                <img src={artist.images[0].url} alt={artist.name} className="w-6 h-6 rounded-full" />
+              )}
+              {artist.name}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+};
+
+const LineupSlot = ({ artist, label }) => (
+  <div className="flex flex-col items-center">
+ <div
+  className={`${
+    label === "Headliner" ? "w-51 h-51 shadow-[0_0_15px_4px_rgba(253,224,71,0.8)]" : "w-32 h-32"
+  } bg-gray-200 border-2 border-black rounded-md overflow-hidden flex items-center justify-center`}
+>
+  {artist?.image ? (
+    <img
+      src={`/api/image-proxy?url=${encodeURIComponent(artist.image)}`}
+      alt={artist.name}
+      className="w-full h-full object-cover"
+    />
+  ) : (
+    <span className="text-black text-xs font-bold text-center w-full text-center block">{label}</span>
+  )}
+</div>
+<div className="mt-2 text-black font-bold text-center max-w-[8rem]">
+  {artist?.name || ""}
+</div>
+  </div>
+);
+
+export default function BestConcertEver() {
+  const flyerRef = React.useRef(null);
+  const [showHowToPlay, setShowHowToPlay] = useState(false);
+  // removed duplicate state declarations for headliner, opener, secondOpener, and submitted
+  const [lineups, setLineups] = useState([]);
+
+  useEffect(() => {
+    const fetchTopLineups = async () => {
+    const { data, error } = await supabase
+      .from("lineups")
+      .select("headliner, opener, second_opener")
+      .eq("prompt", dailyPrompt);
+
+    if (!error && data) {
+      const countMap = {};
+
+      data.forEach((lineup) => {
+        const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+        countMap[key] = (countMap[key] || 0) + 1;
+      });
+
+      const sortedLineups = Object.entries(countMap)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(([key]) => {
+          const [headliner, opener, second_opener] = key.split("|||");
+          return { headliner: { name: headliner }, opener: { name: opener }, second_opener: { name: second_opener } };
+        });
+
+      setLineups(sortedLineups);
+      }
+    };
+
+    fetchTopLineups();
+  }, []);
+  const [headliner, setHeadliner] = useState(null);
+  const [opener, setOpener] = useState(null);
+  const [secondOpener, setSecondOpener] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async () => {
+    if (headliner && opener && secondOpener) {
+      const { error } = await supabase.from("lineups").insert([
+        {
+          prompt: dailyPrompt,
+          headliner,
+          opener,
+          second_opener: secondOpener,
+        },
+      ]);
+
+      if (error) {
+        console.error("Submission error:", error);
+        alert("There was an error submitting your lineup.");
+        return;
+      }
+
+      setSubmitted(true);
+      console.log("Lineup submitted:", { headliner, opener, secondOpener });
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-center justify-start min-h-screen py-10 px-4 bg-gradient-to-b from-[#0f0f0f] to-[#1e1e1e] text-white font-sans">
+{showHowToPlay && (
+        <div className="fixed inset-0 z-50 flex justify-center items-center transition-opacity duration-300 bg-black/40 backdrop-blur-sm">
+          <div className="bg-[#fdf6e3] text-black p-6 rounded-2xl w-[90%] max-w-xl text-left relative shadow-2xl border-[6px] border-black border-double">
+            <button
+              onClick={() => setShowHowToPlay(false)}
+              className="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black"
+            >
+              &times;
+            </button>
+            <h2 className="text-2xl font-bold mb-4">HOW TO PLAY</h2>
+            <ul className="list-disc pl-5 space-y-2 text-sm">
+              <li>Time to flex those Music Promoter skills and show everyone you know how to put together the ultimate concert lineup.</li>
+              <li>First, check out the daily prompt (80s bands, Music Duos) and rack your brain for the best bands or music artists that fit the bill.</li>
+              <li>Pick an Opener, a Second Opener and the ultimate Headliner for your show.</li>
+              <li>Use the search boxes to select real artists from Spotify, then lock them in for good.</li>
+              <li>Note: you can't use the same artist more than once, and dead rock stars are more than fair game. Once you're stoked with your lineup, click "Submit Lineup" to lock it in.</li>
+              <li>Download your <b>Best Concert Ever</b> and share on social and come back tomorrow to see which lineup was the most popular!</li>
+            </ul>
+            <div className="text-center mt-6">
+              <button
+                onClick={() => setShowHowToPlay(false)}
+                className="inline-block bg-black text-white text-lg px-6 py-2 rounded-full border-2 border-black shadow-md hover:bg-yellow-300 hover:text-black"
+              >
+                Let’s Play!
+              </button>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      )}
+    <div className="flex flex-col items-center justify-start min-h-screen py-10 px-4 bg-gradient-to-b from-[#0f0f0f] to-[#1e1e1e] text-white font-sans">
+      <div ref={flyerRef} className="relative bg-[#fdf6e3] text-black rounded-xl shadow-2xl p-6 w-full max-w-md text-center border-[6px] border-black border-double bg-[url('/scratchy-background.png')] bg-repeat bg-opacity-30"
+    >
+        <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-white rounded-full border-4 border-black shadow-lg flex items-center justify-center overflow-hidden">
+          <img src="/logo.png" alt="Best Concert Ever Logo" className="w-full h-full object-cover" crossOrigin="anonymous" />
+        </div>
+
+        <div className="mt-16 mb-4 text-base font-extrabold uppercase tracking-widest text-black inline-block px-4 py-1 border-2 border-black rotate-[-2deg] bg-white shadow-md font-mono">
+          {dailyPrompt}
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <ArtistSearch label="Opener" onSelect={setOpener} disabled={submitted} />
+          <ArtistSearch label="2nd Opener" onSelect={setSecondOpener} disabled={submitted} />
+        </div>
+
+        <ArtistSearch label="Headliner" onSelect={setHeadliner} disabled={submitted} />
+
+        <div className="mt-8 grid grid-cols-2 gap-4 items-start justify-center">
+          <LineupSlot artist={opener} label="Opener" />
+          <LineupSlot artist={secondOpener} label="2nd Opener" />
+        </div>
+
+        <div className="mt-4">
+          <LineupSlot artist={headliner} label="Headliner" />
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
+          <button
+            onClick={handleSubmit}
+            disabled={submitted || !(headliner && opener && secondOpener)}
+            className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide transition shadow ${
+              submitted || !(headliner && opener && secondOpener)
+                ? "bg-gray-400 cursor-not-allowed text-white"
+                : "bg-black text-yellow-300 hover:bg-yellow-400 hover:text-black"
+            }`}
+          >
+            Submit Lineup
+          </button>
+          <button
+            onClick={() => {
+              if (!flyerRef.current) return;
+              import("html-to-image").then((htmlToImage) => {
+                setTimeout(() => {
+                  htmlToImage.toJpeg(flyerRef.current, { quality: 0.95 })
+                  .then((dataUrl) => {
+                    const link = document.createElement("a");
+                    link.download = `best-concert-ever.jpg`;
+                    link.href = dataUrl;
+                    link.click();
+                  });
+              }, 300);
+            });
+            }}
+                 
+            disabled={!submitted}
+            className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide border transition ${
+              submitted
+                ? "border-black bg-white text-black hover:bg-yellow-100"
+                : "text-gray-400 border-gray-500 cursor-not-allowed"
+            }`}
+          >
+            Download Lineup
+          </button>
+        </div>
+      </div>
+      
+  <div className="mt-2 mb-8 text-sm text-gray-300 underline cursor-pointer hover:text-white" onClick={() => setShowHowToPlay(true)}>
+        How to Play
+      </div>
+
+      <div className="w-full max-w-md mt-6 rounded-xl border-2 border-yellow-400 p-4 bg-transparent">
+  <h2 className="title text-center">TOP 5 LINEUPS TODAY</h2>
+  <hr className="border-t-2 border-yellow-400 w-3/4 mx-auto my-4" />
+  <ul className="list-none text-white/90 space-y-2 text-lg text-center">
+  {lineups.map((lineup, index) => (
+    <li key={index} className="flex justify-center">
+      <span>{lineup.headliner?.name}</span> / 
+      <span>{lineup.opener?.name}</span> / 
+      <span>{lineup.second_opener?.name}</span>
+    </li>
+  ))}
+</ul>
+</div>
+</div>
     </div>
   );
 }
+

@@ -24,3 +24,134 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Define the text glow/shining effect */
+@keyframes shine {
+  0% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #ff007f, 0 0 20px #ff007f, 0 0 30px #ff007f, 0 0 40px #ff007f, 0 0 50px #ff007f, 0 0 75px #ff007f;
+  }
+  50% {
+    text-shadow: 0 0 10px #fff, 0 0 20px #ff007f, 0 0 30px #ff007f, 0 0 40px #ff007f, 0 0 50px #ff007f, 0 0 75px #ff007f, 0 0 100px #ff007f;
+  }
+  100% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #ff007f, 0 0 20px #ff007f, 0 0 30px #ff007f, 0 0 40px #ff007f, 0 0 50px #ff007f, 0 0 75px #ff007f;
+  }
+}
+
+.title {
+  font-family: 'Arial', sans-serif;
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  animation: shine 1.5s infinite alternate;
+  letter-spacing: 3px;
+}
+
+/* Marquee Shine Effect */
+@keyframes marqueeShine {
+  0% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #ff007f, 0 0 20px #ff007f;
+  }
+  50% {
+    text-shadow: 0 0 10px #fff, 0 0 20px #ff007f, 0 0 30px #ff007f;
+  }
+  100% {
+    text-shadow: 0 0 5px #fff, 0 0 10px #ff007f, 0 0 20px #ff007f;
+  }
+}
+
+.title {
+  font-family: 'Arial', sans-serif;
+  font-size: 1.25rem;  /* Reduced font size by 50% */
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  animation: marqueeShine 2s infinite alternate;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  background: linear-gradient(to right, #ff007f, #ff6600, #ff007f);
+  background-clip: text;
+  -webkit-background-clip: text;
+  white-space: nowrap;  /* Ensure it stays on one line */
+}
+
+hr {
+  border: none;
+  height: 2px;
+  background-color: #ff007f;
+}
+
+/* Adjust the font size of the lineups */
+ul {
+  font-size: 0.78125rem;  /* Reduced font size by 50% */
+}
+
+li {
+  font-size: inherit;  /* Ensure the li tags inherit the size from the ul */
+}
+
+/* Style the How to Play link */
+.how-to-play-link {
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: bold;
+  text-decoration: underline;
+  text-align: center;
+  display: block;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.how-to-play-link:hover {
+  color: #ff007f;  /* Change hover color to match your theme */
+}
+
+/* Modal Styles */
+.fixed {
+  position: fixed;
+}
+
+.bg-white {
+  background-color: white;
+}
+
+.text-black {
+  color: black;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+}
+
+.text-lg {
+  font-size: 1rem;
+}
+
+.bg-black {
+  background-color: black;
+}
+
+.text-white {
+  color: white;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.mt-4 {
+  margin-top: 16px;
+}
+
+.p-8 {
+  padding: 2rem;
+}
+
+.rounded-lg {
+  border-radius: 8px;
+}
+
+.shadow-lg {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
