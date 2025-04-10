@@ -22,7 +22,7 @@ export default async function handler(req, res) {
 
     // Send welcome email
     await resend.emails.send({
-      from: 'Best Concert Ever <onboarding@resend.dev>',
+    from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
       to: email,
       subject: '🎸 You’re Signed Up!',
       html: `<p>Thanks for signing up for Best Concert Ever! You'll get a daily prompt and yesterday’s winning lineup.</p>`,

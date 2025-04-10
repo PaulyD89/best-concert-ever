@@ -23,7 +23,7 @@ export default async function handler(req, res) {
 
   try {
     await resend.emails.send({
-      from: 'Best Concert Ever <onboarding@resend.dev>',
+    from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
       to: recipients,
       subject: '🎸 Your Daily Prompt Is Coming Soon!',
       html: `<p>This is a test of your daily email system. Stay tuned for tomorrow’s Best Concert Ever lineup and prompt!</p>`,
