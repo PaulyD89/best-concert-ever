@@ -151,7 +151,7 @@ async function getSpotifyImageUrl(artistName) {
   
     const { data: subs, error: subsError } = await supabase
       .from("subscribers")
-      .select("email, id");
+      .select("email");
   
     if (subsError || !subs || subs.length === 0) {
       console.error("Error fetching subscribers:", subsError);
