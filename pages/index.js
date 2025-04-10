@@ -436,34 +436,39 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     const hasVoted = localStorage.getItem(`bce-voted-${dailyPrompt}`);
 
     return (
-      <li key={idx} className="text-white text-center">
-        <div>
-          {lineup.headliner?.name} / {lineup.opener?.name} / {lineup.second_opener?.name}
+      <li key={idx} className="text-white flex items-center justify-between w-full max-w-sm bg-[#1e1e1e] px-4 py-2 rounded-lg border border-yellow-400">
+        <div className="text-left">
+          <div className="font-semibold">
+            {lineup.headliner?.name}
+          </div>
+          <div className="text-sm">
+            {lineup.opener?.name} / {lineup.second_opener?.name}
+          </div>
         </div>
         {!hasVoted && (
           <button
-          onClick={async () => {
-            localStorage.setItem(`bce-voted-${dailyPrompt}`, key);
-          
-            const { error } = await supabase
-              .from("lineups")
-              .update({ votes: (lineup.votes || 0) + 1 })
-              .match({
-                prompt: dailyPrompt,
-                "headliner->>name": lineup.headliner?.name,
-                "opener->>name": lineup.opener?.name,
-                "second_opener->>name": lineup.second_opener?.name,
-              });
-          
-            if (error) {
-              console.error("Vote failed:", error);
-              alert("Oops, there was an issue recording your vote.");
-            } else {
-              alert("🔥 Your vote has been counted!");
-              window.location.reload();
-            }
-          }}          
-            className="mt-1 text-xl hover:scale-110 transition-transform"
+            onClick={async () => {
+              localStorage.setItem(`bce-voted-${dailyPrompt}`, key);
+
+              const { error } = await supabase
+                .from("lineups")
+                .update({ votes: (lineup.votes || 0) + 1 })
+                .match({
+                  prompt: dailyPrompt,
+                  "headliner->>name": lineup.headliner?.name,
+                  "opener->>name": lineup.opener?.name,
+                  "second_opener->>name": lineup.second_opener?.name,
+                });
+
+              if (error) {
+                console.error("Vote failed:", error);
+                alert("Oops, there was an issue recording your vote.");
+              } else {
+                alert("🔥 Your vote has been counted!");
+                window.location.reload();
+              }
+            }}
+            className="text-xl ml-4 hover:scale-110 transition-transform"
             title="Vote for this lineup"
           >
             🔥
