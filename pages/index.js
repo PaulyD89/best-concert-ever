@@ -173,6 +173,27 @@ export default function BestConcertEver() {
   const flyerRef = React.useRef(null);
   const downloadRef = React.useRef(null);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
+const [showEmailSignup, setShowEmailSignup] = useState(false);
+const [email, setEmail] = useState("");
+const [emailSubmitted, setEmailSubmitted] = useState(false);
+
+const handleEmailSignup = async () => {
+  try {
+    const res = await fetch("/api/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email })
+    });
+    if (res.ok) {
+      setEmailSubmitted(true);
+    } else {
+      alert("There was a problem signing up. Try again later.");
+    }
+  } catch (err) {
+    console.error("Email signup error:", err);
+  }
+};
+
   // removed duplicate state declarations for headliner, opener, secondOpener, and submitted
   const [lineups, setLineups] = useState([]);
   const [yesterdaysWinner, setYesterdaysWinner] = useState(null);
@@ -427,6 +448,10 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
         How to Play
       </div>
 
+      <div className="mt-2 mb-8 text-sm text-gray-300 underline cursor-pointer hover:text-white" onClick={() => setShowEmailSignup(true)}>
+  Sign Up for Daily Puzzles & Winners
+</div>
+
       <div className="mt-12 flex justify-center items-center w-full">
         <div className="relative w-full max-w-md text-center">
           <div className="absolute inset-0 rounded-xl border-2 border-yellow-400 animate-pulse pointer-events-none"></div>
@@ -561,6 +586,39 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     </div>
   </div>
 </div>
+{showEmailSignup && (
+  <div className="fixed inset-0 z-50 flex justify-center items-center transition-opacity duration-300 bg-black/40 backdrop-blur-sm">
+    <div className="bg-[#fdf6e3] text-black p-6 rounded-2xl w-[90%] max-w-sm text-left relative shadow-2xl border-[6px] border-black border-double">
+      <button
+        onClick={() => setShowEmailSignup(false)}
+        className="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black"
+      >
+        &times;
+      </button>
+      <h2 className="text-2xl font-bold mb-4">Get Daily Prompts & Winners</h2>
+      {emailSubmitted ? (
+        <p className="text-green-600 font-semibold">Thanks for subscribing! 🎉</p>
+      ) : (
+        <>
+          <input
+            type="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-2 border border-black rounded-md mb-4"
+          />
+          <button
+            onClick={handleEmailSignup}
+            className="w-full bg-black text-yellow-300 py-2 rounded-full font-bold hover:bg-yellow-300 hover:text-black transition"
+          >
+            Subscribe
+          </button>
+        </>
+      )}
+    </div>
+  </div>
+)}
+
 </div>
 </div>
   );
