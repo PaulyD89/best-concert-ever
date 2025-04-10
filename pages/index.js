@@ -352,19 +352,19 @@ setLineups(sortedLineups);
   onClick={async () => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
-  
+
     const background = new Image();
     background.src = "/bestconcertdownloadimage.png";
     background.crossOrigin = "anonymous";
-  
+
     background.onload = async () => {
       const WIDTH = background.width;
       const HEIGHT = background.height;
       canvas.width = WIDTH;
       canvas.height = HEIGHT;
-  
+
       ctx.drawImage(background, 0, 0, WIDTH, HEIGHT);
-  
+
       const loadImage = (src) =>
         new Promise((resolve) => {
           const img = new Image();
@@ -372,49 +372,45 @@ setLineups(sortedLineups);
           img.src = src;
           img.onload = () => resolve(img);
         });
-  
+
       try {
         const [headlinerImg, openerImg, secondOpenerImg] = await Promise.all([
           loadImage(headliner?.image),
           loadImage(opener?.image),
           loadImage(secondOpener?.image),
         ]);
-  
-       // Move all images up ~150px
-ctx.drawImage(headlinerImg, WIDTH / 2 - 125, HEIGHT - 660, 250, 250);
-ctx.drawImage(openerImg, WIDTH / 2 - 250, HEIGHT - 380, 200, 200);
-ctx.drawImage(secondOpenerImg, WIDTH / 2 + 50, HEIGHT - 380, 200, 200);
 
-// Adjust band names to match new positions
-ctx.font = "bold 24px Arial";
-ctx.fillStyle = "#ffffff";
-ctx.textAlign = "center";
+        ctx.drawImage(headlinerImg, WIDTH / 2 - 125, HEIGHT - 660, 250, 250);
+        ctx.drawImage(openerImg, WIDTH / 2 - 250, HEIGHT - 380, 200, 200);
+        ctx.drawImage(secondOpenerImg, WIDTH / 2 + 50, HEIGHT - 380, 200, 200);
 
-ctx.fillText(headliner?.name || "", WIDTH / 2, HEIGHT - 440 + 40);
-ctx.fillText(opener?.name || "", WIDTH / 2 - 140, HEIGHT - 160);
-ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
+        ctx.font = "bold 24px Arial";
+        ctx.fillStyle = "#ffffff";
+        ctx.textAlign = "center";
 
-  
-        // EXPORT IMAGE
-        const link = document.createElement("a");
-        link.download = "best-concert-ever.jpg";
-        link.href = canvas.toDataURL("image/jpeg", 0.95);
-        link.click();
+        ctx.fillText(headliner?.name || "", WIDTH / 2, HEIGHT - 440 + 40);
+        ctx.fillText(opener?.name || "", WIDTH / 2 - 140, HEIGHT - 160);
+        ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
+
+        // Open image in new tab instead of prompting to download
+        const imageURL = canvas.toDataURL("image/jpeg", 0.95);
+        const newTab = window.open();
+        newTab.document.write(`<img src='${imageURL}' style='width:100%' />`);
+        newTab.document.title = "Best Concert Ever";
       } catch (err) {
-        console.error("Image download failed:", err);
+        console.error("Image open failed:", err);
       }
     };
   }}
-                 
-            disabled={!submitted}
-            className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide border transition ${
-              submitted
-                ? "border-black bg-white text-black hover:bg-yellow-100"
-                : "text-gray-400 border-gray-500 cursor-not-allowed"
-            }`}
-          >
-            Download Lineup
-          </button>
+  disabled={!submitted}
+  className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide border transition ${
+    submitted
+      ? "border-black bg-white text-black hover:bg-yellow-100"
+      : "text-gray-400 border-gray-500 cursor-not-allowed"
+  }`}
+>
+  Download Lineup
+</button>
         </div>
       </div>
       
