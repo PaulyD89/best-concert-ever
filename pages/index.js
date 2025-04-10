@@ -303,7 +303,7 @@ setLineups(sortedLineups);
                 onClick={() => setShowHowToPlay(false)}
                 className="inline-block bg-black text-white text-lg px-6 py-2 rounded-full border-2 border-black shadow-md hover:bg-yellow-300 hover:text-black"
               >
-                Let’s Play!
+                Let's Play!
               </button>
             </div>
           </div>
