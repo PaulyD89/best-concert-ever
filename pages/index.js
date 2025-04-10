@@ -473,13 +473,6 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     );
   })}
 </ul>
-
-{!localStorage.getItem(`bce-voted-${dailyPrompt}`) && (
-  <div className="mt-4 text-yellow-300 font-bold text-sm">
-    Click 🔥 to give a lineup some love!
-  </div>
-)}
-
           </div>
         </div>
       </div>
