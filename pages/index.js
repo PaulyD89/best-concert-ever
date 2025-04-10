@@ -303,7 +303,7 @@ setLineups(sortedLineups);
                 onClick={() => setShowHowToPlay(false)}
                 className="inline-block bg-black text-white text-lg px-6 py-2 rounded-full border-2 border-black shadow-md hover:bg-yellow-300 hover:text-black"
               >
-                Let's Play!
+                Let&apos;s Play!
               </button>
             </div>
           </div>
@@ -427,7 +427,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
           <div className="absolute inset-0 rounded-xl border-2 border-yellow-400 animate-pulse pointer-events-none"></div>
           <div className="relative bg-black rounded-xl p-6 border-2 border-yellow-400">
             <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-yellow-400 drop-shadow-[0_0_12px_yellow]">
-              Today's Top 5
+              Today&apos;s Top 5
             </h2>
             <ul className="flex flex-col gap-2 items-center">
               {lineups.map((lineup, idx) => (
@@ -447,7 +447,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 
             <div className="relative bg-black rounded-xl p-6 border-2 border-red-400">
               <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-red-400 drop-shadow-[0_0_12px_red]">
-                Yesterday's Winning Lineup
+                Yesterday&apos;s Winning Lineup
               </h2>
               <div className="mb-6 text-base font-extrabold uppercase tracking-widest text-red-400 inline-block px-4 py-1 border-2 border-red-400 rotate-[-2deg] bg-black shadow-md font-mono">
                 {yesterdayPrompt}
