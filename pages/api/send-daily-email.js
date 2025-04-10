@@ -168,6 +168,9 @@ async function getSpotifyImageUrl(artistName) {
         subject: `🎸 Today's Prompt & Yesterday's Top Lineup`,
         html: `
           <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #fdf6e3; border-radius: 12px; border: 6px double black;">
+              <div style="text-align: center; margin-bottom: 20px;">
+      <img src="https://best-concert-ever.vercel.app/logo.png" alt="Best Concert Ever logo" style="width: 120px; height: auto; border-radius: 50%;" />
+    </div>
             <h1 style="font-size: 24px; text-align: center; margin-bottom: 20px;">🎤 Today's Prompt</h1>
             <p style="font-size: 20px; font-weight: bold; text-align: center; background: black; color: #fdf6e3; padding: 12px; border-radius: 8px;">${dailyPrompt}</p>
   
