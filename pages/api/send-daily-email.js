@@ -161,39 +161,56 @@ async function getSpotifyImageUrl(artistName) {
     const recipients = subs.map((s) => s.email);
   
     try {
-      await resend.emails.send({
-        from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
-        to: recipients,
-        subject: `🎸 Today's Prompt & Yesterday's Top Lineup`,
-        html: `
-          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #fdf6e3; border-radius: 12px; border: 6px double black;">
-              <div style="text-align: center; margin-bottom: 20px;">
-      <img
-  src="https://best-concert-ever.vercel.app/squareherologo.png?v=3"
-  alt="Best Concert Ever"
-  style="width: 100%; max-width: 600px; height: auto; display: block; margin: 0 auto;"
-/>
-    </div>
-            <h1 style="font-size: 24px; text-align: center; margin-bottom: 20px;">🎤 Today's Prompt</h1>
-            <p style="font-size: 20px; font-weight: bold; text-align: center; background: black; color: #fdf6e3; padding: 12px; border-radius: 8px;">${dailyPrompt}</p>
-  
-            <h2 style="font-size: 20px; margin-top: 30px;">🔥 Yesterday's Top Lineup</h2>
-            <div style="display: flex; flex-direction: column; gap: 16px;">
-              <div><strong>Headliner:</strong> ${headliner}<br/><img src="${headlinerImg}" alt="${headliner}" width="100" style="border-radius: 8px; margin-top: 4px;"/></div>
-              <div><strong>Opener:</strong> ${opener}<br/><img src="${openerImg}" alt="${opener}" width="100" style="border-radius: 8px; margin-top: 4px;"/></div>
-              <div><strong>2nd Opener:</strong> ${secondOpener}<br/><img src="${secondOpenerImg}" alt="${secondOpener}" width="100" style="border-radius: 8px; margin-top: 4px;"/></div>
-            </div>
-  
-            <p style="margin-top: 30px; font-size: 16px;">Think you can beat it? Submit your own at:<br/>
-              <a href="https://best-concert-ever.vercel.app" style="color: #ff6600; font-weight: bold;">Best Concert Ever</a>
-            </p>
-  
-            <p style="margin-top: 20px; font-size: 12px; color: gray; text-align: center;">
-              Don’t want to receive these emails? <a href="https://best-concert-ever.vercel.app/unsubscribe" style="color: gray; text-decoration: underline;">Unsubscribe</a>
-            </p>
-          </div>
-        `,
-      });
+        await resend.emails.send({
+            from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
+            to: recipients,
+            subject: `🎸 Today's Prompt & Yesterday's Top Lineup`,
+            html: `
+              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #000; color: white; border-radius: 12px; border: 2px solid #f66;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                  <img src="https://best-concert-ever.vercel.app/emailheader.png" alt="Best Concert Ever logo" style="width: 100%; max-width: 600px; height: auto; display: block;" />
+                </div>
+          
+                <h1 style="font-size: 28px; text-align: center; margin: 30px 0 20px; color: #f66; text-transform: uppercase; font-family: 'Impact', sans-serif; letter-spacing: 1px;">
+                  Yesterday's Top Lineup
+                </h1>
+          
+                <div style="text-align: center; margin: 0 auto 40px;">
+                  <div style="display: inline-block; border: 1px solid #000; border-radius: 12px; padding: 10px; background-color: #111;">
+                    <img src="${headlinerImg}" alt="${headliner}" style="width: 180px; height: 180px; border-radius: 12px; display: block;" />
+                    <div style="font-weight: bold; text-transform: uppercase; margin-top: 10px;">${headliner}</div>
+                    <div style="font-style: italic; font-size: 12px; color: #aaa;">Headliner</div>
+                  </div>
+                </div>
+          
+                <div style="display: flex; justify-content: space-between; margin: 0 auto; max-width: 420px;">
+                  <div style="text-align: center;">
+                    <div style="border: 1px solid #000; border-radius: 10px; padding: 8px; background-color: #111;">
+                      <img src="${openerImg}" alt="${opener}" style="width: 120px; height: 120px; border-radius: 12px; display: block;" />
+                      <div style="font-weight: bold; text-transform: uppercase; margin-top: 8px;">${opener}</div>
+                      <div style="font-style: italic; font-size: 12px; color: #aaa;">Opener</div>
+                    </div>
+                  </div>
+                  <div style="text-align: center;">
+                    <div style="border: 1px solid #000; border-radius: 10px; padding: 8px; background-color: #111;">
+                      <img src="${secondOpenerImg}" alt="${secondOpener}" style="width: 120px; height: 120px; border-radius: 12px; display: block;" />
+                      <div style="font-weight: bold; text-transform: uppercase; margin-top: 8px;">${secondOpener}</div>
+                      <div style="font-style: italic; font-size: 12px; color: #aaa;">2nd Opener</div>
+                    </div>
+                  </div>
+                </div>
+          
+                <p style="margin-top: 40px; font-size: 16px; text-align: center;">
+                  Think you can beat it?<br/>
+                  <a href="https://best-concert-ever.vercel.app" style="color: #f66; font-weight: bold;">Submit your own lineup</a>
+                </p>
+          
+                <p style="margin-top: 30px; font-size: 12px; color: gray; text-align: center;">
+                  Don’t want to receive these emails? <a href="https://best-concert-ever.vercel.app/unsubscribe" style="color: gray; text-decoration: underline;">Unsubscribe</a>
+                </p>
+              </div>
+            `,
+          });
   
       return res.status(200).json({ message: "Emails sent" });
     } catch (err) {
