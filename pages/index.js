@@ -295,7 +295,7 @@ setLineups(sortedLineups);
               <li>First, check out the daily prompt (80s bands, Music Duos) and rack your brain for the best bands or music artists that fit the bill.</li>
               <li>Pick an Opener, a Second Opener and the ultimate Headliner for your show.</li>
               <li>Use the search boxes to select real artists from Spotify, then lock them in for good.</li>
-              <li>Note: you can't use the same artist more than once, and dead rock stars are more than fair game. Once you&apos;re stoked with your lineup, click &apos;Submit Lineup&apos; to lock it in.</li>
+              <li>Note: you can&apos;t use the same artist more than once, and dead rock stars are more than fair game.</li>
               <li>Download your <b>Best Concert Ever</b> and share on social, then come back tomorrow to see which lineup was the most popular!</li>
             </ul>
             <div className="text-center mt-6">
