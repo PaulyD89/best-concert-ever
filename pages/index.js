@@ -388,7 +388,6 @@ setLineups(sortedLineups);
       ctx.fillText(opener?.name || "", WIDTH / 2 - 140, HEIGHT - 160);
       ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 
-      // Open image in new tab instead of prompting to download
       const imageURL = canvas.toDataURL("image/jpeg", 0.95);
       const newTab = window.open();
       newTab.document.write(`<img src='${imageURL}' style='width:100%' />`);
@@ -397,9 +396,9 @@ setLineups(sortedLineups);
       console.error("Image generation failed:", err);
     }
   }}
-  disabled={!submitted}
+  disabled={!(headliner && opener && secondOpener)}
   className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide border transition ${
-    submitted
+    headliner && opener && secondOpener
       ? "border-black bg-white text-black hover:bg-yellow-100"
       : "text-gray-400 border-gray-500 cursor-not-allowed"
   }`}
