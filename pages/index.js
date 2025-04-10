@@ -429,13 +429,34 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
             <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-yellow-400 drop-shadow-[0_0_12px_yellow]">
               Today&apos;s Top 5
             </h2>
-            <ul className="flex flex-col gap-2 items-center">
-              {lineups.map((lineup, idx) => (
-                <li key={idx} className="text-white">
-                  {lineup.headliner?.name} / {lineup.opener?.name} / {lineup.second_opener?.name}
-                </li>
-              ))}
-            </ul>
+            <ul className="flex flex-col gap-4 items-center">
+  {lineups.map((lineup, idx) => {
+    const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+    const hasVoted = localStorage.getItem(`bce-voted-${dailyPrompt}`);
+
+    return (
+      <li key={idx} className="text-white text-center">
+        <div>
+          {lineup.headliner?.name} / {lineup.opener?.name} / {lineup.second_opener?.name}
+        </div>
+        {!hasVoted && (
+          <button
+            onClick={async () => {
+              localStorage.setItem(`bce-voted-${dailyPrompt}`, key);
+              alert("🔥 Vote registered!");
+              window.location.reload();
+            }}
+            className="mt-1 text-xl hover:scale-110 transition-transform"
+            title="Vote for this lineup"
+          >
+            🔥
+          </button>
+        )}
+      </li>
+    );
+  })}
+</ul>
+
           </div>
         </div>
       </div>
