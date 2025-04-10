@@ -7,7 +7,6 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// same prompt list as in your front end
 const prompts = [
   "Best 90s Band Lineup",
   "Best Bands from the 2000s",
@@ -94,7 +93,6 @@ export default async function handler(req, res) {
   const dailyPrompt = getDailyPrompt();
   const yesterdayPrompt = getYesterdayPrompt();
 
-  // Fetch yesterday's lineups from Supabase
   const { data, error } = await supabase
     .from('lineups')
     .select('headliner, opener, second_opener, votes')
@@ -105,7 +103,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ message: 'Failed to fetch yesterday’s lineup' });
   }
 
-  // Determine the most popular lineup
   const countMap = {};
   data.forEach((lineup) => {
     const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
@@ -119,44 +116,48 @@ export default async function handler(req, res) {
 
   const [headliner, opener, secondOpener] = topLineups[Math.floor(Math.random() * topLineups.length)];
 
-  // Get subscriber emails
-const { data: subs, error: subsError } = await supabase
-.from("subscribers")
-.select("email");
+  const { data: subs, error: subsError } = await supabase
+    .from("subscribers")
+    .select("email");
 
-if (subsError || !subs || subs.length === 0) {
-console.error("Error fetching subscribers:", subsError);
-return res.status(500).json({ message: "No subscribers found" });
-}
+  if (subsError || !subs || subs.length === 0) {
+    console.error("Error fetching subscribers:", subsError);
+    return res.status(500).json({ message: "No subscribers found" });
+  }
 
-const recipients = subs.map((s) => s.email);
+  const recipients = subs.map((s) => s.email);
 
-// Send email via Resend
-try {
-await resend.emails.send({
-  from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
-  to: recipients,
-  subject: `🎸 Today's Prompt & Yesterday's Top Lineup`,
-  html: `
-    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-      <h1 style="font-size: 24px;">🎤 Today's Prompt</h1>
-      <p style="font-size: 20px; font-weight: bold;">${dailyPrompt}</p>
+  try {
+    await resend.emails.send({
+      from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
+      to: recipients,
+      subject: `🎸 Today's Prompt & Yesterday's Top Lineup`,
+      html: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #fdf6e3; border-radius: 12px; border: 6px double black;">
+          <h1 style="font-size: 24px; text-align: center; margin-bottom: 20px;">🎤 Today's Prompt</h1>
+          <p style="font-size: 20px; font-weight: bold; text-align: center; background: black; color: #fdf6e3; padding: 12px; border-radius: 8px;">${dailyPrompt}</p>
 
-      <h2 style="font-size: 20px; margin-top: 30px;">🔥 Yesterday's Top Lineup</h2>
-      <ul style="font-size: 16px; line-height: 1.6;">
-        <li><strong>Headliner:</strong> ${headliner}</li>
-        <li><strong>Opener:</strong> ${opener}</li>
-        <li><strong>2nd Opener:</strong> ${secondOpener}</li>
-      </ul>
+          <h2 style="font-size: 20px; margin-top: 30px;">🔥 Yesterday's Top Lineup</h2>
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div><strong>Headliner:</strong> ${headliner} <br/><img src="https://via.placeholder.com/300x300?text=${encodeURIComponent(headliner)}" alt="${headliner}" width="100"/></div>
+            <div><strong>Opener:</strong> ${opener} <br/><img src="https://via.placeholder.com/300x300?text=${encodeURIComponent(opener)}" alt="${opener}" width="100"/></div>
+            <div><strong>2nd Opener:</strong> ${secondOpener} <br/><img src="https://via.placeholder.com/300x300?text=${encodeURIComponent(secondOpener)}" alt="${secondOpener}" width="100"/></div>
+          </div>
 
-      <p style="margin-top: 30px;">Think you can beat it? Submit your own at<br/>
-      <a href="https://best-concert-ever.vercel.app" style="color: #ff6600;">Best Concert Ever</a></p>
-    </div>
-  `,
-});
+          <p style="margin-top: 30px; font-size: 16px;">Think you can beat it? Submit your own at:<br/>
+            <a href="https://best-concert-ever.vercel.app" style="color: #ff6600; font-weight: bold;">Best Concert Ever</a>
+          </p>
 
-return res.status(200).json({ message: "Emails sent" });
-} catch (err) {
-console.error("Failed to send email:", err);
-return res.status(500).json({ message: "Email send failed" });
+          <p style="margin-top: 20px; font-size: 12px; color: gray; text-align: center;">
+            Don’t want to receive these emails? <a href="#" style="color: gray; text-decoration: underline;">Unsubscribe</a>
+          </p>
+        </div>
+      `,
+    });
+
+    return res.status(200).json({ message: "Emails sent" });
+  } catch (err) {
+    console.error("Failed to send email:", err);
+    return res.status(500).json({ message: "Email send failed" });
+  }
 }
