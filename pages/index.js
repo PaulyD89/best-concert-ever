@@ -444,10 +444,10 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
         </div>
       </div>
       
-  <div className="mt-2 mb-8 text-sm text-gray-300 underline cursor-pointer hover:text-white" onClick={() => setShowHowToPlay(true)}>
-        How to Play
-      </div>
-      <div className="mt-2 mb-8 text-sm text-gray-300 underline cursor-pointer hover:text-white" onClick={() => setShowEmailSignup(true)}>
+      <div className="text-sm text-gray-300 underline cursor-pointer hover:text-white" onClick={() => setShowHowToPlay(true)}>
+  How to Play
+</div>
+<div className="mb-8 text-sm text-gray-300 underline cursor-pointer hover:text-white" onClick={() => setShowEmailSignup(true)}>
   Sign Up for Daily Puzzles & Winners
 </div>
 
