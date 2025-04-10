@@ -186,8 +186,9 @@ export default function BestConcertEver() {
 
       data.forEach((lineup) => {
         const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
-        countMap[key] = (countMap[key] || 0) + 1;
-      });
+        const votes = lineup.votes || 0;
+        countMap[key] = (countMap[key] || 0) + 1 + votes;
+      });      
 
       const sortedLineups = Object.entries(countMap)
   .sort((a, b) => b[1] - a[1])
@@ -220,7 +221,7 @@ setLineups(sortedLineups);
     const fetchYesterdaysWinner = async () => {
       const { data, error } = await supabase
         .from("lineups")
-        .select("headliner, opener, second_opener")
+        .select("headliner, opener, second_opener, votes")
         .eq("prompt", yesterdayPrompt);
   
       if (error || !data) return;
