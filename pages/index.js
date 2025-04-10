@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 
 const prompts = [
@@ -91,7 +92,7 @@ const yesterdayPrompt = getYesterdayPrompt();
 
 
 const ArtistSearch = ({ label, onSelect, disabled }) => {
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(&quot;&quot;);
   const [results, setResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
 
@@ -115,7 +116,7 @@ const ArtistSearch = ({ label, onSelect, disabled }) => {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         disabled={disabled}
-        className="w-full px-4 py-3 border-2 border-black rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black font-semibold text-sm"
+        className=&quot;w-full px-4 py-3 border-2 border-black rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black font-semibold text-sm&quot;
       />
       {showDropdown && results.length > 0 && (
         <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-y-scroll shadow-xl">
@@ -124,13 +125,13 @@ const ArtistSearch = ({ label, onSelect, disabled }) => {
               key={artist.id}
               onClick={() => {
               onSelect({ name: artist.name, image: artist.images?.[0]?.url });
-              setQuery("");
+              setQuery(&quot;&quot;);
               setShowDropdown(false);
             }}
-              className="p-2 hover:bg-yellow-100 cursor-pointer flex items-center gap-2 text-sm"
+              className=&quot;p-2 hover:bg-yellow-100 cursor-pointer flex items-center gap-2 text-sm&quot;
             >
               {artist.images?.[0]?.url && (
-                <img src={artist.images[0].url} alt={artist.name} className="w-6 h-6 rounded-full" />
+                <Image src={artist.images[0].url} alt={artist.name} className="w-6 h-6 rounded-full" />
               )}
               {artist.name}
             </li>
@@ -149,18 +150,16 @@ const LineupSlot = ({ artist, label }) => (
   } bg-gray-200 border-2 border-black rounded-md overflow-hidden flex items-center justify-center`}
 >
   {artist?.image ? (
-    <img
-    src={artist.image}
+    <Image src={artist.image}
       alt={artist.name}
       className="w-full h-full object-cover"
-      crossOrigin="anonymous"
-    />
+      crossOrigin="anonymous" />
   ) : (
     <span className="text-black text-xs font-bold text-center w-full text-center block">{label}</span>
   )}
 </div>
 <div className="mt-2 text-black font-bold text-center max-w-[8rem]">
-  {artist?.name || ""}
+  {artist?.name || &quot;&quot;}
 </div>
   </div>
 );
@@ -177,9 +176,9 @@ export default function BestConcertEver() {
   useEffect(() => {
     const fetchTopLineups = async () => {
     const { data, error } = await supabase
-      .from("lineups")
-      .select("headliner, opener, second_opener")
-      .eq("prompt", dailyPrompt);
+      .from(&quot;lineups&quot;)
+      .select(&quot;headliner, opener, second_opener&quot;)
+      .eq(&quot;prompt&quot;, dailyPrompt);
 
     if (!error && data) {
       const countMap = {};
@@ -193,7 +192,7 @@ export default function BestConcertEver() {
   .sort((a, b) => b[1] - a[1])
   .slice(0, 5)
   .map(([key]) => {
-    const [headlinerName, openerName, secondOpenerName] = key.split("|||");
+    const [headlinerName, openerName, secondOpenerName] = key.split(&quot;|||&quot;);
 
     const matchingLineup = data.find(
       (entry) =>
@@ -219,9 +218,9 @@ setLineups(sortedLineups);
   useEffect(() => {
     const fetchYesterdaysWinner = async () => {
       const { data, error } = await supabase
-        .from("lineups")
-        .select("headliner, opener, second_opener")
-        .eq("prompt", yesterdayPrompt);
+        .from(&quot;lineups&quot;)
+        .select(&quot;headliner, opener, second_opener&quot;)
+        .eq(&quot;prompt&quot;, yesterdayPrompt);
   
       if (error || !data) return;
   
@@ -236,7 +235,7 @@ setLineups(sortedLineups);
       const topLineups = Object.entries(countMap)
         .filter(([_, count]) => count === maxCount)
         .map(([key]) => {
-          const [headliner, opener, second_opener] = key.split("|||");
+          const [headliner, opener, second_opener] = key.split(&quot;|||&quot;);
           return {
             headliner: data.find(d => d.headliner?.name === headliner)?.headliner,
             opener: data.find(d => d.opener?.name === opener)?.opener,
@@ -258,7 +257,7 @@ setLineups(sortedLineups);
 
   const handleSubmit = async () => {
     if (headliner && opener && secondOpener) {
-      const { error } = await supabase.from("lineups").insert([
+      const { error } = await supabase.from(&quot;lineups&quot;).insert([
         {
           prompt: dailyPrompt,
           headliner,
@@ -268,13 +267,13 @@ setLineups(sortedLineups);
       ]);
 
       if (error) {
-        console.error("Submission error:", error);
-        alert("There was an error submitting your lineup.");
+        console.error(&quot;Submission error:&quot;, error);
+        alert(&quot;There was an error submitting your lineup.&quot;);
         return;
       }
 
       setSubmitted(true);
-      console.log("Lineup submitted:", { headliner, opener, secondOpener });
+      console.log(&quot;Lineup submitted:&quot;, { headliner, opener, secondOpener });
     }
   };
 
@@ -285,7 +284,7 @@ setLineups(sortedLineups);
           <div className="bg-[#fdf6e3] text-black p-6 rounded-2xl w-[90%] max-w-xl text-left relative shadow-2xl border-[6px] border-black border-double">
             <button
               onClick={() => setShowHowToPlay(false)}
-              className="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black"
+              className=&quot;absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black&quot;
             >
               &times;
             </button>
@@ -301,7 +300,7 @@ setLineups(sortedLineups);
             <div className="text-center mt-6">
               <button
                 onClick={() => setShowHowToPlay(false)}
-                className="inline-block bg-black text-white text-lg px-6 py-2 rounded-full border-2 border-black shadow-md hover:bg-yellow-300 hover:text-black"
+                className=&quot;inline-block bg-black text-white text-lg px-6 py-2 rounded-full border-2 border-black shadow-md hover:bg-yellow-300 hover:text-black&quot;
                 >
                   Let&apos;s Play!  
               </button>
@@ -313,7 +312,7 @@ setLineups(sortedLineups);
       <div ref={flyerRef} className="relative bg-[#fdf6e3] text-black rounded-xl shadow-2xl p-6 w-full max-w-md text-center border-[6px] border-black border-double bg-[url('/scratchy-background.png')] bg-repeat bg-opacity-30"
     >
         <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 w-32 h-32 bg-white rounded-full border-4 border-black shadow-lg flex items-center justify-center overflow-hidden">
-          <img src="/logo.png" alt="Best Concert Ever Logo" className="w-full h-full object-cover" crossOrigin="anonymous" />
+          <Image src="/logo.png" alt="Best Concert Ever Logo" className="w-full h-full object-cover" crossOrigin="anonymous" />
         </div>
 
         <div className="mt-16 mb-4 text-base font-extrabold uppercase tracking-widest text-black inline-block px-4 py-1 border-2 border-black rotate-[-2deg] bg-white shadow-md font-mono">
@@ -350,12 +349,12 @@ setLineups(sortedLineups);
           </button>
           <button
   onClick={async () => {
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
+    const canvas = document.createElement(&quot;canvas&quot;);
+    const ctx = canvas.getContext(&quot;2d&quot;);
   
     const background = new Image();
-    background.src = "/bestconcertdownloadimage.png";
-    background.crossOrigin = "anonymous";
+    background.src = &quot;/bestconcertdownloadimage.png&quot;;
+    background.crossOrigin = &quot;anonymous&quot;;
   
     background.onload = async () => {
       const WIDTH = background.width;
@@ -368,7 +367,7 @@ setLineups(sortedLineups);
       const loadImage = (src) =>
         new Promise((resolve) => {
           const img = new Image();
-          img.crossOrigin = "anonymous";
+          img.crossOrigin = &quot;anonymous&quot;;
           img.src = src;
           img.onload = () => resolve(img);
         });
@@ -386,22 +385,22 @@ ctx.drawImage(openerImg, WIDTH / 2 - 250, HEIGHT - 380, 200, 200);
 ctx.drawImage(secondOpenerImg, WIDTH / 2 + 50, HEIGHT - 380, 200, 200);
 
 // Adjust band names to match new positions
-ctx.font = "bold 24px Arial";
-ctx.fillStyle = "#ffffff";
-ctx.textAlign = "center";
+ctx.font = &quot;bold 24px Arial&quot;;
+ctx.fillStyle = &quot;#ffffff&quot;;
+ctx.textAlign = &quot;center&quot;;
 
-ctx.fillText(headliner?.name || "", WIDTH / 2, HEIGHT - 440 + 40);
-ctx.fillText(opener?.name || "", WIDTH / 2 - 140, HEIGHT - 160);
-ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
+ctx.fillText(headliner?.name || &quot;&quot;, WIDTH / 2, HEIGHT - 440 + 40);
+ctx.fillText(opener?.name || &quot;&quot;, WIDTH / 2 - 140, HEIGHT - 160);
+ctx.fillText(secondOpener?.name || &quot;&quot;, WIDTH / 2 + 140, HEIGHT - 160);
 
   
         // EXPORT IMAGE
-        const link = document.createElement("a");
-        link.download = "best-concert-ever.jpg";
-        link.href = canvas.toDataURL("image/jpeg", 0.95);
+        const link = document.createElement(&quot;a&quot;);
+        link.download = &quot;best-concert-ever.jpg&quot;;
+        link.href = canvas.toDataURL(&quot;image/jpeg&quot;, 0.95);
         link.click();
       } catch (err) {
-        console.error("Image download failed:", err);
+        console.error(&quot;Image download failed:&quot;, err);
       }
     };
   }}
@@ -409,8 +408,8 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
             disabled={!submitted}
             className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide border transition ${
               submitted
-                ? "border-black bg-white text-black hover:bg-yellow-100"
-                : "text-gray-400 border-gray-500 cursor-not-allowed"
+                ? &quot;border-black bg-white text-black hover:bg-yellow-100&quot;
+                : &quot;text-gray-400 border-gray-500 cursor-not-allowed&quot;
             }`}
           >
             Download Lineup
@@ -457,11 +456,9 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
                   <li key={idx} className="text-white flex flex-col items-center">
                     <div className="group">
                       <a href={artist?.url} target="_blank" rel="noopener noreferrer">
-                        <img
-                          src={artist?.image}
+                        <Image src={artist?.image}
                           alt={artist?.name}
-                          className="w-24 h-24 rounded-full mb-2 object-cover border-2 border-red-400 shadow-[0_0_8px_#f87171] group-hover:scale-105 transition-transform duration-200"
-                        />
+                          className="w-24 h-24 rounded-full mb-2 object-cover border-2 border-red-400 shadow-[0_0_8px_#f87171] group-hover:scale-105 transition-transform duration-200" />
                       </a>
                     </div>
                     <span className={`font-bold ${idx === 0 ? 'text-lg' : ''}`}>{artist?.name}</span>
@@ -474,12 +471,10 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
       )}
 <div ref={downloadRef} className="absolute left-[-9999px]">
   <div className="relative w-[768px] h-[1365px]">
-    <img
-      src="/bestconcertdownloadimage.png"
+    <Image src="/bestconcertdownloadimage.png"
       alt="Poster Background"
       className="w-full h-full object-cover"
-      crossOrigin="anonymous"
-    />
+      crossOrigin="anonymous" />
 
    {/* Prompt Styled Like Yesterday&apos;s Winning Lineup */}
 {dailyPrompt && (
@@ -494,12 +489,10 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     <div className="absolute bottom-24 w-full flex flex-col items-center gap-6 px-4">
       <div className="w-40 h-40 rounded-2xl border border-red-600 overflow-hidden shadow-xl">
         {headliner?.image && (
-          <img
-            src={headliner.image}
+          <Image src={headliner.image}
             alt={headliner.name}
             className="w-full h-full object-cover"
-            crossOrigin="anonymous"
-          />
+            crossOrigin="anonymous" />
         )}
       </div>
 
@@ -507,12 +500,10 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
         {[opener, secondOpener].map((artist, idx) => (
           <div key={idx} className="w-32 h-32 rounded-2xl border border-red-600 overflow-hidden shadow-md">
             {artist?.image && (
-              <img
-                src={artist.image}
+              <Image src={artist.image}
                 alt={artist.name}
                 className="w-full h-full object-cover"
-                crossOrigin="anonymous"
-              />
+                crossOrigin="anonymous" />
             )}
           </div>
         ))}

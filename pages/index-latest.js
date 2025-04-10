@@ -190,14 +190,26 @@ export default function BestConcertEver() {
       });
 
       const sortedLineups = Object.entries(countMap)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 5)
-        .map(([key]) => {
-          const [headliner, opener, second_opener] = key.split("|||");
-          return { headliner: { name: headliner }, opener: { name: opener }, second_opener: { name: second_opener } };
-        });
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 5)
+  .map(([key]) => {
+    const [headlinerName, openerName, secondOpenerName] = key.split("|||");
 
-      setLineups(sortedLineups);
+    const matchingLineup = data.find(
+      (entry) =>
+        entry.headliner?.name === headlinerName &&
+        entry.opener?.name === openerName &&
+        entry.second_opener?.name === secondOpenerName
+    );
+
+    return matchingLineup ?? {
+      headliner: { name: headlinerName },
+      opener: { name: openerName },
+      second_opener: { name: secondOpenerName }
+    };
+  });
+
+setLineups(sortedLineups);
       }
     };
 
@@ -283,15 +295,15 @@ export default function BestConcertEver() {
               <li>First, check out the daily prompt (80s bands, Music Duos) and rack your brain for the best bands or music artists that fit the bill.</li>
               <li>Pick an Opener, a Second Opener and the ultimate Headliner for your show.</li>
               <li>Use the search boxes to select real artists from Spotify, then lock them in for good.</li>
-              <li>Note: you can't use the same artist more than once, and dead rock stars are more than fair game. Once you're stoked with your lineup, click "Submit Lineup" to lock it in.</li>
-              <li>Download your <b>Best Concert Ever</b> and share on social and come back tomorrow to see which lineup was the most popular!</li>
+              <li>Note: you can&apos;t use the same artist more than once, and dead rock stars are more than fair game.</li>
+              <li>Download your <b>Best Concert Ever</b> and share on social, then come back tomorrow to see which lineup was the most popular!</li>
             </ul>
             <div className="text-center mt-6">
               <button
                 onClick={() => setShowHowToPlay(false)}
                 className="inline-block bg-black text-white text-lg px-6 py-2 rounded-full border-2 border-black shadow-md hover:bg-yellow-300 hover:text-black"
-              >
-                Let’s Play!
+                >
+                  Let&apos;s Play!  
               </button>
             </div>
           </div>
@@ -337,28 +349,61 @@ export default function BestConcertEver() {
             Submit Lineup
           </button>
           <button
-  onClick={() => {
-    if (!downloadRef.current) return;
-    import("html-to-image").then((htmlToImage) => {
-      const node = downloadRef.current;
-      const images = node.querySelectorAll("img");
-
-      Promise.all(
-        Array.from(images).map((img) => {
-          if (img.complete) return Promise.resolve();
-          return new Promise((resolve) => {
-            img.onload = img.onerror = resolve;
-          });
-        })
-      ).then(() => {
-        htmlToImage.toJpeg(node, { quality: 0.95 }).then((dataUrl) => {
-          const link = document.createElement("a");
-          link.download = `best-concert-ever.jpg`;
-          link.href = dataUrl;
-          link.click();
+  onClick={async () => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+  
+    const background = new Image();
+    background.src = "/bestconcertdownloadimage.png";
+    background.crossOrigin = "anonymous";
+  
+    background.onload = async () => {
+      const WIDTH = background.width;
+      const HEIGHT = background.height;
+      canvas.width = WIDTH;
+      canvas.height = HEIGHT;
+  
+      ctx.drawImage(background, 0, 0, WIDTH, HEIGHT);
+  
+      const loadImage = (src) =>
+        new Promise((resolve) => {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.src = src;
+          img.onload = () => resolve(img);
         });
-      });
-    });
+  
+      try {
+        const [headlinerImg, openerImg, secondOpenerImg] = await Promise.all([
+          loadImage(headliner?.image),
+          loadImage(opener?.image),
+          loadImage(secondOpener?.image),
+        ]);
+  
+       // Move all images up ~150px
+ctx.drawImage(headlinerImg, WIDTH / 2 - 125, HEIGHT - 660, 250, 250);
+ctx.drawImage(openerImg, WIDTH / 2 - 250, HEIGHT - 380, 200, 200);
+ctx.drawImage(secondOpenerImg, WIDTH / 2 + 50, HEIGHT - 380, 200, 200);
+
+// Adjust band names to match new positions
+ctx.font = "bold 24px Arial";
+ctx.fillStyle = "#ffffff";
+ctx.textAlign = "center";
+
+ctx.fillText(headliner?.name || "", WIDTH / 2, HEIGHT - 440 + 40);
+ctx.fillText(opener?.name || "", WIDTH / 2 - 140, HEIGHT - 160);
+ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
+
+  
+        // EXPORT IMAGE
+        const link = document.createElement("a");
+        link.download = "best-concert-ever.jpg";
+        link.href = canvas.toDataURL("image/jpeg", 0.95);
+        link.click();
+      } catch (err) {
+        console.error("Image download failed:", err);
+      }
+    };
   }}
                  
             disabled={!submitted}
@@ -382,7 +427,7 @@ export default function BestConcertEver() {
           <div className="absolute inset-0 rounded-xl border-2 border-yellow-400 animate-pulse pointer-events-none"></div>
           <div className="relative bg-black rounded-xl p-6 border-2 border-yellow-400">
             <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-yellow-400 drop-shadow-[0_0_12px_yellow]">
-              Top 5 Lineups Today
+              Today&apos;s Top 5
             </h2>
             <ul className="flex flex-col gap-2 items-center">
               {lineups.map((lineup, idx) => (
@@ -402,7 +447,7 @@ export default function BestConcertEver() {
 
             <div className="relative bg-black rounded-xl p-6 border-2 border-red-400">
               <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-red-400 drop-shadow-[0_0_12px_red]">
-                Yesterday's Winning Lineup
+                Yesterday&apos;s Winning Lineup
               </h2>
               <div className="mb-6 text-base font-extrabold uppercase tracking-widest text-red-400 inline-block px-4 py-1 border-2 border-red-400 rotate-[-2deg] bg-black shadow-md font-mono">
                 {yesterdayPrompt}
@@ -436,8 +481,18 @@ export default function BestConcertEver() {
       crossOrigin="anonymous"
     />
 
+   {/* Prompt Styled Like Yesterday&apos;s Winning Lineup */}
+{dailyPrompt && (
+  <div className="absolute top-[140px] left-1/2 transform -translate-x-1/2 rotate-[-2deg]">
+    <div className="text-center text-red-500 text-lg font-bold uppercase border-2 border-red-500 px-6 py-2 tracking-wider whitespace-nowrap bg-black">
+      {dailyPrompt}
+    </div>
+  </div>
+)}
+
+
     <div className="absolute bottom-24 w-full flex flex-col items-center gap-6 px-4">
-      <div className="w-40 h-40 bg-white border-2 border-black overflow-hidden shadow-xl">
+      <div className="w-40 h-40 rounded-2xl border border-red-600 overflow-hidden shadow-xl">
         {headliner?.image && (
           <img
             src={headliner.image}
@@ -450,7 +505,7 @@ export default function BestConcertEver() {
 
       <div className="flex gap-4">
         {[opener, secondOpener].map((artist, idx) => (
-          <div key={idx} className="w-32 h-32 bg-white border-2 border-black overflow-hidden shadow-md">
+          <div key={idx} className="w-32 h-32 rounded-2xl border border-red-600 overflow-hidden shadow-md">
             {artist?.image && (
               <img
                 src={artist.image}
