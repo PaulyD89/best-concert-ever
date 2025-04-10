@@ -135,7 +135,11 @@ const ArtistSearch = ({ label, onSelect, disabled }) => {
               {artist.name}
             </li>
           ))}
-        </ul>
+        $1{!localStorage.getItem(`bce-voted-${dailyPrompt}`) && (
+  <div className="mt-4 text-yellow-300 font-bold text-sm">
+    Click 🔥 to give a lineup some love!
+  </div>
+)}
       )}
     </div>
   );
