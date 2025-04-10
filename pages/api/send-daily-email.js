@@ -160,11 +160,3 @@ return res.status(200).json({ message: "Emails sent" });
 console.error("Failed to send email:", err);
 return res.status(500).json({ message: "Email send failed" });
 }
-
-
-  return res.status(200).json({
-    dailyPrompt,
-    yesterdayPrompt,
-    topLineup: { headliner, opener, secondOpener }
-  });
-}
