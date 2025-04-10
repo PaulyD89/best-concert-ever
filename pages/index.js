@@ -295,7 +295,7 @@ setLineups(sortedLineups);
               <li>First, check out the daily prompt (80s bands, Music Duos) and rack your brain for the best bands or music artists that fit the bill.</li>
               <li>Pick an Opener, a Second Opener and the ultimate Headliner for your show.</li>
               <li>Use the search boxes to select real artists from Spotify, then lock them in for good.</li>
-              <li>Note: you can&apos;t use the same artist more than once, and dead rock stars are more than fair game.</li>
+              <li>Note: you can’t use the same artist more than once, and dead rock stars are more than fair game.</li>
               <li>Download your <b>Best Concert Ever</b> and share on social, then come back tomorrow to see which lineup was the most popular!</li>
             </ul>
             <div className="text-center mt-6">
@@ -427,7 +427,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
           <div className="absolute inset-0 rounded-xl border-2 border-yellow-400 animate-pulse pointer-events-none"></div>
           <div className="relative bg-black rounded-xl p-6 border-2 border-yellow-400">
             <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-yellow-400 drop-shadow-[0_0_12px_yellow]">
-              Top 5 Lineups Today
+              Today's Top 5
             </h2>
             <ul className="flex flex-col gap-2 items-center">
               {lineups.map((lineup, idx) => (
