@@ -123,7 +123,11 @@ const ArtistSearch = ({ label, onSelect, disabled }) => {
             <li
               key={artist.id}
               onClick={() => {
-              onSelect({ name: artist.name, image: artist.images?.[0]?.url });
+                onSelect({
+                  name: artist.name,
+                  image: artist.images?.[0]?.url,
+                  url: artist.external_urls?.spotify,
+                });                
               setQuery("");
               setShowDropdown(false);
             }}
