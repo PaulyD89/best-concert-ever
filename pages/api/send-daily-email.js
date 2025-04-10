@@ -1,6 +1,5 @@
 import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
-import fetch from 'node-fetch';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const supabase = createClient(
