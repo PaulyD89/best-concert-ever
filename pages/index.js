@@ -472,6 +472,95 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
           </div>
         </div>
       )}
+
+{/* Mailing List Signup Section */}
+<div className="mt-16 mb-10 w-full max-w-md bg-white text-black p-6 rounded-xl border-4 border-black shadow-xl text-center">
+  <h2 className="text-xl font-bold mb-2">Opt in To Best Concert Ever Daily Updates</h2>
+  <p className="text-sm text-gray-600 mb-4">Get yesterday’s winning lineup in your inbox each morning.</p>
+  <form
+    onSubmit={async (e) => {
+      e.preventDefault();
+      const email = e.target.email.value;
+      if (!email) return;
+      const { error } = await supabase.from("subscribers").insert([{ email }]);
+      if (error) {
+        alert("There was a problem subscribing. Please try again later.");
+        console.error("Subscription error:", error);
+      } else {
+        alert("Thanks for subscribing!");
+        e.target.reset();
+      }
+    }}
+    className="flex flex-col sm:flex-row gap-2 justify-center"
+  >
+    <input
+      type="email"
+      name="email"
+      placeholder="you@example.com"
+      required
+      className="px-4 py-2 border-2 border-black rounded-md w-full text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400"
+    />
+    <button
+      type="submit"
+      className="px-4 py-2 bg-black text-yellow-300 font-bold rounded-md border-2 border-black hover:bg-yellow-400 hover:text-black"
+    >
+      Subscribe
+    </button>
+  </form>
+</div>
+
+<div ref={downloadRef} className="absolute left-[-9999px]">
+  <div className="relative w-[768px] h-[1365px]">
+    <img
+      src="/bestconcertdownloadimage.png"
+      alt="Poster Background"
+      className="w-full h-full object-cover"
+      crossOrigin="anonymous"
+    />
+
+    {/* Prompt Styled Like Yesterday's Winning Lineup */}
+    {dailyPrompt && (
+      <div className="absolute top-[140px] left-1/2 transform -translate-x-1/2 rotate-[-2deg]">
+        <div className="text-center text-red-500 text-lg font-bold uppercase border-2 border-red-500 px-6 py-2 tracking-wider whitespace-nowrap bg-black">
+          {dailyPrompt}
+        </div>
+      </div>
+    )}
+
+    <div className="absolute bottom-24 w-full flex flex-col items-center gap-6 px-4">
+      <div className="w-40 h-40 rounded-2xl border border-red-600 overflow-hidden shadow-xl">
+        {headliner?.image && (
+          <img
+            src={headliner.image}
+            alt={headliner.name}
+            className="w-full h-full object-cover"
+            crossOrigin="anonymous"
+          />
+        )}
+      </div>
+
+      <div className="flex gap-4">
+        {[opener, secondOpener].map((artist, idx) => (
+          <div key={idx} className="w-32 h-32 rounded-2xl border border-red-600 overflow-hidden shadow-md">
+            {artist?.image && (
+              <img
+                src={artist.image}
+                alt={artist.name}
+                className="w-full h-full object-cover"
+                crossOrigin="anonymous"
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+  );
+}
+
 <div ref={downloadRef} className="absolute left-[-9999px]">
   <div className="relative w-[768px] h-[1365px]">
     <img
