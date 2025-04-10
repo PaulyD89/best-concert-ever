@@ -1,3 +1,5 @@
+// ... previous code remains the same above
+
 import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
 
@@ -171,9 +173,15 @@ async function getSpotifyImageUrl(artistName) {
                   <img src="https://best-concert-ever.vercel.app/emailheader.png" alt="Best Concert Ever logo" style="width: 100%; max-width: 600px; height: auto; display: block;" />
                 </div>
           
-                <h1 style="font-size: 28px; text-align: center; margin: 30px 0 20px; color: #ff6b6b; text-transform: uppercase; font-weight: bold; letter-spacing: 1.5px; text-shadow: 0 0 8px #ff6b6b;">
-            Yesterday's Winning Lineup
-          </h1>
+                <h1 style="font-size: 28px; text-align: center; margin: 30px 0 12px; color: #ff6b6b; text-transform: uppercase; font-weight: bold; letter-spacing: 1.5px; text-shadow: 0 0 8px #ff6b6b;">
+  Yesterday's Winning Lineup
+</h1>
+<div style="text-align: center; margin: 0 auto 30px; transform: rotate(-2deg);">
+  <div style="display: inline-block; border: 2px solid #ff6b6b; padding: 6px 14px; font-weight: bold; font-size: 14px; letter-spacing: 1px; color: #ff6b6b; text-transform: uppercase; background-color: #000; text-shadow: 0 0 5px #ff6b6b;">
+    ${yesterdayPrompt}
+  </div>
+</div>
+</div>
           
                 <div style="text-align: center; margin: 0 auto 40px;">
                   <div style="display: inline-block; border: 1px solid #000; border-radius: 12px; padding: 10px; background-color: #111;">
