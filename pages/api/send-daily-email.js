@@ -200,14 +200,14 @@ export default async function handler(req, res) {
 
           <div style="display: flex; justify-content: space-between; max-width: 420px; margin: 0 auto 40px;">
             <div style="text-align: center;">
-              <div style="border: 1px solid #444; border-radius: 12px; padding: 8px; background-color: #111; width: 140px;">
+              <div style="border: 1px solid #444; border-radius: 12px; padding: 8px; background-color: #111; width: 140px; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
                 <img src="${openerImg}" alt="${opener}" style="width: 120px; height: 120px; border-radius: 12px;" />
                 <div style="font-weight: bold; text-transform: uppercase; margin-top: 8px;">${opener}</div>
                 <div style="font-style: italic; font-size: 12px; color: #aaa;">Opener</div>
               </div>
             </div>
             <div style="text-align: center;">
-              <div style="border: 1px solid #444; border-radius: 12px; padding: 8px; background-color: #111; width: 140px;">
+              <div style="border: 1px solid #444; border-radius: 12px; padding: 8px; background-color: #111; width: 140px; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
                 <img src="${secondOpenerImg}" alt="${secondOpener}" style="width: 120px; height: 120px; border-radius: 12px;" />
                 <div style="font-weight: bold; text-transform: uppercase; margin-top: 8px;">${secondOpener}</div>
                 <div style="font-style: italic; font-size: 12px; color: #aaa;">2nd Opener</div>
