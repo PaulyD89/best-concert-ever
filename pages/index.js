@@ -56,14 +56,12 @@ const prompts = [
 ];
 
 function getDailyPrompt() {
-  const formatter = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'America/Los_Angeles',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  });
-  const [{ value: month }, , { value: day }, , { value: year }] = formatter.formatToParts(new Date());
-  const today = `${year}-${month}-${day}`;
+  // Convert to Pacific Time (automatically handles PST/PDT)
+  const now = new Date();
+  const pacificDate = new Date(
+    now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
+  );
+  const today = pacificDate.toISOString().split("T")[0];
 
   let hash = 0;
   for (let i = 0; i < today.length; i++) {
@@ -77,15 +75,9 @@ const dailyPrompt = getDailyPrompt();
 
 function getYesterdayPrompt() {
   const now = new Date();
-  now.setDate(now.getDate() - 1);
-  const formatter = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'America/Los_Angeles',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  });
-  const [{ value: month }, , { value: day }, , { value: year }] = formatter.formatToParts(now);
-  const yesterday = `${year}-${month}-${day}`;
+  const pacificDate = new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
+  pacificDate.setDate(pacificDate.getDate() - 1); // one day before
+  const yesterday = pacificDate.toISOString().split("T")[0];
 
   let hash = 0;
   for (let i = 0; i < yesterday.length; i++) {
