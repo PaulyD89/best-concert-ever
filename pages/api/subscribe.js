@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     <div style="text-align: center; margin-bottom: 24px;">
       <img src="https://best-concert-ever.vercel.app/circularlogo.png" alt="Best Concert Ever Logo" width="180" height="180" style="border-radius: 50%; display: block; margin: 0 auto;" />
     </div>
-    <h1 style="text-align: center; font-size: 24px; color: #ffee33; text-transform: uppercase; font-weight: bold; margin-bottom: 12px;">
+    <h1 style="text-align: center; font-size: 24px; color: #ffee33; text-transform: uppercase; font-weight: bold; margin-bottom: 12px; text-shadow: 0 0 6px #ffee33, 0 0 12px #ffee33; animation: pulse 2s infinite alternate;">
       You’re Signed Up!
     </h1>
     <p style="font-size: 16px; text-align: center; margin-bottom: 24px;">
@@ -42,8 +42,13 @@ export default async function handler(req, res) {
     </p>
     <p style="margin-top: 30px; font-size: 11px; color: gray; text-align: center;">
       © 2025 Thirty Bucks, LLC. All rights reserved.
-    </p>
-  </div>
+    $1
+<style>
+@keyframes pulse {
+  from { opacity: 1; }
+  to { opacity: 0.85; }
+}
+</style>
 `,
     });
 
