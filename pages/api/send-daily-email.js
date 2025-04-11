@@ -57,7 +57,7 @@ const prompts = [
   "Best Pop Acts of the 80s",
   "Best Bands to See at Night",
   "Best College Radio Legends",
-  "Best World Music Lineups"
+  "Best World Music Lineups",
   "Best 80s Rock",
   "Best 90s Hip-Hop",
   "Best Female Icons",
@@ -283,8 +283,8 @@ const prompts = [
   "Best Honky Tonk Artists",
   "Best Southern Rock Bands",
   "Best Lounge Acts",
-  "Best Drum & Bass"
-  "Best Krautrock",
+  "Best Drum & Bass",
+  "Best Kraut Rock",
   "Best House Music Artists",
   "Best Mod Music Acts",
   "Best Manchester Sound Bands",
