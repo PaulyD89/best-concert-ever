@@ -25,12 +25,12 @@ export default async function handler(req, res) {
     from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
       to: email,
       subject: '🎸 You’re Signed Up!',
-     html: `
+      html: `
   <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #000; color: white; border-radius: 12px; border: 2px solid #f66;">
     <div style="text-align: center; margin-bottom: 24px;">
       <img src="https://best-concert-ever.vercel.app/circularlogo.png" alt="Best Concert Ever Logo" width="180" height="180" style="border-radius: 50%; display: block; margin: 0 auto;" />
     </div>
-    <h1 style="text-align: center; font-size: 24px; color: #ffee33; text-transform: uppercase; font-weight: bold; margin-bottom: 12px; text-shadow: 0 0 6px #ffee33, 0 0 12px #ffee33; animation: pulse 1.5s infinite alternate;">
+    <h1 style="text-align: center; font-size: 24px; color: #ffee33; text-transform: uppercase; font-weight: bold; margin-bottom: 12px;">
       You’re Signed Up!
     </h1>
     <p style="font-size: 16px; text-align: center; margin-bottom: 24px;">
@@ -43,11 +43,13 @@ export default async function handler(req, res) {
     <p style="margin-top: 30px; font-size: 11px; color: gray; text-align: center;">
       © 2025 Thirty Bucks, LLC. All rights reserved.
     </p>
-    <style>
-      @keyframes pulse {
-        from { opacity: 1; }
-        to { opacity: 0.7; }
-      }
-    </style>
   </div>
-`
+`,
+    });
+
+    return res.status(200).json({ message: 'Email sent' });
+  } catch (err) {
+    console.error('Email error:', err);
+    return res.status(500).json({ message: 'Email failed' });
+  }
+}
