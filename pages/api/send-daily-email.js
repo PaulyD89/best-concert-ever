@@ -225,8 +225,10 @@ export default async function handler(req, res) {
           </p>
 
           <p style="margin-top: 30px; font-size: 12px; color: gray; text-align: center;">
-            Don’t want to receive these emails? <a href="https://best-concert-ever.vercel.app/unsubscribe" style="color: gray; text-decoration: underline;">Unsubscribe</a>
-          </p>
+            $1
+<p style="margin-top: 10px; font-size: 11px; color: gray; text-align: center;">
+  © 2025 Thirty Bucks, LLC. All rights reserved.
+</p>
         </div>
       `;
     await resend.emails.send({
