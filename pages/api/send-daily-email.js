@@ -172,18 +172,9 @@ export default async function handler(req, res) {
           </div>
 
           <div style="text-align: center; margin-bottom: 32px;">
-  $1
-<div style="margin: 10px 0;">
-  <div style="display: inline-block; font-size: 16px; font-weight: bold; color: #ffee33; background-color: #111; padding: 6px 16px; border-radius: 6px; box-shadow: 0 0 10px #ffee33, 0 0 20px #ffee33; animation: flash 1.5s infinite alternate;">
-    IS NOW LIVE
-  </div>
-</div>
-<style>
-@keyframes flash {
-  from { opacity: 1; }
-  to { opacity: 0.4; }
-}
-</style>
+  <h1 style="font-size: 28px; color: #ffee33; text-transform: uppercase; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 12px;">
+    Today's Challenge
+  </h1>
   <div style="display: inline-block; border: 2px solid #ffee33; padding: 6px 14px; font-weight: bold; font-size: 14px; letter-spacing: 1px; color: #ffee33; text-transform: uppercase; background-color: #000; text-shadow: 0 0 5px #ffee33; transform: rotate(-2deg);">
     ${dailyPrompt}
   </div>
