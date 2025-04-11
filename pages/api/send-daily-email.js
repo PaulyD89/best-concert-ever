@@ -113,6 +113,7 @@ async function getSpotifyImageUrl(artistName) {
 }
 
 export default async function handler(req, res) {
+  console.log("Running email sender...");
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
@@ -149,6 +150,13 @@ export default async function handler(req, res) {
     getSpotifyImageUrl(secondOpener)
   ]);
 
+  if (!headliner || !opener || !secondOpener || !dailyPrompt || !yesterdayPrompt) {
+    console.error("Missing data for email content:", {
+      headliner, opener, secondOpener, dailyPrompt, yesterdayPrompt
+    });
+    return res.status(500).json({ message: "Incomplete data for email content" });
+  }
+
   const { data: subs, error: subsError } = await supabase
     .from("subscribers")
     .select("email");
@@ -161,11 +169,10 @@ export default async function handler(req, res) {
   const recipients = subs.map((s) => s.email);
 
   try {
-    await resend.emails.send({
+    const html = `
       from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
       to: recipients,
-      subject: `🎸 Today's Prompt & Yesterday's Top Lineup`,
-      html: `
+      subject: `🎸 Today's Prompt & Yesterday's Top Lineup`,html,
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #000; color: white; border-radius: 12px; border: 2px solid #f66;">
           <div style="text-align: center; margin-bottom: 20px;">
             <img src="https://best-concert-ever.vercel.app/bcefinalemaillogo.png" alt="Best Concert Ever logo" style="width: 100%; max-width: 600px; height: auto; display: block;" />
@@ -226,7 +233,7 @@ export default async function handler(req, res) {
         </div>
       `,
     });
-
+    console.log("Email HTML content:", html);
     return res.status(200).json({ message: "Emails sent" });
   } catch (err) {
     console.error("Failed to send email:", err);
