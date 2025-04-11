@@ -220,7 +220,7 @@ export default async function handler(req, res) {
           </div>
 
           <p style="margin-top: 10px; font-size: 16px; text-align: center;">
-            Think you can beat it?<br/>
+            Think you have what it takes to be the ultimate Music Promoter?<br/>
             <a href="https://best-concert-ever.vercel.app" style="color: #f66; font-weight: bold;">Submit your own lineup</a>
           </p>
 
