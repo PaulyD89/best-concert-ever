@@ -173,32 +173,39 @@ async function getSpotifyImageUrl(artistName) {
                   <img src="https://best-concert-ever.vercel.app/emailheader.png" alt="Best Concert Ever logo" style="width: 100%; max-width: 600px; height: auto; display: block;" />
                 </div>
           
-                <h1 style="font-size: 28px; text-align: center; margin: 30px 0 12px; color: #ff6b6b; text-transform: uppercase; font-weight: bold; letter-spacing: 1.5px; text-shadow: 0 0 8px #ff6b6b;">
-  Yesterday's Winning Lineup
-</h1>
-<div style="text-align: center; margin: 0 auto 30px; transform: rotate(-2deg);">
-  <div style="display: inline-block; border: 2px solid #ff6b6b; padding: 6px 14px; font-weight: bold; font-size: 14px; letter-spacing: 1px; color: #ff6b6b; text-transform: uppercase; background-color: #000; text-shadow: 0 0 5px #ff6b6b;">
-    ${yesterdayPrompt}
+                <div style="background-color: #111; border-radius: 12px; padding: 20px; margin-bottom: 40px;">
+  <h1 style="font-size: 28px; text-align: center; margin: 0 0 12px; color: #ff6b6b; text-transform: uppercase; font-weight: bold; letter-spacing: 1.5px; text-shadow: 0 0 8px #ff6b6b;">
+    Yesterday's Winning Lineup
+  </h1>
+  <div style="text-align: center; margin: 0 auto 30px; transform: rotate(-2deg);">
+    <div style="display: inline-block; border: 2px solid #ff6b6b; padding: 6px 14px; font-weight: bold; font-size: 14px; letter-spacing: 1px; color: #ff6b6b; text-transform: uppercase; background-color: #000; text-shadow: 0 0 5px #ff6b6b;">
+      ${yesterdayPrompt}
+    </div>
+  </div>
+  <div style="text-align: center; margin-bottom: 20px;">
+    <div style="display: inline-block; border: 1px solid #000; border-radius: 12px; padding: 10px; background-color: #111; width: 200px;">
+      <img src="${headlinerImg}" alt="${headliner}" style="width: 180px; height: 180px; border-radius: 12px; display: block; margin: 0 auto;" />
+      <div style="font-weight: bold; text-transform: uppercase; margin-top: 10px;">${headliner}</div>
+      <div style="font-style: italic; font-size: 12px; color: #aaa;">Headliner</div>
+    </div>
+  </div>
+  <div style="display: flex; justify-content: space-between; max-width: 420px; margin: 0 auto;">
+    <div style="text-align: center;">
+      <div style="border: 1px solid #000; border-radius: 12px; padding: 8px; background-color: #111; width: 140px;">
+        <img src="${openerImg}" alt="${opener}" style="width: 120px; height: 120px; border-radius: 12px; display: block; margin: 0 auto;" />
+        <div style="font-weight: bold; text-transform: uppercase; margin-top: 8px;">${opener}</div>
+        <div style="font-style: italic; font-size: 12px; color: #aaa;">Opener</div>
+      </div>
+    </div>
+    <div style="text-align: center;">
+      <div style="border: 1px solid #000; border-radius: 12px; padding: 8px; background-color: #111; width: 140px;">
+        <img src="${secondOpenerImg}" alt="${secondOpener}" style="width: 120px; height: 120px; border-radius: 12px; display: block; margin: 0 auto;" />
+        <div style="font-weight: bold; text-transform: uppercase; margin-top: 8px;">${secondOpener}</div>
+        <div style="font-style: italic; font-size: 12px; color: #aaa;">2nd Opener</div>
+      </div>
+    </div>
   </div>
 </div>
-</div>
-          
-                <div style="text-align: center; margin: 0 auto 40px;">
-  <div style="display: inline-block; border: 1px solid #000; border-radius: 12px; padding: 10px; background-color: #111; width: 200px;">
-    <img src="${headlinerImg}" alt="${headliner}" style="width: 180px; height: 180px; border-radius: 12px; display: block; margin: 0 auto;" />
-    <div style="font-weight: bold; text-transform: uppercase; margin-top: 10px;">${headliner}</div>
-    <div style="font-style: italic; font-size: 12px; color: #aaa;">Headliner</div>
-  </div>
-</div>
-                    <div style="font-style: italic; font-size: 12px; color: #aaa;">Headliner</div>
-                  </div>
-                </div>
-          
-                <div style="display: flex; justify-content: space-between; margin: 0 auto; max-width: 420px;">
-  <div style="text-align: center;">
-    <div style="border: 1px solid #000; border-radius: 12px; padding: 8px; background-color: #111; width: 140px;">
-      <img src="${openerImg}" alt="${opener}" style="width: 120px; height: 120px; border-radius: 12px; display: block; margin: 0 auto;" />
-      <div style="font-weight: bold; text-transform: uppercase; margin-top: 8px;">${opener}</div>
       <div style="font-style: italic; font-size: 12px; color: #aaa;">Opener</div>
     </div>
   </div>
