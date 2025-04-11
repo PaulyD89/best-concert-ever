@@ -171,8 +171,18 @@ export default async function handler(req, res) {
             <img src="https://best-concert-ever.vercel.app/bcefinalemaillogo.png" alt="Best Concert Ever logo" style="width: 100%; max-width: 600px; height: auto; display: block;" />
           </div>
 
-          <div style="text-align: center; margin-bottom: 24px;">
-            <h1 style="font-size: 28px; color: #ff6b6b; text-transform: uppercase; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 12px;">
+          <div style="text-align: center; margin-bottom: 32px;">
+  <h1 style="font-size: 28px; color: #ffee33; text-transform: uppercase; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 12px;">
+    Today's Challenge
+  </h1>
+  <div style="display: inline-block; border: 2px solid #ffee33; padding: 6px 14px; font-weight: bold; font-size: 14px; letter-spacing: 1px; color: #ffee33; text-transform: uppercase; background-color: #000; text-shadow: 0 0 5px #ffee33; transform: rotate(-2deg);">
+    ${dailyPrompt}
+  </div>
+</div>
+
+<br/><br/>
+
+<div style="text-align: center; margin-bottom: 24px;"><h1 style="font-size: 28px; color: #ff6b6b; text-transform: uppercase; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 12px;">
               Yesterday's Winning Lineup
             </h1>
             <div style="display: inline-block; border: 2px solid #ff6b6b; padding: 6px 14px; font-weight: bold; font-size: 14px; letter-spacing: 1px; color: #ff6b6b; text-transform: uppercase; background-color: #000; text-shadow: 0 0 5px #ff6b6b; transform: rotate(-2deg);">
