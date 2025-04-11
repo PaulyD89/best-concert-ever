@@ -228,8 +228,7 @@ export default async function handler(req, res) {
             Don’t want to receive these emails? <a href="https://best-concert-ever.vercel.app/unsubscribe" style="color: gray; text-decoration: underline;">Unsubscribe</a>
           </p>
         </div>
-      `,
-    });
+      `;
     await resend.emails.send({
         from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
         to: recipients,
