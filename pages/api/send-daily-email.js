@@ -170,9 +170,6 @@ export default async function handler(req, res) {
 
   try {
     const html = `
-      from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
-      to: recipients,
-      subject: `🎸 Today's Prompt & Yesterday's Top Lineup`,html,
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #000; color: white; border-radius: 12px; border: 2px solid #f66;">
           <div style="text-align: center; margin-bottom: 20px;">
             <img src="https://best-concert-ever.vercel.app/bcefinalemaillogo.png" alt="Best Concert Ever logo" style="width: 100%; max-width: 600px; height: auto; display: block;" />
@@ -233,6 +230,12 @@ export default async function handler(req, res) {
         </div>
       `,
     });
+    await resend.emails.send({
+        from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
+        to: recipients,
+        subject: `🎸 Today's Prompt & Yesterday's Top Lineup`,
+        html
+      });
     console.log("Email HTML content:", html);
     return res.status(200).json({ message: "Emails sent" });
   } catch (err) {
