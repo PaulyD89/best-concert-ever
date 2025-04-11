@@ -549,12 +549,14 @@ setLineups(sortedLineups);
             </button>
             <h2 className="text-2xl font-bold mb-4">HOW TO PLAY</h2>
             <ul className="list-disc pl-5 space-y-2 text-sm">
-              <li>Time to flex those Music Promoter skills and show everyone you know how to put together the ultimate concert lineup.</li>
-              <li>First, check out the daily prompt (80s bands, Music Duos) and rack your brain for the best bands or music artists that fit the bill.</li>
-              <li>Pick an Opener, a Second Opener and the ultimate Headliner for your show.</li>
-              <li>Use the search boxes to select real artists from Spotify, then lock them in for good.</li>
-              <li>Note: you can&apos;t use the same artist more than once, and dead rock stars are more than fair game.</li>
-              <li>Download your <b>Best Concert Ever</b> and share on social, then come back tomorrow to see which lineup was the most popular!</li>
+              <li>Time to flex those Music Promoter skills and show everyone you know how to assemble the ULTIMATE CONCERT LINE-UP!</li>
+              <li>CHECK THE DAILY PROMPT for the genre of the show you&apos;re promoting.</li>
+              <li>Use the drop-down menus to select THREE ARTISTS who fit the bill</li>
+              <li>CHOOSE THE ORDER for your show - the OPENER, 2ND OPENER and HEADLINER.</li>
+              <li>You can only pick an artist once per game.</li>
+              <li>Once you have made your selections, hit SUBMIT LINEUP. Click DOWNLOAD LINEUP for your own personal concert poster that you can SHARE ON SOCIAL MEDIA.</li>
+              <li>Today&apos;s TOP 5 most popular will be posted daily. You can VOTE once per day on the Top 5 by clicking the FIRE EMOJI.</li>
+              <li>NEW GAMES and YESTERDAY'S WINNERS are posted every single day.</li>
             </ul>
             <div className="text-center mt-6">
               <button
