@@ -556,7 +556,7 @@ setLineups(sortedLineups);
               <li>You can only pick an artist once per game.</li>
               <li>Once you have made your selections, hit SUBMIT LINEUP. Click DOWNLOAD LINEUP for your own personal concert poster that you can SHARE ON SOCIAL MEDIA.</li>
               <li>Today&apos;s TOP 5 most popular will be posted daily. You can VOTE once per day on the Top 5 by clicking the FIRE EMOJI.</li>
-              <li>NEW GAMES and YESTERDAY'S WINNERS are posted every single day.</li>
+              <li>NEW GAMES and YESTERDAY&apos;S WINNERS are posted every single day.</li>
             </ul>
             <div className="text-center mt-6">
               <button
