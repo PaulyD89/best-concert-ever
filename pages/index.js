@@ -524,9 +524,9 @@ setLineups(sortedLineups);
           .from("lineups")
           .select("*")
           .eq("prompt", dailyPrompt)
-          .eq("headliner", headliner)
-          .eq("opener", opener)
-          .eq("second_opener", secondOpener)
+          .eq("headliner.name", headliner.name)
+          .eq("opener.name", opener.name)
+          .eq("second_opener.name", secondOpener.name)
           .single();
 
         if (fetchError && fetchError.code !== "PGRST116") {
