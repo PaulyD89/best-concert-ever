@@ -708,33 +708,23 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
           onClick={async () => {
             localStorage.setItem(`bce-voted-${dailyPrompt}`, key);
           
-            const { data: match, error: fetchError } = await supabase
-  .from("lineups")
-  .select("id, votes")
-  .eq("prompt", dailyPrompt)
-  .eq("headliner.name", lineup.headliner?.name)
-  .eq("opener.name", lineup.opener?.name)
-  .eq("second_opener.name", lineup.second_opener?.name)
-  .single();
-
-if (fetchError || !match) {
-  console.error("Vote fetch failed:", fetchError);
-  alert("Oops, could not find lineup to vote for.");
-  return;
-}
-
-const { error: voteError } = await supabase
-  .from("lineups")
-  .update({ votes: (match.votes || 0) + 1 })
-  .eq("id", match.id);
-
-if (voteError) {
-  console.error("Vote update failed:", voteError);
-  alert("Oops, vote could not be recorded.");
-} else {
-  alert("🔥 Your vote has been counted!");
-  window.location.reload();
-}
+            const { error } = await supabase
+              .from("lineups")
+              .update({ votes: (lineup.votes || 0) + 1 })
+              .match({
+                prompt: dailyPrompt,
+                "headliner->>name": lineup.headliner?.name,
+                "opener->>name": lineup.opener?.name,
+                "second_opener->>name": lineup.second_opener?.name,
+              });
+          
+            if (error) {
+              console.error("Vote failed:", error);
+              alert("Oops, there was an issue recording your vote.");
+            } else {
+              alert("🔥 Your vote has been counted!");
+              window.location.reload();
+            }
           }}          
             className="mt-1 text-xl hover:scale-110 transition-transform"
             title="Vote for this lineup"
