@@ -517,22 +517,39 @@ setLineups(sortedLineups);
 
   const handleSubmit = async () => {
     if (headliner && opener && secondOpener) {
-      const { error } = await supabase.from("lineups").insert([
-        {
-          prompt: dailyPrompt,
-          headliner,
-          opener,
-          second_opener: secondOpener,
-        },
-      ]);
+      try {
+        const { data: existingLineup, error: fetchError } = await supabase
+          .from("lineups")
+          .select("*")
+          .eq("prompt", dailyPrompt)
+          .eq("headliner", headliner)
+          .eq("opener", opener)
+          .eq("second_opener", secondOpener)
+          .single();
 
-      if (error) {
-        console.error("Submission error:", error);
-        alert("There was an error submitting your lineup.");
-        return;
-      }
+        if (fetchError && fetchError.code !== "PGRST116") {
+          throw fetchError;
+        }
 
-      setSubmitted(true);
+        if (existingLineup) {
+          await supabase
+            .from("lineups")
+            .update({ submissions: (existingLineup.submissions || 0) + 1 })
+            .eq("id", existingLineup.id);
+        } else {
+          await supabase.from("lineups").insert([
+            {
+              prompt: dailyPrompt,
+              headliner,
+              opener,
+              second_opener: secondOpener,
+              submissions: 1,
+              votes: 0,
+            },
+          ]);
+        }
+
+        setSubmitted(true);
       console.log("Lineup submitted:", { headliner, opener, secondOpener });
     }
   };
@@ -713,10 +730,11 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
               return;
             }
             
-            const { error: voteError } = await supabase
+            const { data: updatedVotes, error: voteError } = await supabase
               .from("lineups")
               .update({ votes: (lineup.votes || 0) + 1 })
-              .eq("id", lineup.id);            
+              .eq("id", lineup.id)
+              .select();            
           
               if (voteError) {
                 console.error("Vote failed:", voteError);              
