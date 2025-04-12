@@ -42,7 +42,7 @@ export default async function handler(req, res) {
     </p>
     <p style="margin-top: 30px; font-size: 11px; color: gray; text-align: center;">
       © 2025 Thirty Bucks, LLC. All rights reserved.
-    $1
+    
 <style>
 @keyframes pulse {
   from { opacity: 1; }
