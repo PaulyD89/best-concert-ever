@@ -365,10 +365,11 @@ export default async function handler(req, res) {
   }
 
   const countMap = {};
-  data.forEach((lineup) => {
-    const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
-    countMap[key] = (countMap[key] || 0) + 1;
-  });
+data.forEach((lineup) => {
+  const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+  const votes = lineup.votes || 0;
+  countMap[key] = (countMap[key] || 0) + 1 + votes;
+});
 
   const maxCount = Math.max(...Object.values(countMap));
   const topLineups = Object.entries(countMap)
