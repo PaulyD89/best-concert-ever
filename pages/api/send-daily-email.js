@@ -406,10 +406,7 @@ data.forEach((lineup) => {
     const html = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #000; color: white; border-radius: 12px; border: 2px solid #f66;">
           <div style="text-align: center; margin-bottom: 20px;">
-            <img src="https://best-concert-ever.vercel.app/bcefinalemaillogo.png" 
-                alt="Best Concert Ever logo" 
-                width="600" height="200" 
-        style="display: block; margin: 0 auto;" />
+            <img src="https://best-concert-ever.vercel.app/bcefinalemaillogo.png" alt="Best Concert Ever logo" style="width: 100%; max-width: 600px; height: auto; display: block;" />
           </div>
 
           <div style="text-align: center; margin-bottom: 32px;">
