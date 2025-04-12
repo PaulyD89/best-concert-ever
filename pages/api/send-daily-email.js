@@ -406,7 +406,10 @@ data.forEach((lineup) => {
     const html = `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #000; color: white; border-radius: 12px; border: 2px solid #f66;">
           <div style="text-align: center; margin-bottom: 20px;">
-            <img src="https://best-concert-ever.vercel.app/bcefinalemaillogo.png" alt="Best Concert Ever logo" style="width: 100%; max-width: 600px; height: auto; display: block;" />
+            <img src="https://best-concert-ever.vercel.app/bcefinalemaillogo.png" 
+                alt="Best Concert Ever logo" 
+                width="600" height="200" 
+                style="display: block; margin: 0 auto;" />
           </div>
 
           <div style="text-align: center; margin-bottom: 32px;">
@@ -429,12 +432,16 @@ data.forEach((lineup) => {
           </div>
 
           <div style="text-align: center; margin-bottom: 30px;">
-            <div style="border: 1px solid #444; border-radius: 12px; padding: 10px; background-color: #111; width: 200px; margin: 0 auto;">
-              <img src="${headlinerImg}" alt="${headliner}" style="width: 180px; height: 180px; border-radius: 12px;" />
-              <div style="font-weight: bold; text-transform: uppercase; margin-top: 10px;">${headliner}</div>
-              <div style="font-style: italic; font-size: 12px; color: #aaa;">Headliner</div>
-            </div>
-          </div>
+  <table align="center" style="margin: 0 auto; background-color: #111; border: 1px solid #444; border-radius: 12px;">
+    <tr>
+      <td style="padding: 10px;">
+        <img src="${headlinerImg}" alt="${headliner}" width="180" height="180" style="border-radius: 12px; display: block; margin: 0 auto;" />
+        <div style="font-weight: bold; text-transform: uppercase; margin-top: 10px; text-align: center;">${headliner}</div>
+        <div style="font-style: italic; font-size: 12px; color: #aaa; text-align: center;">Headliner</div>
+      </td>
+    </tr>
+  </table>
+</div>
 
           <div style="display: flex; justify-content: space-between; max-width: 420px; margin: 0 auto 40px;">
             <div style="text-align: center;">
