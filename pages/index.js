@@ -711,12 +711,10 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
             const { error } = await supabase
               .from("lineups")
               .update({ votes: (lineup.votes || 0) + 1 })
-              .match({
-                prompt: dailyPrompt,
-                "headliner->>name": lineup.headliner?.name,
-                "opener->>name": lineup.opener?.name,
-                "second_opener->>name": lineup.second_opener?.name,
-              });
+              .eq("prompt", dailyPrompt)
+              .eq("headliner.name", lineup.headliner?.name)
+              .eq("opener.name", lineup.opener?.name)
+              .eq("second_opener.name", lineup.second_opener?.name);
           
             if (error) {
               console.error("Vote failed:", error);
