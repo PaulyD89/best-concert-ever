@@ -517,58 +517,22 @@ setLineups(sortedLineups);
 
   const handleSubmit = async () => {
     if (headliner && opener && secondOpener) {
-      try {
-        const { data: existingLineup, error: fetchError } = await supabase
-          .from("lineups")
-          .select("*")
-          .eq("prompt", dailyPrompt)
-          .eq("headliner.name", headliner.name)
-          .eq("opener.name", opener.name)
-          .eq("second_opener.name", secondOpener.name)
-          .single();
+      const { error } = await supabase.from("lineups").insert([
+        {
+          prompt: dailyPrompt,
+          headliner,
+          opener,
+          second_opener: secondOpener,
+        },
+      ]);
 
-        if (fetchError && fetchError.code !== "PGRST116") {
-          console.error("Error fetching existing lineup:", fetchError);
-          alert("There was an error checking for duplicates.");
-          return;
-        }
-
-        if (existingLineup) {
-          const { error: updateError } = await supabase
-            .from("lineups")
-            .update({ submissions: (existingLineup.submissions || 1) + 1 })
-            .eq("id", existingLineup.id);
-
-          if (updateError) {
-            console.error("Error updating submission count:", updateError);
-            alert("There was an error updating your lineup.");
-            return;
-          }
-        } else {
-          const { error: insertError } = await supabase.from("lineups").insert([
-            {
-              prompt: dailyPrompt,
-              headliner,
-              opener,
-              second_opener: secondOpener,
-              submissions: 1,
-              votes: 0
-            },
-          ]);
-
-          if (insertError) {
-            console.error("Error inserting new lineup:", insertError);
-            alert("There was an error submitting your lineup.");
-            return;
-          }
-        }
-
-        setSubmitted(true);
-        console.log("Lineup submitted:", { headliner, opener, secondOpener });
-      } catch (error) {
+      if (error) {
         console.error("Submission error:", error);
         alert("There was an error submitting your lineup.");
+        return;
       }
+
+      setSubmitted(true);
       console.log("Lineup submitted:", { headliner, opener, secondOpener });
     }
   };
