@@ -444,7 +444,8 @@ const handleEmailSignup = async () => {
       data.forEach((lineup) => {
         const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
         const votes = lineup.votes || 0;
-        countMap[key] = (countMap[key] || 0) + 1 + votes;
+        const submissions = lineup.submissions || 0;
+        countMap[key] = (countMap[key] || 0) + submissions + votes;
       });      
 
       const sortedLineups = Object.entries(countMap)
@@ -488,7 +489,8 @@ setLineups(sortedLineups);
       data.forEach((lineup) => {
         const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
         const votes = lineup.votes || 0;
-        countMap[key] = (countMap[key] || 0) + 1 + votes;
+        const submissions = lineup.submissions || 0;
+        countMap[key] = (countMap[key] || 0) + submissions + votes;
       });      
   
       const maxCount = Math.max(...Object.values(countMap));
