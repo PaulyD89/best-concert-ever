@@ -444,8 +444,7 @@ const handleEmailSignup = async () => {
       data.forEach((lineup) => {
         const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
         const votes = lineup.votes || 0;
-        const submissions = lineup.submissions || 0;
-        countMap[key] = (countMap[key] || 0) + submissions + votes;
+        countMap[key] = (countMap[key] || 0) + 1 + votes;
       });      
 
       const sortedLineups = Object.entries(countMap)
@@ -489,8 +488,7 @@ setLineups(sortedLineups);
       data.forEach((lineup) => {
         const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
         const votes = lineup.votes || 0;
-        const submissions = lineup.submissions || 0;
-        countMap[key] = (countMap[key] || 0) + submissions + votes;
+        countMap[key] = (countMap[key] || 0) + 1 + votes;
       });      
   
       const maxCount = Math.max(...Object.values(countMap));
@@ -519,44 +517,23 @@ setLineups(sortedLineups);
 
   const handleSubmit = async () => {
     if (headliner && opener && secondOpener) {
-      try {
-        const { data: existingLineup, error: fetchError } = await supabase
-          .from("lineups")
-          .select("*")
-          .eq("prompt", dailyPrompt)
-          .eq("headliner.name", headliner.name)
-          .eq("opener.name", opener.name)
-          .eq("second_opener.name", secondOpener.name)
-          .single();
+      const { error } = await supabase.from("lineups").insert([
+        {
+          prompt: dailyPrompt,
+          headliner,
+          opener,
+          second_opener: secondOpener,
+        },
+      ]);
 
-        if (fetchError && fetchError.code !== "PGRST116") {
-          throw fetchError;
-        }
-
-        if (existingLineup) {
-          await supabase
-            .from("lineups")
-            .update({ submissions: (existingLineup.submissions || 0) + 1 })
-            .eq("id", existingLineup.id);
-        } else {
-          await supabase.from("lineups").insert([
-            {
-              prompt: dailyPrompt,
-              headliner,
-              opener,
-              second_opener: secondOpener,
-              submissions: 1,
-              votes: 0,
-            },
-          ]);
-        }
-
-        setSubmitted(true);
-        console.log("Lineup submitted:", { headliner, opener, secondOpener });
-      } catch (error) {
+      if (error) {
         console.error("Submission error:", error);
-        alert("There was an issue submitting your lineup.");
+        alert("There was an error submitting your lineup.");
+        return;
       }
+
+      setSubmitted(true);
+      console.log("Lineup submitted:", { headliner, opener, secondOpener });
     }
   };
 
@@ -736,11 +713,10 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
               return;
             }
             
-            const { data: updatedVotes, error: voteError } = await supabase
+            const { error: voteError } = await supabase
               .from("lineups")
               .update({ votes: (lineup.votes || 0) + 1 })
-              .eq("id", lineup.id)
-              .select();            
+              .eq("id", lineup.id);            
           
               if (voteError) {
                 console.error("Vote failed:", voteError);              
