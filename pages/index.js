@@ -487,8 +487,9 @@ setLineups(sortedLineups);
   
       data.forEach((lineup) => {
         const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
-        countMap[key] = (countMap[key] || 0) + 1;
-      });
+        const votes = lineup.votes || 0;
+        countMap[key] = (countMap[key] || 0) + 1 + votes;
+      });      
   
       const maxCount = Math.max(...Object.values(countMap));
       const topLineups = Object.entries(countMap)
