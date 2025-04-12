@@ -550,7 +550,11 @@ setLineups(sortedLineups);
         }
 
         setSubmitted(true);
-      console.log("Lineup submitted:", { headliner, opener, secondOpener });
+        console.log("Lineup submitted:", { headliner, opener, secondOpener });
+      } catch (error) {
+        console.error("Submission error:", error);
+        alert("There was an issue submitting your lineup.");
+      }
     }
   };
 
