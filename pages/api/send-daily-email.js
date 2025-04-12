@@ -346,6 +346,7 @@ async function getSpotifyImageUrl(artistName) {
 }
 
 export default async function handler(req, res) {
+  const testEmail = req.query.testEmail;
   console.log("Running email sender...");
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
@@ -391,16 +392,14 @@ data.forEach((lineup) => {
     return res.status(500).json({ message: "Incomplete data for email content" });
   }
 
-  const { data: subs, error: subsError } = await supabase
-    .from("subscribers")
-    .select("email");
+  const recipients = testEmail
+  ? [testEmail]
+  : (await supabase.from("subscribers").select("email")).data.map((s) => s.email);
 
-  if (subsError || !subs || subs.length === 0) {
-    console.error("Error fetching subscribers:", subsError);
-    return res.status(500).json({ message: "No subscribers found" });
-  }
-
-  const recipients = subs.map((s) => s.email);
+if (!recipients || recipients.length === 0) {
+  console.error("No recipients found.");
+  return res.status(500).json({ message: "No recipients found" });
+}
 
   try {
     const html = `
