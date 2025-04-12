@@ -708,15 +708,25 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
           onClick={async () => {
             localStorage.setItem(`bce-voted-${dailyPrompt}`, key);
           
-            const { error } = await supabase
-              .from("lineups")
-              .update({ votes: (lineup.votes || 0) + 1 })
-              .match({
-                prompt: dailyPrompt,
-                "headliner->>name": lineup.headliner?.name,
-                "opener->>name": lineup.opener?.name,
-                "second_opener->>name": lineup.second_opener?.name,
-              });
+            const { data: match, error: fetchError } = await supabase
+  .from("lineups")
+  .select("id, votes")
+  .eq("prompt", dailyPrompt)
+  .eq("headliner.name", lineup.headliner?.name)
+  .eq("opener.name", lineup.opener?.name)
+  .eq("second_opener.name", lineup.second_opener?.name)
+  .single();
+
+if (fetchError || !match) {
+  console.error("Vote fetch failed:", fetchError);
+  alert("Oops, could not find lineup to vote for.");
+  return;
+}
+
+const { error: voteError } = await supabase
+  .from("lineups")
+  .update({ votes: (match.votes || 0) + 1 })
+  .eq("id", match.id);
           
             if (error) {
               console.error("Vote failed:", error);
