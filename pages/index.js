@@ -433,10 +433,10 @@ const handleEmailSignup = async () => {
 
   useEffect(() => {
     const fetchTopLineups = async () => {
-    const { data, error } = await supabase
+      const { data, error } = await supabase
       .from("lineups")
-      .select("headliner, opener, second_opener")
-      .eq("prompt", dailyPrompt);
+      .select("id, headliner, opener, second_opener, votes")
+      .eq("prompt", dailyPrompt);    
 
     if (!error && data) {
       const countMap = {};
@@ -708,25 +708,15 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
           onClick={async () => {
             localStorage.setItem(`bce-voted-${dailyPrompt}`, key);
           
-            const { data: match, error: fetchError } = await supabase
-  .from("lineups")
-  .select("id, votes")
-  .eq("prompt", dailyPrompt)
-  .eq("headliner.name", lineup.headliner?.name)
-  .eq("opener.name", lineup.opener?.name)
-  .eq("second_opener.name", lineup.second_opener?.name)
-  .single();
-
-if (fetchError || !match) {
-  console.error("Vote fetch failed:", fetchError);
-  alert("Oops, could not find lineup to vote for.");
-  return;
-}
-
-const { error: voteError } = await supabase
-  .from("lineups")
-  .update({ votes: (match.votes || 0) + 1 })
-  .eq("id", match.id);
+            if (!lineup.id) {
+              alert("Oops, could not find lineup to vote for.");
+              return;
+            }
+            
+            const { error: voteError } = await supabase
+              .from("lineups")
+              .update({ votes: (lineup.votes || 0) + 1 })
+              .eq("id", lineup.id);            
           
             if (error) {
               console.error("Vote failed:", error);
