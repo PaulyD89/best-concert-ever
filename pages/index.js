@@ -718,8 +718,8 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
               .update({ votes: (lineup.votes || 0) + 1 })
               .eq("id", lineup.id);            
           
-            if (error) {
-              console.error("Vote failed:", error);
+              if (voteError) {
+                console.error("Vote failed:", voteError);              
               alert("Oops, there was an issue recording your vote.");
             } else {
               alert("🔥 Your vote has been counted!");
