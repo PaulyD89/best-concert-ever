@@ -346,9 +346,9 @@ async function getSpotifyImageUrl(artistName) {
 }
 
 export default async function handler(req, res) {
-  const testEmail = req.query.testEmail;
+  const testEmail = req.query.testEmail || req.body?.testEmail;
   console.log("Running email sender...");
-  if (req.method !== 'POST') {
+  if (req.method !== 'GET' && req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
