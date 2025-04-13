@@ -468,9 +468,9 @@ if (!recipients || recipients.length === 0) {
           </p>
         </div>
       `;
-    await resend.emails.send({
+      await resend.emails.send({
         from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
-        to: recipients,
+        bcc: recipients,      
         subject: `🎸 Today's Prompt & Yesterday's Top Lineup`,
         html
       });
