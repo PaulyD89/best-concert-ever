@@ -294,23 +294,18 @@ const prompts = [
 ];
 
 function getDailyPrompt() {
-  const now = new Date();
-  const pacificDate = new Date(
-    now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
-  );
-  const today = pacificDate.toISOString().split("T")[0];
+  const utcDate = new Date().toISOString().split("T")[0];
   let hash = 0;
-  for (let i = 0; i < today.length; i++) {
-    hash = today.charCodeAt(i) + ((hash << 5) - hash);
+  for (let i = 0; i < utcDate.length; i++) {
+    hash = utcDate.charCodeAt(i) + ((hash << 5) - hash);
   }
   return prompts[Math.abs(hash) % prompts.length];
 }
 
 function getYesterdayPrompt() {
   const now = new Date();
-  const pacificDate = new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
-  pacificDate.setDate(pacificDate.getDate() - 1);
-  const yesterday = pacificDate.toISOString().split("T")[0];
+  now.setUTCDate(now.getUTCDate() - 1);
+  const yesterday = now.toISOString().split("T")[0];
   let hash = 0;
   for (let i = 0; i < yesterday.length; i++) {
     hash = yesterday.charCodeAt(i) + ((hash << 5) - hash);
