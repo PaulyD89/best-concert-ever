@@ -463,14 +463,16 @@ if (!recipients || recipients.length === 0) {
           </p>
         </div>
       `;
-      await resend.emails.send({
-        from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
-        bcc: recipients,      
-        subject: `🎸 Today's Prompt & Yesterday's Top Lineup`,
-        html
-      });
-    console.log("Email HTML content:", html);
-    return res.status(200).json({ message: "Emails sent" });
+      for (const recipient of recipients) {
+        await resend.emails.send({
+          from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
+          to: recipient,
+          subject: `🎸 Today's Prompt & Yesterday's Top Lineup`,
+          html
+        });
+      }
+      console.log("Email HTML content:", html);
+      return res.status(200).json({ message: "Emails sent" });      
   } catch (err) {
     console.error("Failed to send email:", err);
     return res.status(500).json({ message: "Email send failed" });
