@@ -1053,7 +1053,9 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   )}
 </div>
       </div>
-
+      </div>
     </div>
   </div>
-); }
+  </div>
+); 
+}
