@@ -517,25 +517,49 @@ setLineups(sortedLineups);
 
   const handleSubmit = async () => {
     if (headliner && opener && secondOpener) {
+      if (!localStorage.getItem("bce_user_id")) {
+        localStorage.setItem("bce_user_id", crypto.randomUUID());
+      }
+      const userId = localStorage.getItem("bce_user_id");
+  
+      // Check if user already submitted for today's prompt
+      const { data: existing, error: checkError } = await supabase
+        .from("lineups")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("prompt", dailyPrompt);
+  
+      if (checkError) {
+        console.error("Error checking existing submission:", checkError);
+        alert("There was an error checking your previous submission.");
+        return;
+      }
+  
+      if (existing.length > 0) {
+        alert("You've already submitted a lineup for today's prompt!");
+        return;
+      }
+  
       const { error } = await supabase.from("lineups").insert([
         {
           prompt: dailyPrompt,
           headliner,
           opener,
           second_opener: secondOpener,
+          user_id: userId,
         },
       ]);
-
+  
       if (error) {
         console.error("Submission error:", error);
         alert("There was an error submitting your lineup.");
         return;
       }
-
+  
       setSubmitted(true);
       console.log("Lineup submitted:", { headliner, opener, secondOpener });
     }
-  };
+  };  
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen py-10 px-4 bg-gradient-to-b from-[#0f0f0f] to-[#1e1e1e] text-white font-sans">
