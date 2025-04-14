@@ -470,7 +470,7 @@ for (const recipient of recipients) {
     await resend.emails.send({
       from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
       to: recipient,
-      subject: `🎸 Today's Prompt & Yesterday's Top Lineup`,
+      subject: `🎸 Best. Concert. Ever. Today's Challenge & Yesterday's Winner!`,
       html
     });
     console.log(`✅ Sent to: ${recipient}`);
