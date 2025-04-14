@@ -470,10 +470,11 @@ for (const recipient of recipients) {
     await resend.emails.send({
       from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
       to: recipient,
-      subject: `🎸 Best. Concert. Ever. Today's Challenge & Yesterday's Winner!`,
+      subject: `🎸 Plan Your Best. Concert. Ever. for "${dailyPrompt}"?`,
       html
     });
     console.log(`✅ Sent to: ${recipient}`);
+await new Promise((resolve) => setTimeout(resolve, 200)); // prevent rate limiting
   } catch (err) {
     console.error(`❌ Failed to send to: ${recipient}`, err);
   }
