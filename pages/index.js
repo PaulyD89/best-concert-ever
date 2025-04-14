@@ -402,6 +402,10 @@ const LineupSlot = ({ artist, label }) => (
 );
 
 export default function BestConcertEver() {
+  const [submittedCount, setSubmittedCount] = useState(null);
+  const [topFiveCount, setTopFiveCount] = useState(null);
+  const [longestStreak, setLongestStreak] = useState(null);
+  const [mostVotedLineup, setMostVotedLineup] = useState(null);
   const flyerRef = React.useRef(null);
   const downloadRef = React.useRef(null);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
@@ -432,6 +436,82 @@ const handleEmailSignup = async () => {
 
 
   useEffect(() => {
+    const fetchSubmittedCount = async () => {
+      const userId = localStorage.getItem("bce_user_id");
+      if (!userId) return;
+
+      const { data, count, error } = await supabase
+        .from("lineups")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", userId);
+
+      if (!error) {
+        setSubmittedCount(count);
+      } else {
+        console.error("Failed to fetch submitted count", error);
+      }
+    };
+
+    fetchSubmittedCount();
+
+    const fetchTopFiveCount = async () => {
+      const userId = localStorage.getItem("bce_user_id");
+      if (!userId) return;
+
+      const { data: userLineups, error: userError } = await supabase
+        .from("lineups")
+        .select("headliner, opener, second_opener, prompt")
+        .eq("user_id", userId);
+
+      if (userError || !userLineups) {
+        console.error("Error fetching user lineups:", userError);
+        return;
+      }
+
+      const { data: allLineups, error: allError } = await supabase
+        .from("lineups")
+        .select("headliner, opener, second_opener, prompt, votes");
+
+      if (allError || !allLineups) {
+        console.error("Error fetching all lineups:", allError);
+        return;
+      }
+
+      const lineupsByPrompt = {};
+      allLineups.forEach((lineup) => {
+        const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+        const prompt = lineup.prompt;
+        const votes = lineup.votes || 0;
+
+        if (!lineupsByPrompt[prompt]) lineupsByPrompt[prompt] = {};
+        lineupsByPrompt[prompt][key] = (lineupsByPrompt[prompt][key] || 0) + 1 + votes;
+      });
+
+      const top5KeysPerPrompt = {};
+      Object.entries(lineupsByPrompt).forEach(([prompt, lineups]) => {
+        const sorted = Object.entries(lineups)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5)
+          .map(([key]) => key);
+        top5KeysPerPrompt[prompt] = sorted;
+      });
+
+      const userKeys = userLineups.map(
+        (lineup) => `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`
+      );
+
+      let totalTop5s = 0;
+      Object.entries(top5KeysPerPrompt).forEach(([prompt, keys]) => {
+        keys.forEach((key) => {
+          if (userKeys.includes(key)) totalTop5s++;
+        });
+      });
+
+      setTopFiveCount(totalTop5s);
+    };
+
+    fetchTopFiveCount();
+
     const fetchTopLineups = async () => {
       const { data, error } = await supabase
       .from("lineups")
@@ -472,6 +552,65 @@ setLineups(sortedLineups);
     };
 
     fetchTopLineups();
+
+    const fetchLongestStreak = async () => {
+      const userId = localStorage.getItem("bce_user_id");
+      if (!userId) return;
+
+      const { data, error } = await supabase
+        .from("lineups")
+        .select("created_at")
+        .eq("user_id", userId);
+
+      if (error || !data) {
+        console.error("Failed to fetch streak data:", error);
+        return;
+      }
+
+      const dates = [...new Set(data.map(d => new Date(d.created_at).toLocaleDateString("en-US", { timeZone: "America/Los_Angeles" })))]
+        .map(dateStr => new Date(dateStr))
+        .sort((a, b) => a - b);
+
+      let longest = 0, current = 1;
+      for (let i = 1; i < dates.length; i++) {
+        const diff = (dates[i] - dates[i - 1]) / (1000 * 60 * 60 * 24);
+        if (diff === 1) {
+          current++;
+          longest = Math.max(longest, current);
+        } else {
+          current = 1;
+        }
+      }
+
+      setLongestStreak(dates.length === 1 ? 1 : Math.max(longest, 1));
+    };
+
+    fetchLongestStreak();
+
+    const fetchMostVotedLineup = async () => {
+      const userId = localStorage.getItem("bce_user_id");
+      if (!userId) return;
+
+      const { data, error } = await supabase
+        .from("lineups")
+        .select("headliner, opener, second_opener, votes")
+        .eq("user_id", userId);
+
+      if (error || !data) {
+        console.error("Failed to fetch most voted lineup:", error);
+        return;
+      }
+
+      const sorted = data
+        .filter(l => l.votes && l.votes > 0)
+        .sort((a, b) => (b.votes || 0) - (a.votes || 0));
+
+      if (sorted.length > 0) {
+        setMostVotedLineup(sorted[0]);
+      }
+    };
+
+    fetchMostVotedLineup();
   }, []);
 
   useEffect(() => {
@@ -877,7 +1016,44 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   </div>
 )}
 
+      {/* YOUR PROMOTING WINS SECTION */}
+      <div className="mt-12 flex justify-center items-center w-full">
+        <div className="relative w-full max-w-md text-center">
+          <div className="absolute inset-0 -z-10 rounded-xl border-2 border-green-400 animate-pulse"></div>
+          <div className="relative bg-black rounded-xl p-6 border-2 border-green-400">
+            <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-green-400 drop-shadow-[0_0_12px_green]">
+              Your Promoting Wins
+            </h2>
+            <ul className="flex flex-col gap-4 items-center text-white">
+  <li className="text-sm">🎤 Promoted Lineups (So Far): <span className="font-bold">{submittedCount ?? "--"}</span></li>
+  <li className="text-sm">🏆 Lineups That Made the Top 5: <span className="font-bold">{topFiveCount ?? "--"}</span></li>
+  <li className="text-sm">📆 Longest Daily Streak: <span className="font-bold">{longestStreak ?? "--"}</span></li>
+</ul>
+
+            <div className="mt-6">
+  <h3 className="text-green-300 font-bold mb-2 text-lg">🔥 Most Voted Lineup</h3>
+  {mostVotedLineup ? (
+    <>
+      <div className="flex justify-center gap-4">
+        {[mostVotedLineup.headliner, mostVotedLineup.opener, mostVotedLineup.second_opener].map((artist, idx) => (
+          <div key={idx} className="flex flex-col items-center">
+            <img
+              src={artist?.image || "/placeholder.jpg"}
+              alt={artist?.name || "Artist"}
+              className="w-20 h-20 rounded-md object-cover border border-green-400 mb-1"
+            />
+            <span className="text-xs font-bold">{artist?.name || "Artist"}</span>
+          </div>
+        ))}
+      </div>
+      <p className="mt-2 text-sm text-green-400">🔥 <span className="font-bold">{mostVotedLineup.votes ?? 0}</span> votes</p>
+    </>
+  ) : (
+    <p className="text-sm text-green-400">No votes yet.</p>
+  )}
 </div>
-</div>
-  );
-}
+      </div>
+
+    </div>
+  </div>
+); }
