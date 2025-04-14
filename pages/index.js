@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 
-// Set up a unique user ID in localStorage
-if (!localStorage.getItem("bce_user_id")) {
-  localStorage.setItem("bce_user_id", crypto.randomUUID());
-}
-const userId = localStorage.getItem("bce_user_id");
-
 const prompts = [
   "Best 90s Band Lineup",
   "Best Bands from the 2000s",
@@ -522,23 +516,6 @@ setLineups(sortedLineups);
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async () => {
-    // Check if this user already submitted for today's prompt
-    const { data: existing, error: checkError } = await supabase
-      .from("lineups")
-      .select("*")
-      .eq("user_id", userId)
-      .eq("prompt", todaysPrompt);
-  
-    if (checkError) {
-      console.error("Error checking existing lineup:", checkError);
-      return;
-    }
-  
-    if (existing.length > 0) {
-      alert("You’ve already submitted a lineup for today’s prompt!");
-      return;
-    }
-  
     if (headliner && opener && secondOpener) {
       const { error } = await supabase.from("lineups").insert([
         {
@@ -546,9 +523,8 @@ setLineups(sortedLineups);
           headliner,
           opener,
           second_opener: secondOpener,
-          user_id: userId,
         },
-      ]);      
+      ]);
 
       if (error) {
         console.error("Submission error:", error);
