@@ -1016,13 +1016,13 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   </div>
 )}
 
-      {/* YOUR PROMOTING WINS SECTION */}
+      {/* YOUR GREATEST HITS SECTION */}
       <div className="mt-12 flex justify-center items-center w-full">
         <div className="relative w-full max-w-md text-center">
           <div className="absolute inset-0 -z-10 rounded-xl border-2 border-green-400 animate-pulse"></div>
           <div className="relative bg-black rounded-xl p-6 border-2 border-green-400">
             <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-green-400 drop-shadow-[0_0_12px_green]">
-              Your Promoting Wins
+              Your Greatest Hits
             </h2>
             <ul className="flex flex-col gap-4 items-center text-white">
   <li className="text-sm">🎤 Promoted Lineups (So Far): <span className="font-bold">{submittedCount ?? "--"}</span></li>
