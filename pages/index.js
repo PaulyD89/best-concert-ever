@@ -755,7 +755,7 @@ setLineups(sortedLineups);
               <li>CHOOSE THE ORDER for your show - the OPENER, 2ND OPENER and HEADLINER.</li>
               <li>You can only pick an artist once per game.</li>
               <li>Once you have made your selections, hit <b>SUBMIT LINEUP</b>. Click DOWNLOAD LINEUP for your own personal concert poster that you can SHARE ON SOCIAL MEDIA.</li>
-              <li>Today&apos;s TOP 5 most popular will be posted daily. You can VOTE once per day on the Top 5 by clicking the FIRE EMOJI. Sometimes a player's DEEP CUT could also show up.</li>
+              <li>Today&apos;s TOP 5 most popular will be posted daily. You can VOTE once per day on the Top 5 by clicking the FIRE EMOJI. Sometimes a player&apos;s DEEP CUT could also show up.</li>
               <li>NEW GAMES and YESTERDAY&apos;S WINNERS are posted every single day at 5pm PST.</li>
             </ul>
             <div className="text-center mt-6">
