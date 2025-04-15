@@ -574,7 +574,7 @@ setLineups(sortedLineups);
           (lineup.headliner?.followers || 0) +
           (lineup.opener?.followers || 0) +
           (lineup.second_opener?.followers || 0);
-        return totalFollowers < 500000;
+        return totalFollowers < 250000;
       });
 
       if (eligible.length > 0) {
