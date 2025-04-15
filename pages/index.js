@@ -284,11 +284,9 @@ const prompts = [
   "Best Manchester Sound Bands",
   "Best Cult Bands",
   "Best Hair Metal Bands"
-  // ... You can add up to 1000+ prompts here
 ];
 
 function getDailyPrompt() {
-  // Convert to Pacific Time (automatically handles PST/PDT)
   const now = new Date();
   const pacificDate = new Date(
     now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
@@ -308,7 +306,7 @@ const dailyPrompt = getDailyPrompt();
 function getYesterdayPrompt() {
   const now = new Date();
   const pacificDate = new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
-  pacificDate.setDate(pacificDate.getDate() - 1); // one day before
+  pacificDate.setDate(pacificDate.getDate() - 1); 
   const yesterday = pacificDate.toISOString().split("T")[0];
 
   let hash = 0;
@@ -432,7 +430,6 @@ const handleEmailSignup = async () => {
   }
 };
 
-  // removed duplicate state declarations for headliner, opener, secondOpener, and submitted
   const [lineups, setLineups] = useState([]);
   const [deepCutLineup, setDeepCutLineup] = useState(null);
   const [yesterdaysWinner, setYesterdaysWinner] = useState(null);
@@ -563,7 +560,7 @@ setLineups(sortedLineups);
 
       const tenHoursLater = new Date(utcMidnight.getTime() + 10 * 60 * 60 * 1000);
 
-      if (now < tenHoursLater) return; // Too early to select Deep Cut
+      if (now < tenHoursLater) return;
 
       const { data, error } = await supabase
         .from("lineups")
@@ -697,7 +694,6 @@ setLineups(sortedLineups);
       }
       const userId = localStorage.getItem("bce_user_id");
   
-      // Check if user already submitted for today's prompt
       const { data: existing, error: checkError } = await supabase
         .from("lineups")
         .select("id")
@@ -840,12 +836,10 @@ setLineups(sortedLineups);
           loadImage(secondOpener?.image),
         ]);
   
-       // Move all images up ~150px
 ctx.drawImage(headlinerImg, WIDTH / 2 - 125, HEIGHT - 660, 250, 250);
 ctx.drawImage(openerImg, WIDTH / 2 - 250, HEIGHT - 380, 200, 200);
 ctx.drawImage(secondOpenerImg, WIDTH / 2 + 50, HEIGHT - 380, 200, 200);
 
-// Adjust band names to match new positions
 ctx.font = "bold 24px Arial";
 ctx.fillStyle = "#ffffff";
 ctx.textAlign = "center";
@@ -855,7 +849,6 @@ ctx.fillText(opener?.name || "", WIDTH / 2 - 140, HEIGHT - 160);
 ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 
   
-        // EXPORT IMAGE
         const link = document.createElement("a");
         link.download = "best-concert-ever.jpg";
         link.href = canvas.toDataURL("image/jpeg", 0.95);
