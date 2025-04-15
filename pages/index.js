@@ -335,6 +335,7 @@ const ArtistSearch = ({ label, onSelect, disabled }) => {
       setResults(data);
       setShowDropdown(true);
     };
+    
     const delayDebounce = setTimeout(fetchResults, 300);
     return () => clearTimeout(delayDebounce);
   }, [query]);
@@ -359,7 +360,8 @@ const ArtistSearch = ({ label, onSelect, disabled }) => {
                   name: artist.name,
                   image: artist.images?.[0]?.url,
                   url: artist.external_urls?.spotify,
-                });                
+                  followers: artist.followers?.total || 0
+                });                              
               setQuery("");
               setShowDropdown(false);
             }}
@@ -432,6 +434,7 @@ const handleEmailSignup = async () => {
 
   // removed duplicate state declarations for headliner, opener, secondOpener, and submitted
   const [lineups, setLineups] = useState([]);
+  const [deepCutLineup, setDeepCutLineup] = useState(null);
   const [yesterdaysWinner, setYesterdaysWinner] = useState(null);
 
 
@@ -552,6 +555,37 @@ setLineups(sortedLineups);
     };
 
     fetchTopLineups();
+
+    const fetchDeepCutLineup = async () => {
+      const now = new Date();
+      const pst = new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
+      const hour = pst.getHours();
+
+      if (hour < 3) return; // 3AM PST = 10 hours after prompt flips
+
+      const { data, error } = await supabase
+        .from("lineups")
+        .select("id, headliner, opener, second_opener, votes")
+        .eq("prompt", dailyPrompt);
+
+      if (error || !data) return;
+
+      const eligible = data.filter(lineup => {
+        const totalFollowers =
+          (lineup.headliner?.followers || 0) +
+          (lineup.opener?.followers || 0) +
+          (lineup.second_opener?.followers || 0);
+        return totalFollowers < 500000;
+      });
+
+      if (eligible.length > 0) {
+        const randomIndex = Math.floor(Math.random() * eligible.length);
+        setDeepCutLineup(eligible[randomIndex]);
+      }
+    };
+
+    fetchDeepCutLineup();
+
 
     const fetchLongestStreak = async () => {
       const userId = localStorage.getItem("bce_user_id");
@@ -899,6 +933,45 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     );
   })}
 </ul>
+
+{deepCutLineup && (
+  <div className="mt-6 text-center border-t border-yellow-400 pt-4">
+    <div className="text-yellow-400 font-bold mb-1 text-md">🎧 Deep Cut of the Day</div>
+    <div className="text-white text-sm">
+      {deepCutLineup.headliner?.name} / {deepCutLineup.opener?.name} / {deepCutLineup.second_opener?.name}
+    </div>
+
+    {!localStorage.getItem(`bce-voted-${dailyPrompt}`) && (
+      <button
+        onClick={async () => {
+          localStorage.setItem(`bce-voted-${dailyPrompt}`, "deepcut");
+
+          if (!deepCutLineup.id) {
+            alert("Oops, could not find Deep Cut lineup to vote for.");
+            return;
+          }
+
+          const { error: voteError } = await supabase
+            .from("lineups")
+            .update({ votes: (deepCutLineup.votes || 0) + 1 })
+            .eq("id", deepCutLineup.id);
+
+          if (voteError) {
+            console.error("Vote failed:", voteError);
+            alert("Oops, there was an issue recording your vote.");
+          } else {
+            alert("🔥 Your vote for the Deep Cut has been counted!");
+            window.location.reload();
+          }
+        }}
+        className="mt-1 text-xl hover:scale-110 transition-transform"
+        title="Vote for this Deep Cut lineup"
+      >
+        🔥
+      </button>
+    )}
+  </div>
+)}
           </div>
         </div>
       </div>
