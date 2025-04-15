@@ -558,10 +558,12 @@ setLineups(sortedLineups);
 
     const fetchDeepCutLineup = async () => {
       const now = new Date();
-      const pst = new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
-      const hour = pst.getHours();
+      const utcMidnight = new Date();
+      utcMidnight.setUTCHours(0, 0, 0, 0);
 
-      if (hour < 3) return; // 3AM PST = 10 hours after prompt flips
+      const tenHoursLater = new Date(utcMidnight.getTime() + 10 * 60 * 60 * 1000);
+
+      if (now < tenHoursLater) return; // Too early to select Deep Cut
 
       const { data, error } = await supabase
         .from("lineups")
