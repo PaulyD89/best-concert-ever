@@ -893,7 +893,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     return (
       <li key={idx} className="text-white text-center">
         <div>
-          {lineup.headliner?.name} / {lineup.opener?.name} / {lineup.second_opener?.name}
+        {lineup.opener?.name} / {lineup.second_opener?.name} / {lineup.headliner?.name}
         </div>
         {!hasVoted && (
           <button
