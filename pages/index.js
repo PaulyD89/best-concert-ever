@@ -988,11 +988,15 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
                   <li key={idx} className="text-white flex flex-col items-center">
                     <div className="group">
                       <a href={artist?.url} target="_blank" rel="noopener noreferrer">
-                        <img
-                          src={artist?.image}
-                          alt={artist?.name}
-                          className="w-24 h-24 rounded-full mb-2 object-cover border-2 border-red-400 shadow-[0_0_8px_#f87171] group-hover:scale-105 transition-transform duration-200"
-                        />
+                      <img
+                        src={artist?.image}
+                        alt={artist?.name}
+                        className={`rounded-full mb-2 object-cover border-2 transition-transform duration-200 group-hover:scale-105 ${
+                          idx === 0
+                            ? 'w-28 h-28 border-yellow-300 shadow-[0_0_12px_3px_rgba(253,224,71,0.5)]'
+                            : 'w-24 h-24 border-red-400 shadow-[0_0_8px_#f87171]'
+  }`}
+/>
                       </a>
                     </div>
                     <span className={`font-bold ${idx === 0 ? 'text-lg' : ''}`}>{artist?.name}</span>
