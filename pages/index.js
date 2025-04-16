@@ -1108,7 +1108,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   {mostVotedLineup ? (
     <>
       <div className="flex justify-center gap-4">
-        {[mostVotedLineup.headliner, mostVotedLineup.opener, mostVotedLineup.second_opener].map((artist, idx) => (
+        {[mostVotedLineup.opener, mostVotedLineup.second_opener, mostVotedLineup.headliner].map((artist, idx) => (
           <div key={idx} className="flex flex-col items-center">
             <img
               src={artist?.image || "/placeholder.jpg"}
