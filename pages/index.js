@@ -986,7 +986,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   <div className="mt-6 text-center border-t border-yellow-400 pt-4">
     <div className="text-yellow-400 font-bold mb-1 text-md">🎧 Deep Cut of the Day</div>
     <div className="text-white text-sm">
-      {deepCutLineup.headliner?.name} / {deepCutLineup.opener?.name} / {deepCutLineup.second_opener?.name}
+      {deepCutLineup.opener?.name} / {deepCutLineup.second_opener?.name} / {deepCutLineup.headliner?.name}
     </div>
 
     {!localStorage.getItem(`bce-voted-${dailyPrompt}`) && (
