@@ -984,7 +984,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
                 {yesterdayPrompt}
               </div>
               <ul className="flex flex-col gap-4 items-center">
-                {[yesterdaysWinner.headliner, yesterdaysWinner.opener, yesterdaysWinner.second_opener].map((artist, idx) => (
+                {[yesterdaysWinner.headliner, yesterdaysWinner.second_opener, yesterdaysWinner.opener].map((artist, idx) => (
                   <li key={idx} className="text-white flex flex-col items-center">
                     <div className="group">
                       <a href={artist?.url} target="_blank" rel="noopener noreferrer">
