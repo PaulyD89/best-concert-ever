@@ -405,6 +405,7 @@ export default function BestConcertEver() {
   const [submittedCount, setSubmittedCount] = useState(null);
   const [topFiveCount, setTopFiveCount] = useState(null);
   const [longestStreak, setLongestStreak] = useState(null);
+  const [winningCount, setWinningCount] = useState(null);
   const [mostVotedLineup, setMostVotedLineup] = useState(null);
   const flyerRef = React.useRef(null);
   const downloadRef = React.useRef(null);
@@ -644,6 +645,58 @@ setLineups(sortedLineups);
     };
 
     fetchMostVotedLineup();
+
+    fetchMostVotedLineup();
+
+const fetchWinningCount = async () => {
+  const userId = localStorage.getItem("bce_user_id");
+  if (!userId) return;
+
+  const { data: userLineups, error: userError } = await supabase
+    .from("lineups")
+    .select("headliner, opener, second_opener, prompt")
+    .eq("user_id", userId);
+
+  if (userError || !userLineups) {
+    console.error("Error fetching user lineups:", userError);
+    return;
+  }
+
+  const { data: allLineups, error: allError } = await supabase
+    .from("lineups")
+    .select("headliner, opener, second_opener, prompt, votes");
+
+  if (allError || !allLineups) {
+    console.error("Error fetching all lineups:", allError);
+    return;
+  }
+
+  const winnersByPrompt = {};
+  allLineups.forEach((lineup) => {
+    const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+    const prompt = lineup.prompt;
+    const votes = lineup.votes || 0;
+    winnersByPrompt[prompt] = winnersByPrompt[prompt] || {};
+    winnersByPrompt[prompt][key] = (winnersByPrompt[prompt][key] || 0) + 1 + votes;
+  });
+
+  let winTotal = 0;
+  Object.entries(winnersByPrompt).forEach(([prompt, entries]) => {
+    const sorted = Object.entries(entries).sort((a, b) => b[1] - a[1]);
+    const [topKey] = sorted[0];
+
+    userLineups.forEach((userLineup) => {
+      const userKey = `${userLineup.headliner?.name}|||${userLineup.opener?.name}|||${userLineup.second_opener?.name}`;
+      if (userKey === topKey && userLineup.prompt === prompt) {
+        winTotal++;
+      }
+    });
+  });
+
+  setWinningCount(winTotal);
+};
+fetchWinningCount();
+
   }, []);
 
   useEffect(() => {
@@ -1100,6 +1153,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
             <ul className="flex flex-col gap-4 items-center text-white">
   <li className="text-sm">🎤 Promoted Lineups (So Far): <span className="font-bold">{submittedCount ?? "--"}</span></li>
   <li className="text-sm">🏆 Lineups That Made the Top 5: <span className="font-bold">{topFiveCount ?? "--"}</span></li>
+  <li className="text-sm">🥇 Lineups That Won It All: <span className="font-bold">{winningCount ?? "--"}</span></li>
   <li className="text-sm">📆 Longest Daily Streak: <span className="font-bold">{longestStreak ?? "--"}</span></li>
 </ul>
 
