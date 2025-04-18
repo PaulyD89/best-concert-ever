@@ -397,7 +397,11 @@ if (!recipients || recipients.length === 0) {
 }
 
   try {
-    const html = `
+    const html = `<!DOCTYPE html>
+<html>
+  <head><meta charset="UTF-8"></head>
+  <body style="margin:0;padding:0;background:#000;">
+    
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #000; color: white; border-radius: 12px; border: 2px solid #f66;">
           <div style="text-align: center; margin-bottom: 20px;">
             <img 
@@ -410,20 +414,20 @@ if (!recipients || recipients.length === 0) {
           </div>
 
           <div style="text-align: center; margin-bottom: 32px;">
-  <h1 style="font-size: 28px; color: #ffee33; text-transform: uppercase; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 12px;">
+  <h1 style="font-size: 28px; color: #ffee33; text- font-weight: bold; letter-spacing: 1.5px; margin-bottom: 12px;">
     Today's Challenge
   </h1>
-  <div style="display: inline-block; border: 2px solid #ffee33; padding: 6px 14px; font-weight: bold; font-size: 14px; letter-spacing: 1px; color: #ffee33; text-transform: uppercase; background-color: #000; text-shadow: 0 0 5px #ffee33; transform: rotate(-2deg);">
+  <div style="display: inline-block; border: 2px solid #ffee33; padding: 6px 14px; font-weight: bold; font-size: 14px; letter-spacing: 1px; color: #ffee33; text- background-color: #000;  ">
     ${dailyPrompt}
   </div>
 </div>
 
 <br/><br/>
 
-<div style="text-align: center; margin-bottom: 24px;"><h1 style="font-size: 28px; color: #ff6b6b; text-transform: uppercase; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 12px;">
+<div style="text-align: center; margin-bottom: 24px;"><h1 style="font-size: 28px; color: #ff6b6b; text- font-weight: bold; letter-spacing: 1.5px; margin-bottom: 12px;">
               Yesterday's Winning Lineup
             </h1>
-            <div style="display: inline-block; border: 2px solid #ff6b6b; padding: 6px 14px; font-weight: bold; font-size: 14px; letter-spacing: 1px; color: #ff6b6b; text-transform: uppercase; background-color: #000; text-shadow: 0 0 5px #ff6b6b; transform: rotate(-2deg);">
+            <div style="display: inline-block; border: 2px solid #ff6b6b; padding: 6px 14px; font-weight: bold; font-size: 14px; letter-spacing: 1px; color: #ff6b6b; text- background-color: #000;  ">
               ${yesterdayPrompt}
             </div>
           </div>
@@ -431,25 +435,37 @@ if (!recipients || recipients.length === 0) {
           <div style="text-align: center; margin-bottom: 30px;">
             <div style="border: 1px solid #444; border-radius: 12px; padding: 10px; background-color: #111; width: 200px; margin: 0 auto;">
               <img src="${headlinerImg}" alt="${headliner}" style="width: 180px; height: 180px; border-radius: 12px;" />
-              <div style="font-weight: bold; text-transform: uppercase; margin-top: 10px;">${headliner}</div>
+              <div style="font-weight: bold; text- margin-top: 10px;">${headliner}</div>
               <div style="font-style: italic; font-size: 12px; color: #aaa;">Headliner</div>
             </div>
           </div>
 
-          <div style="display: flex; justify-content: space-between; max-width: 420px; margin: 0 auto 40px;">
-            <div style="text-align: center;">
+          
+<table align="center" width="100%" cellpadding="0" cellspacing="0" style="max-width: 420px; margin: 0 auto 40px;">
+  <tr>
+    <td align="center" style="padding: 0 5px;">
+      <div style="border: 1px solid #444; border-radius: 12px; padding: 8px; background-color: #111; width: 140px; min-height: 220px;">
+        
               <div style="border: 1px solid #444; border-radius: 12px; padding: 8px; background-color: #111; width: 140px; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
                 <img src="${openerImg}" alt="${opener}" style="width: 120px; height: 120px; border-radius: 12px;" />
-                <div style="font-weight: bold; text-transform: uppercase; margin-top: 8px;">${opener}</div>
+                <div style="font-weight: bold; text- margin-top: 8px;">${opener}</div>
                 <div style="font-style: italic; font-size: 12px; color: #aaa;">Opener</div>
               </div>
-            </div>
-            <div style="text-align: center;">
+            
+      </div>
+    </td>
+    <td align="center" style="padding: 0 5px;">
+      <div style="border: 1px solid #444; border-radius: 12px; padding: 8px; background-color: #111; width: 140px; min-height: 220px;">
+        
               <div style="border: 1px solid #444; border-radius: 12px; padding: 8px; background-color: #111; width: 140px; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between;">
                 <img src="${secondOpenerImg}" alt="${secondOpener}" style="width: 120px; height: 120px; border-radius: 12px;" />
-                <div style="font-weight: bold; text-transform: uppercase; margin-top: 8px;">${secondOpener}</div>
-                <div style="font-style: italic; font-size: 12px; color: #aaa;">2nd Opener</div>
-              </div>
+                <div style="font-weight: bold; text- margin-top: 8px;">${secondOpener}</div>
+                <div style="font-style: italic; font-size: 12px; color: #aaa;">2nd Opener
+      </div>
+    </td>
+  </tr>
+</table>
+
             </div>
           </div>
 
@@ -462,7 +478,10 @@ if (!recipients || recipients.length === 0) {
             Don’t want to receive these emails? <a href="https://best-concert-ever.vercel.app/unsubscribe" style="color: gray; text-decoration: underline;">Unsubscribe</a>
           </p>
         </div>
-      `;
+      
+  </body>
+</html>
+`;
       console.log("Sending emails to:", recipients.length, "recipients");
 
 for (const recipient of recipients) {
