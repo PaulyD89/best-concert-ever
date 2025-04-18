@@ -288,10 +288,8 @@ const prompts = [
 
 function getDailyPrompt() {
   const now = new Date();
-  const pacificDate = new Date(
-    now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
-  );
-  const today = pacificDate.toISOString().split("T")[0];
+  const utcDate = new Date(now.toISOString().split("T")[0]); // UTC midnight date string
+  const today = utcDate.toISOString().split("T")[0];
 
   let hash = 0;
   for (let i = 0; i < today.length; i++) {
@@ -305,9 +303,9 @@ const dailyPrompt = getDailyPrompt();
 
 function getYesterdayPrompt() {
   const now = new Date();
-  const pacificDate = new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
-  pacificDate.setDate(pacificDate.getDate() - 1); 
-  const yesterday = pacificDate.toISOString().split("T")[0];
+  const utcDate = new Date(now.toISOString().split("T")[0]);
+  utcDate.setDate(utcDate.getDate() - 1);
+  const yesterday = utcDate.toISOString().split("T")[0];
 
   let hash = 0;
   for (let i = 0; i < yesterday.length; i++) {
