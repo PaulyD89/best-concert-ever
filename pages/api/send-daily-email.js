@@ -474,7 +474,7 @@ for (const recipient of recipients) {
       html
     });
     console.log(`✅ Sent to: ${recipient}`);
-await new Promise((resolve) => setTimeout(resolve, 200)); // prevent rate limiting
+await new Promise((resolve) => setTimeout(resolve, 600)); // prevent rate limiting
   } catch (err) {
     console.error(`❌ Failed to send to: ${recipient}`, err);
   }
