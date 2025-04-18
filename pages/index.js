@@ -401,7 +401,6 @@ const LineupSlot = ({ artist, label }) => (
 
 export default function BestConcertEver() {
   const [submittedCount, setSubmittedCount] = useState(null);
-  const [winningAssists, setWinningAssists] = useState(null);
   const [topTenCount, setTopTenCount] = useState(null);
   const [longestStreak, setLongestStreak] = useState(null);
   const [winningCount, setWinningCount] = useState(null);
@@ -695,52 +694,6 @@ const fetchWinningCount = async () => {
   setWinningCount(winTotal);
 };
 fetchWinningCount();
-fetchWinningAssists();
-
-const fetchWinningAssists = async () => {
-  const userId = localStorage.getItem("bce_user_id");
-  if (!userId) return;
-
-  const { data, error } = await supabase
-    .from("lineups")
-    .select("headliner, opener, second_opener, prompt");
-
-  if (error || !data) {
-    console.error("Failed to fetch assists:", error);
-    return;
-  }
-
-  const assistsMap = {};
-
-  data.forEach((lineup) => {
-    const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
-    const prompt = lineup.prompt;
-    assistsMap[prompt] = assistsMap[prompt] || {};
-    assistsMap[prompt][key] = assistsMap[prompt][key] || [];
-    assistsMap[prompt][key].push(lineup.user_id);
-  });
-
-  let assists = 0;
-
-  Object.entries(assistsMap).forEach(([prompt, entries]) => {
-    const sorted = Object.entries(entries)
-      .map(([key, userIds]) => [key, userIds.length])
-      .sort((a, b) => b[1] - a[1]);
-
-    const [topKey, _] = sorted[0];
-
-    if (entries[topKey].includes(userId) && entries[topKey][0] !== userId) {
-      assists++;
-    }
-  });
-
-  setWinningAssists(assists);
-
-  await supabase
-  .from("profiles")
-  .update({ winning_assists: assists })
-  .eq("id", userId);
-};
 
   }, []);
 
@@ -849,7 +802,7 @@ const fetchWinningAssists = async () => {
               <li>CHOOSE THE ORDER for your show - the OPENER, 2ND OPENER and HEADLINER.</li>
               <li>You can only pick an artist once per game.</li>
               <li>Once you have made your selections, hit <b>SUBMIT LINEUP</b>. Click DOWNLOAD LINEUP for your own personal concert poster that you can SHARE ON SOCIAL MEDIA.</li>
-              <li>Today&apos;s TOP 10 most popular will be posted daily. You can VOTE once per day on the Top 10 by clicking the FIRE EMOJI. Sometimes a player&apos;s DEEP CUT could also show up. Your winning lineups and those you help win all count toward YOUR GREATEST HITS</li>
+              <li>Today&apos;s TOP 10 most popular will be posted daily. You can VOTE once per day on the Top 10 by clicking the FIRE EMOJI. Sometimes a player&apos;s DEEP CUT could also show up.</li>
               <li>NEW GAMES and YESTERDAY&apos;S WINNERS are posted every single day at 5pm PST.</li>
             </ul>
             <div className="text-center mt-6">
@@ -1199,7 +1152,6 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   <li className="text-sm">🎤 Promoted Lineups (So Far): <span className="font-bold">{submittedCount ?? "--"}</span></li>
   <li className="text-sm">🏆 Lineups That Made the Top 10: <span className="font-bold">{topTenCount ?? "--"}</span></li>
   <li className="text-sm">🥇 Lineups That Won It All: <span className="font-bold">{winningCount ?? "--"}</span></li>
-  <li className="text-sm">🤝 Winning Assists: <span className="font-bold">{winningAssists ?? "--"}</span></li>
   <li className="text-sm">📆 Longest Daily Streak: <span className="font-bold">{longestStreak ?? "--"}</span></li>
 </ul>
 
