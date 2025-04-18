@@ -401,7 +401,7 @@ const LineupSlot = ({ artist, label }) => (
 
 export default function BestConcertEver() {
   const [submittedCount, setSubmittedCount] = useState(null);
-  const [topFiveCount, setTopFiveCount] = useState(null);
+  const [topTenCount, setTopTenCount] = useState(null);
   const [longestStreak, setLongestStreak] = useState(null);
   const [winningCount, setWinningCount] = useState(null);
   const [mostVotedLineup, setMostVotedLineup] = useState(null);
@@ -453,7 +453,7 @@ const handleEmailSignup = async () => {
 
     fetchSubmittedCount();
 
-    const fetchTopFiveCount = async () => {
+    const fetchTopTenCount = async () => {
       const userId = localStorage.getItem("bce_user_id");
       if (!userId) return;
 
@@ -486,30 +486,30 @@ const handleEmailSignup = async () => {
         lineupsByPrompt[prompt][key] = (lineupsByPrompt[prompt][key] || 0) + 1 + votes;
       });
 
-      const top5KeysPerPrompt = {};
+      const top10KeysPerPrompt = {};
       Object.entries(lineupsByPrompt).forEach(([prompt, lineups]) => {
         const sorted = Object.entries(lineups)
           .sort((a, b) => b[1] - a[1])
-          .slice(0, 5)
+          .slice(0, 10)
           .map(([key]) => key);
-        top5KeysPerPrompt[prompt] = sorted;
+        top10KeysPerPrompt[prompt] = sorted;
       });
 
       const userKeys = userLineups.map(
         (lineup) => `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`
       );
 
-      let totalTop5s = 0;
-      Object.entries(top5KeysPerPrompt).forEach(([prompt, keys]) => {
+      let totalTop10s = 0;
+      Object.entries(top10KeysPerPrompt).forEach(([prompt, keys]) => {
         keys.forEach((key) => {
-          if (userKeys.includes(key)) totalTop5s++;
+          if (userKeys.includes(key)) totalTop10s++;
         });
       });
 
-      setTopFiveCount(totalTop5s);
+      setTopTenCount(totalTop10s);
     };
 
-    fetchTopFiveCount();
+    fetchTopTenCount();
 
     const fetchTopLineups = async () => {
       const { data, error } = await supabase
@@ -528,7 +528,7 @@ const handleEmailSignup = async () => {
 
       const sortedLineups = Object.entries(countMap)
   .sort((a, b) => b[1] - a[1])
-  .slice(0, 5)
+  .slice(0, 10)
   .map(([key]) => {
     const [headlinerName, openerName, secondOpenerName] = key.split("|||");
 
@@ -802,7 +802,7 @@ fetchWinningCount();
               <li>CHOOSE THE ORDER for your show - the OPENER, 2ND OPENER and HEADLINER.</li>
               <li>You can only pick an artist once per game.</li>
               <li>Once you have made your selections, hit <b>SUBMIT LINEUP</b>. Click DOWNLOAD LINEUP for your own personal concert poster that you can SHARE ON SOCIAL MEDIA.</li>
-              <li>Today&apos;s TOP 5 most popular will be posted daily. You can VOTE once per day on the Top 5 by clicking the FIRE EMOJI. Sometimes a player&apos;s DEEP CUT could also show up.</li>
+              <li>Today&apos;s TOP 10 most popular will be posted daily. You can VOTE once per day on the Top 10 by clicking the FIRE EMOJI. Sometimes a player&apos;s DEEP CUT could also show up.</li>
               <li>NEW GAMES and YESTERDAY&apos;S WINNERS are posted every single day at 5pm PST.</li>
             </ul>
             <div className="text-center mt-6">
@@ -934,7 +934,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
           <div className="absolute inset-0 rounded-xl border-2 border-yellow-400 animate-pulse pointer-events-none"></div>
           <div className="relative bg-black rounded-xl p-6 border-2 border-yellow-400">
             <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-yellow-400 drop-shadow-[0_0_12px_yellow]">
-              Today&apos;s Top 5
+              Today&apos;s Top 10
             </h2>
             <ul className="flex flex-col gap-4 items-center">
   {lineups.map((lineup, idx) => {
@@ -1150,7 +1150,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
             </h2>
             <ul className="flex flex-col gap-4 items-center text-white">
   <li className="text-sm">🎤 Promoted Lineups (So Far): <span className="font-bold">{submittedCount ?? "--"}</span></li>
-  <li className="text-sm">🏆 Lineups That Made the Top 5: <span className="font-bold">{topFiveCount ?? "--"}</span></li>
+  <li className="text-sm">🏆 Lineups That Made the Top 10: <span className="font-bold">{topTenCount ?? "--"}</span></li>
   <li className="text-sm">🥇 Lineups That Won It All: <span className="font-bold">{winningCount ?? "--"}</span></li>
   <li className="text-sm">📆 Longest Daily Streak: <span className="font-bold">{longestStreak ?? "--"}</span></li>
 </ul>
