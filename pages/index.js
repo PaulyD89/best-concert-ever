@@ -526,25 +526,34 @@ const handleEmailSignup = async () => {
         countMap[key] = (countMap[key] || 0) + 1 + votes;
       });      
 
-      const sortedLineups = Object.entries(countMap)
-  .sort((a, b) => b[1] - a[1])
-  .slice(0, 10)
-  .map(([key]) => {
-    const [headlinerName, openerName, secondOpenerName] = key.split("|||");
+      const allEntries = Object.entries(countMap);
 
-    const matchingLineup = data.find(
-      (entry) =>
-        entry.headliner?.name === headlinerName &&
-        entry.opener?.name === openerName &&
-        entry.second_opener?.name === secondOpenerName
-    );
+const voted = allEntries.filter(([_, score]) => score > 1);
+const zeroVoted = allEntries.filter(([_, score]) => score === 1);
 
-    return matchingLineup ?? {
-      headliner: { name: headlinerName },
-      opener: { name: openerName },
-      second_opener: { name: secondOpenerName }
-    };
-  });
+for (let i = zeroVoted.length - 1; i > 0; i--) {
+  const j = Math.floor(Math.random() * (i + 1));
+  [zeroVoted[i], zeroVoted[j]] = [zeroVoted[j], zeroVoted[i]];
+}
+
+const combined = [...voted.sort((a, b) => b[1] - a[1]), ...zeroVoted].slice(0, 10);
+
+const sortedLineups = combined.map(([key]) => {
+  const [headlinerName, openerName, secondOpenerName] = key.split("|||");
+
+  const matchingLineup = data.find(
+    (entry) =>
+      entry.headliner?.name === headlinerName &&
+      entry.opener?.name === openerName &&
+      entry.second_opener?.name === secondOpenerName
+  );
+
+  return matchingLineup ?? {
+    headliner: { name: headlinerName },
+    opener: { name: openerName },
+    second_opener: { name: secondOpenerName }
+  };
+});
 
 setLineups(sortedLineups);
       }
