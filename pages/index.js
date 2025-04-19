@@ -786,6 +786,24 @@ setLineups(sortedLineups);
         localStorage.setItem("bce_user_id", crypto.randomUUID());
       }
       const userId = localStorage.getItem("bce_user_id");
+
+      // Check if user exists in users table
+const { data: existingUser, error: userCheckError } = await supabase
+.from("users")
+.select("user_id")
+.eq("user_id", userId)
+.single();
+
+if (!existingUser && !userCheckError) {
+await supabase.from("users").insert([
+  {
+    user_id: userId,
+    total_wins: 0,
+    total_top_10s: 0,
+    winning_assists: 0
+  }
+]);
+}
   
       const { data: existing, error: checkError } = await supabase
         .from("lineups")
