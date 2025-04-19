@@ -465,27 +465,24 @@ if (!recipients || recipients.length === 0) {
       `;
       console.log("Sending emails to:", recipients.length, "recipients");
 
-      for (const recipient of recipients) {
-        try {
-          await resend.emails.send({
-            from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
-            to: recipient,
-            subject: `🎸 What's Your Best Concert Ever for "${dailyPrompt}"?`,
-            html
-          });
-          console.log(`✅ Sent to: ${recipient}`);
-          await new Promise((resolve) => setTimeout(resolve, 1000)); // safer spacing
-        } catch (err) {
-          console.error(`❌ Failed to send to: ${recipient}`, err);
-        }
-      }
-      
-      console.log("Finished sending to all recipients");
-      res.status(200).json({ message: "All emails sent successfully" });      
+for (const recipient of recipients) {
+  try {
+    await resend.emails.send({
+      from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
+      to: recipient,
+      subject: `🎸 What's Your Best Concert Ever for "${dailyPrompt}"?`,
+      html
+    });
+    console.log(`✅ Sent to: ${recipient}`);
+await new Promise((resolve) => setTimeout(resolve, 600)); // prevent rate limiting
+  } catch (err) {
+    console.error(`❌ Failed to send to: ${recipient}`, err);
   }
 }
+      console.log("Email HTML content:", html);
+      return res.status(200).json({ message: "Emails sent" });      
   } catch (err) {
-    console.error("💥 Fatal error in email handler:", err);
-    res.status(500).json({ message: "Email send failed due to server error." });
+    console.error("Failed to send email:", err);
+    return res.status(500).json({ message: "Email send failed" });
   }
 }
