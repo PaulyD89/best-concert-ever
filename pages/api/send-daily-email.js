@@ -484,3 +484,8 @@ if (!recipients || recipients.length === 0) {
       res.status(200).json({ message: "All emails sent successfully" });      
   }
 }
+  } catch (err) {
+    console.error("💥 Fatal error in email handler:", err);
+    res.status(500).json({ message: "Email send failed due to server error." });
+  }
+}
