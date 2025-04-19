@@ -794,15 +794,25 @@ const { data: existingUser, error: userCheckError } = await supabase
 .eq("user_id", userId)
 .single();
 
-if (!existingUser && !userCheckError) {
-await supabase.from("users").insert([
-  {
-    user_id: userId,
-    total_wins: 0,
-    total_top_10s: 0,
-    winning_assists: 0
+if (!existingUser) {
+  if (userCheckError) {
+    console.error("User check failed:", userCheckError);
+  } else {
+    const { error: insertError } = await supabase.from("users").insert([
+      {
+        user_id: userId,
+        total_wins: 0,
+        total_top_10s: 0,
+        winning_assists: 0
+      }
+    ]);
+
+    if (insertError) {
+      console.error("Insert failed:", insertError);
+    } else {
+      console.log("✅ New user added to users table:", userId);
+    }
   }
-]);
 }
   
       const { data: existing, error: checkError } = await supabase
