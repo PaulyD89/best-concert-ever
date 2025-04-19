@@ -867,10 +867,8 @@ if (!existingUser) {
             <h2 className="text-2xl font-bold mb-4">HOW TO PLAY</h2>
             <ul className="list-disc pl-5 space-y-2 text-sm">
               <li>Time to flex those Music Promoter skills and show everyone you know how to assemble the ULTIMATE CONCERT LINE-UP!</li>
-              <li>CHECK THE DAILY PROMPT for the genre of the show you&apos;re promoting.</li>
-              <li>Use the drop-down menus to select THREE ARTISTS who fit the bill.</li>
-              <li>CHOOSE THE ORDER for your show - the OPENER, 2ND OPENER and HEADLINER.</li>
-              <li>You can only pick an artist once per game.</li>
+              <li>CHECK THE DAILY PROMPT for the genre of the show you&apos;re promoting. Then use the drop-down menus to select THREE ARTISTS who fit the bill.</li>
+              <li>CHOOSE THE ORDER for your show - the OPENER, 2ND OPENER and HEADLINER. You can only pick an artist once per game.</li>
               <li>Once you have made your selections, hit <b>SUBMIT LINEUP</b>. Click DOWNLOAD LINEUP for your own personal concert poster that you can SHARE ON SOCIAL MEDIA.</li>
               <li>Today&apos;s TOP 10 most popular will be posted daily. You can VOTE once per day on the Top 10 by clicking the FIRE EMOJI. Sometimes a player&apos;s DEEP CUT could also show up.</li>
               <li>Your winning lineups and those you help win contribute towards YOUR GREATEST HITS.</li>
