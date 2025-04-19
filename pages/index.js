@@ -401,6 +401,7 @@ const LineupSlot = ({ artist, label }) => (
 
 export default function BestConcertEver() {
   const [submittedCount, setSubmittedCount] = useState(null);
+  const [winningAssistsCount, setWinningAssistsCount] = useState(null);
   const [topTenCount, setTopTenCount] = useState(null);
   const [longestStreak, setLongestStreak] = useState(null);
   const [winningCount, setWinningCount] = useState(null);
@@ -646,54 +647,95 @@ setLineups(sortedLineups);
 
     fetchMostVotedLineup();
 
-const fetchWinningCount = async () => {
-  const userId = localStorage.getItem("bce_user_id");
-  if (!userId) return;
-
-  const { data: userLineups, error: userError } = await supabase
-    .from("lineups")
-    .select("headliner, opener, second_opener, prompt")
-    .eq("user_id", userId);
-
-  if (userError || !userLineups) {
-    console.error("Error fetching user lineups:", userError);
-    return;
-  }
-
-  const { data: allLineups, error: allError } = await supabase
-    .from("lineups")
-    .select("headliner, opener, second_opener, prompt, votes");
-
-  if (allError || !allLineups) {
-    console.error("Error fetching all lineups:", allError);
-    return;
-  }
-
-  const winnersByPrompt = {};
-  allLineups.forEach((lineup) => {
-    const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
-    const prompt = lineup.prompt;
-    const votes = lineup.votes || 0;
-    winnersByPrompt[prompt] = winnersByPrompt[prompt] || {};
-    winnersByPrompt[prompt][key] = (winnersByPrompt[prompt][key] || 0) + 1 + votes;
-  });
-
-  let winTotal = 0;
-  Object.entries(winnersByPrompt).forEach(([prompt, entries]) => {
-    const sorted = Object.entries(entries).sort((a, b) => b[1] - a[1]);
-    const [topKey] = sorted[0];
-
-    userLineups.forEach((userLineup) => {
-      const userKey = `${userLineup.headliner?.name}|||${userLineup.opener?.name}|||${userLineup.second_opener?.name}`;
-      if (userKey === topKey && userLineup.prompt === prompt) {
-        winTotal++;
+    const fetchWinningCount = async () => {
+      const userId = localStorage.getItem("bce_user_id");
+      if (!userId) return;
+    
+      const { data: userLineups, error: userError } = await supabase
+        .from("lineups")
+        .select("headliner, opener, second_opener, prompt")
+        .eq("user_id", userId);
+    
+      if (userError || !userLineups) {
+        console.error("Error fetching user lineups:", userError);
+        return;
       }
-    });
-  });
-
-  setWinningCount(winTotal);
-};
-fetchWinningCount();
+    
+      const { data: allLineups, error: allError } = await supabase
+        .from("lineups")
+        .select("headliner, opener, second_opener, prompt, user_id, created_at, votes");
+    
+      if (allError || !allLineups) {
+        console.error("Error fetching all lineups:", allError);
+        return;
+      }
+    
+      const winnersByPrompt = {};
+      allLineups.forEach((lineup) => {
+        const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+        const prompt = lineup.prompt;
+        const votes = lineup.votes || 0;
+        winnersByPrompt[prompt] = winnersByPrompt[prompt] || {};
+        winnersByPrompt[prompt][key] = (winnersByPrompt[prompt][key] || 0) + 1 + votes;
+      });
+    
+      let winTotal = 0;
+      for (const [prompt, entries] of Object.entries(winnersByPrompt)) {
+        const sorted = Object.entries(entries).sort((a, b) => b[1] - a[1]);
+        const [topKey] = sorted[0];
+    
+        const matchingLineups = allLineups.filter((l) => {
+          const lineupKey = `${l.headliner?.name}|||${l.opener?.name}|||${l.second_opener?.name}`;
+          return lineupKey === topKey && l.prompt === prompt;
+        });
+    
+        const sortedByTime = matchingLineups.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        const firstUserId = sortedByTime[0].user_id;
+    
+        // Update total_wins for first submitter
+        await supabase
+          .from("users")
+          .update({ total_wins: supabase.raw("total_wins + 1") })
+          .eq("user_id", firstUserId);
+    
+        // Update winning_assists for all others
+        const assistUserIds = [...new Set(
+          sortedByTime.slice(1).map((l) => l.user_id).filter((id) => id !== firstUserId)
+        )];
+    
+        for (const assistId of assistUserIds) {
+          await supabase
+            .from("users")
+            .update({ winning_assists: supabase.raw("winning_assists + 1") })
+            .eq("user_id", assistId);
+        }
+    
+        userLineups.forEach((userLineup) => {
+          const userKey = `${userLineup.headliner?.name}|||${userLineup.opener?.name}|||${userLineup.second_opener?.name}`;
+          if (userKey === topKey && userLineup.prompt === prompt && userId === firstUserId) {
+            winTotal++;
+          }
+        });
+      }
+    
+      setWinningCount(winTotal);
+    };
+    fetchWinningCount();
+    const fetchWinningAssists = async () => {
+      const userId = localStorage.getItem("bce_user_id");
+      if (!userId) return;
+    
+      const { data, error } = await supabase
+        .from("users")
+        .select("winning_assists")
+        .eq("user_id", userId)
+        .single();
+    
+      if (!error && data) {
+        setWinningAssistsCount(data.winning_assists);
+      }
+    };
+    fetchWinningAssists();       
 
   }, []);
 
@@ -1152,6 +1194,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   <li className="text-sm">🎤 Promoted Lineups (So Far): <span className="font-bold">{submittedCount ?? "--"}</span></li>
   <li className="text-sm">🏆 Lineups That Made the Top 10: <span className="font-bold">{topTenCount ?? "--"}</span></li>
   <li className="text-sm">🥇 Lineups That Won It All: <span className="font-bold">{winningCount ?? "--"}</span></li>
+  <li className="text-sm">🤝 Winning Assists: <span className="font-bold">{winningAssistsCount ?? "--"}</span></li>
   <li className="text-sm">📆 Longest Daily Streak: <span className="font-bold">{longestStreak ?? "--"}</span></li>
 </ul>
 
