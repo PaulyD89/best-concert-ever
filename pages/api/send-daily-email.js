@@ -465,30 +465,20 @@ if (!recipients || recipients.length === 0) {
       `;
       console.log("Sending emails to:", recipients.length, "recipients");
 
-      const batchSize = 5;
-      for (let i = 0; i < recipients.length; i += batchSize) {
-        const batch = recipients.slice(i, i + batchSize);
-        console.log(`🚀 Sending batch ${i / batchSize + 1} of ${Math.ceil(recipients.length / batchSize)}`);
-      
-        for (const recipient of batch) {
-          try {
-            await resend.emails.send({
-              from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
-              to: recipient,
-              subject: `🎸 What's Your Best Concert Ever for "${dailyPrompt}"?`,
-              html
-            });
-            console.log(`✅ Sent to: ${recipient}`);
-            await new Promise((resolve) => setTimeout(resolve, 1000)); // 1 second per recipient
-          } catch (err) {
-            console.error(`❌ Failed to send to: ${recipient}`, err);
-          }
-        }
-      
-        console.log(`✅ Finished batch ${i / batchSize + 1}`);
-        await new Promise((resolve) => setTimeout(resolve, 2000)); // wait 2 seconds between batches
-      }
-      
+for (const recipient of recipients) {
+  try {
+    await resend.emails.send({
+      from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
+      to: recipient,
+      subject: `🎸 What's Your Best Concert Ever for "${dailyPrompt}"?`,
+      html
+    });
+    console.log(`✅ Sent to: ${recipient}`);
+await new Promise((resolve) => setTimeout(resolve, 1000)); // prevent rate limiting
+  } catch (err) {
+    console.error(`❌ Failed to send to: ${recipient}`, err);
+  }
+}
       console.log("Email HTML content:", html);
       return res.status(200).json({ message: "Emails sent" });      
   } catch (err) {
