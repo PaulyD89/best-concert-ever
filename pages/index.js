@@ -747,6 +747,103 @@ fetchWinningCount();
   const [secondOpener, setSecondOpener] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
+  const handleDownloadGreatestHits = async () => {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+  
+    const background = new Image();
+    background.src = "/yourgreatesthits.png";
+    background.crossOrigin = "anonymous";
+  
+    background.onload = async () => {
+      const WIDTH = background.width;
+      const HEIGHT = background.height;
+      canvas.width = WIDTH;
+      canvas.height = HEIGHT;
+  
+      ctx.drawImage(background, 0, 0, WIDTH, HEIGHT);
+  
+      // Load Montserrat font
+      await document.fonts.load("bold 38px 'Montserrat'");
+  
+      ctx.fillStyle = "#ffffff";
+      ctx.textAlign = "center";
+      ctx.font = "bold 42px 'Montserrat', sans-serif";
+      ctx.fillText("YOUR GREATEST HITS", WIDTH / 2, HEIGHT * 0.08); // Title under logo
+  
+      ctx.font = "bold 38px 'Montserrat', sans-serif";
+      ctx.fillText(`${submittedCount ?? 0}`, WIDTH * 0.17, HEIGHT * 0.48);
+      ctx.fillText(`${topTenCount ?? 0}`, WIDTH * 0.50, HEIGHT * 0.48);
+      ctx.fillText(`${winningCount ?? 0}`, WIDTH * 0.83, HEIGHT * 0.48);
+      ctx.fillText(`${mostVotedLineup?.votes ?? 0}`, WIDTH * 0.17, HEIGHT * 0.735);
+  
+      // 🎧 MY TOP LINEUP: Render text
+      ctx.font = "bold 26px 'Montserrat', sans-serif";
+      const topLineupText = `${mostVotedLineup?.opener?.name || ""} / ${mostVotedLineup?.second_opener?.name || ""} / ${mostVotedLineup?.headliner?.name || ""}`;
+      ctx.fillText(topLineupText, WIDTH * 0.66, HEIGHT * 0.74);
+  
+      // 🎤 Draw circular artist images
+      const avatarSize = 120;
+      const centerY = HEIGHT * 0.87;
+      const centers = [
+        WIDTH * 0.33 - avatarSize, // opener
+        WIDTH * 0.50,              // second_opener
+        WIDTH * 0.67 + avatarSize  // headliner
+      ];
+  
+      const loadImage = (src) =>
+        new Promise((resolve) => {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.src = src;
+          img.onload = () => resolve(img);
+        });
+  
+      const artistImgs = await Promise.all([
+        loadImage(mostVotedLineup?.opener?.image),
+        loadImage(mostVotedLineup?.second_opener?.image),
+        loadImage(mostVotedLineup?.headliner?.image)
+      ]);
+  
+      artistImgs.forEach((img, i) => {
+        const x = centers[i] - avatarSize / 2;
+        const y = centerY - avatarSize / 2;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(centers[i], centerY, avatarSize / 2, 0, Math.PI * 2, true);
+        ctx.closePath();
+        ctx.clip();
+        ctx.drawImage(img, x, y, avatarSize, avatarSize);
+        ctx.restore();
+      });
+  
+      // 🏅 Add streak badge
+      let streakText = "";
+      let color = "";
+  
+      if (longestStreak >= 100) {
+        streakText = "💛 100-Day Streak Club";
+        color = "#FFD700"; // Gold
+      } else if (longestStreak >= 50) {
+        streakText = "🥈 50-Day Streak Club";
+        color = "#C0C0C0"; // Silver
+      } else if (longestStreak >= 25) {
+        streakText = "🥉 25-Day Streak Club";
+        color = "#cd7f32"; // Bronze
+      }
+  
+      if (streakText) {
+        ctx.font = "bold 28px 'Montserrat', sans-serif";
+        ctx.fillStyle = color;
+        ctx.fillText(streakText, WIDTH / 2, HEIGHT * 0.96);
+      }
+  
+      // 🔓 Open in new tab
+      const imageDataUrl = canvas.toDataURL("image/jpeg", 0.95);
+      window.open(imageDataUrl, "_blank");
+    };
+  };  
+
   const handleSubmit = async () => {
     if (headliner && opener && secondOpener) {
       if (!localStorage.getItem("bce_user_id")) {
@@ -1187,6 +1284,9 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   )}
 </div>
       </div>
+      <div className="mt-4 text-sm text-green-300 underline cursor-pointer hover:text-white" onClick={handleDownloadGreatestHits}>
+      Download Your Greatest Hits
+    </div>
       </div>
     </div>
   </div>
