@@ -23,14 +23,15 @@ export default function Unsubscribe() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white px-6 py-12">
       {/* Logo at top */}
       <div className="mb-6">
-        <Image
-          src="/fullsquarelogo.jpg" // make sure this is in your /public folder
-          alt="Best Concert Ever Logo"
-          width={100}
-          height={100}
-          className="rounded-full shadow-lg"
-        />
-      </div>
+  <Image
+    src="/fullsquarelogo.jpg"
+    alt="Best Concert Ever Logo"
+    width={300}
+    height={300}
+    className="rounded-md shadow-xl"
+    priority
+  />
+</div>
 
       <h1 className="text-3xl font-bold mb-6 text-green-400">Unsubscribe from Best. Concert. Ever.</h1>
 
