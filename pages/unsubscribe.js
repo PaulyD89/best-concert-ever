@@ -24,7 +24,7 @@ export default function Unsubscribe() {
       {/* Logo at top */}
       <div className="mb-6">
         <Image
-          src="/logo.png" // make sure this is in your /public folder
+          src="/fullsquarelogo.jpg" // make sure this is in your /public folder
           alt="Best Concert Ever Logo"
           width={100}
           height={100}
