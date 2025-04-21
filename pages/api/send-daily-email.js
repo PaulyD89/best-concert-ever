@@ -455,11 +455,11 @@ if (!recipients || recipients.length === 0) {
 
           <p style="margin-top: 10px; font-size: 16px; text-align: center;">
             Think you have what it takes to be the ultimate Music Promoter?<br/>
-            <a href="https://best-concert-ever.vercel.app" style="color: #f66; font-weight: bold;">Submit your own lineup</a>
+            <a href="https://bestconcertevergame.com" style="color: #f66; font-weight: bold;">Submit your own lineup</a>
           </p>
 
           <p style="margin-top: 30px; font-size: 12px; color: gray; text-align: center;">
-            Don’t want to receive these emails? <a href="https://best-concert-ever.vercel.app/unsubscribe" style="color: gray; text-decoration: underline;">Unsubscribe</a>
+            Don’t want to receive these emails? <a href="https://bestconcertevergame.com/unsubscribe" style="color: gray; text-decoration: underline;">Unsubscribe</a>
           </p>
         </div>
       `;
