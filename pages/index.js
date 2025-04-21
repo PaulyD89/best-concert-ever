@@ -413,6 +413,29 @@ const [showEmailSignup, setShowEmailSignup] = useState(false);
 const [email, setEmail] = useState("");
 const [emailSubmitted, setEmailSubmitted] = useState(false);
 
+const handleBadgeClick = () => {
+  let badgeUrl = "";
+
+  if (globalRank <= 10) {
+    badgeUrl = "/elitepromoter.jpg";
+  } else if (globalRank <= 50) {
+    badgeUrl = "/starbooker.jpg";
+  } else if (globalRank <= 100) {
+    badgeUrl = "/fanfavorite.jpg";
+  } else if (globalRank <= 250) {
+    badgeUrl = "/upandcomer.jpg";
+  } else if (globalRank <= 500) {
+    badgeUrl = "/openingact.jpg";
+  } else {
+    return; // no badge available
+  }
+
+  const newWindow = window.open(badgeUrl, "_blank");
+  if (newWindow) {
+    newWindow.focus();
+  }
+};
+
 const handleEmailSignup = async () => {
   try {
     const res = await fetch("/api/subscribe", {
@@ -1227,11 +1250,13 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   {typeof globalRank === "number" && (
   <li>
     <span
-      className={`inline-block px-3 py-1 rounded-full text-xs font-bold shadow-md
+      onClick={handleBadgeClick}
+      className={`inline-block px-3 py-1 rounded-full text-xs font-bold shadow-md cursor-pointer hover:scale-105 transition-transform
         ${globalRank <= 10
           ? "bg-yellow-300 text-black animate-pulse"
           : "bg-green-900 text-green-300"}
       `}
+      title="Click to download your badge!"
     >
       {globalRank <= 10
         ? "🏆 Elite Promoter"
