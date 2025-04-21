@@ -1224,6 +1224,21 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   <li className="text-sm">🌍 Global Rank: <span className="font-bold">{globalRank === "unranked" || globalRank === null ? "Not Ranked Yet" : `#${globalRank}`}
     </span>
   </li>
+  {typeof globalRank === "number" && (
+  <li className="text-sm text-green-300">
+    {globalRank <= 10
+      ? "🏆 Elite Promoter"
+      : globalRank <= 50
+      ? "🌟 Star Booker"
+      : globalRank <= 100
+      ? "🔥 Fan Favorite"
+      : globalRank <= 250
+      ? "🎶 Up-And-Comer"
+      : globalRank <= 500
+      ? "🎤 Opening Act"
+      : null}
+  </li>
+)}
 
 </ul>
 
