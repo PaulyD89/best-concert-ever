@@ -405,6 +405,7 @@ export default function BestConcertEver() {
   const [longestStreak, setLongestStreak] = useState(null);
   const [winningCount, setWinningCount] = useState(null);
   const [mostVotedLineup, setMostVotedLineup] = useState(null);
+  const [globalRank, setGlobalRank] = useState(null);
   const flyerRef = React.useRef(null);
   const downloadRef = React.useRef(null);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
@@ -703,6 +704,64 @@ const fetchWinningCount = async () => {
   setWinningCount(winTotal);
 };
 fetchWinningCount();
+
+const fetchGlobalRank = async () => {
+  const userId = localStorage.getItem("bce_user_id");
+  if (!userId) return;
+
+  const { data: allLineups, error } = await supabase
+    .from("lineups")
+    .select("user_id, votes");
+
+  if (error || !allLineups) {
+    console.error("Error fetching all lineups for global rank:", error);
+    return;
+  }
+
+  const userStats = {};
+  allLineups.forEach(({ user_id, votes }) => {
+    if (!userStats[user_id]) {
+      userStats[user_id] = { wins: 0, votes: 0 };
+    }
+    userStats[user_id].votes += votes || 0;
+  });
+
+  // Add wins using same logic
+  const winnersByPrompt = {};
+  allLineups.forEach((lineup) => {
+    const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+    const prompt = lineup.prompt;
+    const votes = lineup.votes || 0;
+    winnersByPrompt[prompt] = winnersByPrompt[prompt] || {};
+    winnersByPrompt[prompt][key] = (winnersByPrompt[prompt][key] || { count: 0, userIds: [] });
+    winnersByPrompt[prompt][key].count += 1 + votes;
+    winnersByPrompt[prompt][key].userIds.push(lineup.user_id);
+  });
+
+  Object.entries(winnersByPrompt).forEach(([prompt, entries]) => {
+    const sorted = Object.entries(entries).sort((a, b) => b[1].count - a[1].count);
+    const topKey = sorted[0]?.[0];
+    const winnerUserId = entries[topKey]?.userIds?.[0]; // First submitter gets win
+    if (winnerUserId && userStats[winnerUserId]) {
+      userStats[winnerUserId].wins += 1;
+    }
+  });
+
+  const scores = Object.entries(userStats)
+    .map(([id, stats]) => ({ id, score: stats.wins * 10 + stats.votes }))
+    .sort((a, b) => b.score - a.score);
+
+  const rank = scores.findIndex(entry => entry.id === userId);
+
+  if (rank !== -1) {
+    setGlobalRank(rank + 1); // 1-based rank
+  } else {
+    setGlobalRank("unranked");
+  }
+};
+
+fetchGlobalRank();
+
 
   }, []);
 
@@ -1162,6 +1221,10 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   <li className="text-sm">🏆 Lineups That Made the Top 10: <span className="font-bold">{topTenCount ?? "--"}</span></li>
   <li className="text-sm">🥇 Lineups That Won It All: <span className="font-bold">{winningCount ?? "--"}</span></li>
   <li className="text-sm">📆 Longest Daily Streak: <span className="font-bold">{longestStreak ?? "--"}</span></li>
+  <li className="text-sm">🌍 Global Rank: <span className="font-bold">{globalRank === "unranked" || globalRank === null ? "Not Ranked Yet" : `#${globalRank}`}
+    </span>
+  </li>
+
 </ul>
 
             <div className="mt-6">
