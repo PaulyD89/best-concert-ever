@@ -713,15 +713,18 @@ const fetchWinningCount = async () => {
 
   let winTotal = 0;
   Object.entries(winnersByPrompt).forEach(([prompt, entries]) => {
-    const sorted = Object.entries(entries).sort((a, b) => b[1] - a[1]);
-    const [topKey] = sorted[0];
+    const maxScore = Math.max(...Object.values(entries));
+const topKeys = Object.entries(entries)
+  .filter(([_, score]) => score === maxScore)
+  .map(([key]) => key);
 
-    userLineups.forEach((userLineup) => {
-      const userKey = `${userLineup.headliner?.name}|||${userLineup.opener?.name}|||${userLineup.second_opener?.name}`;
-      if (userKey === topKey && userLineup.prompt === prompt) {
-        winTotal++;
-      }
-    });
+userLineups.forEach((userLineup) => {
+  const userKey = `${userLineup.headliner?.name}|||${userLineup.opener?.name}|||${userLineup.second_opener?.name}`;
+  if (topKeys.includes(userKey) && userLineup.prompt === prompt) {
+    winTotal++;
+  }
+});
+
   });
 
   setWinningCount(winTotal);
@@ -762,12 +765,17 @@ const fetchGlobalRank = async () => {
   });
 
   Object.entries(winnersByPrompt).forEach(([prompt, entries]) => {
-    const sorted = Object.entries(entries).sort((a, b) => b[1].count - a[1].count);
-    const topKey = sorted[0]?.[0];
-    const winnerUserId = entries[topKey]?.userIds?.[0]; // First submitter gets win
-    if (winnerUserId && userStats[winnerUserId]) {
-      userStats[winnerUserId].wins += 1;
+    const maxCount = Math.max(...Object.values(entries).map(e => e.count));
+const topEntries = Object.entries(entries).filter(([_, e]) => e.count === maxCount);
+
+topEntries.forEach(([_, entry]) => {
+  const uniqueUserIds = [...new Set(entry.userIds)];
+  uniqueUserIds.forEach((userId) => {
+    if (userStats[userId]) {
+      userStats[userId].wins += 1;
     }
+  });
+});
   });
 
   const scores = Object.entries(userStats)
