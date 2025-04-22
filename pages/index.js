@@ -502,7 +502,11 @@ const handleEmailSignup = async () => {
 
       const lineupsByPrompt = {};
       allLineups.forEach((lineup) => {
-        const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+const key = [
+  normalizeArtistName(lineup.headliner),
+  normalizeArtistName(lineup.opener),
+  normalizeArtistName(lineup.second_opener)
+].join("|||");
         const prompt = lineup.prompt;
         const votes = lineup.votes || 0;
 
@@ -545,7 +549,11 @@ const handleEmailSignup = async () => {
       const countMap = {};
 
       data.forEach((lineup) => {
-        const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+const key = [
+  normalizeArtistName(lineup.headliner),
+  normalizeArtistName(lineup.opener),
+  normalizeArtistName(lineup.second_opener)
+].join("|||");
         const votes = lineup.votes || 0;
         countMap[key] = (countMap[key] || 0) + 1 + votes;
       });      
@@ -704,7 +712,11 @@ const fetchWinningCount = async () => {
 
   const winnersByPrompt = {};
   allLineups.forEach((lineup) => {
-    const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+const key = [
+  normalizeArtistName(lineup.headliner),
+  normalizeArtistName(lineup.opener),
+  normalizeArtistName(lineup.second_opener)
+].join("|||");
     const prompt = lineup.prompt;
     const votes = lineup.votes || 0;
     winnersByPrompt[prompt] = winnersByPrompt[prompt] || {};
@@ -719,7 +731,11 @@ const topKeys = Object.entries(entries)
   .map(([key]) => key);
 
 userLineups.forEach((userLineup) => {
-  const userKey = `${userLineup.headliner?.name}|||${userLineup.opener?.name}|||${userLineup.second_opener?.name}`;
+const userKey = [
+  normalizeArtistName(userLineup.headliner),
+  normalizeArtistName(userLineup.opener),
+  normalizeArtistName(userLineup.second_opener)
+].join("|||");
   if (topKeys.includes(userKey) && userLineup.prompt === prompt) {
     winTotal++;
   }
@@ -755,7 +771,11 @@ const fetchGlobalRank = async () => {
   // Add wins using same logic
   const winnersByPrompt = {};
   allLineups.forEach((lineup) => {
-    const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+const key = [
+  normalizeArtistName(lineup.headliner),
+  normalizeArtistName(lineup.opener),
+  normalizeArtistName(lineup.second_opener)
+].join("|||");
     const prompt = lineup.prompt;
     const votes = lineup.votes || 0;
     winnersByPrompt[prompt] = winnersByPrompt[prompt] || {};
@@ -808,7 +828,11 @@ fetchGlobalRank();
       const countMap = {};
   
       data.forEach((lineup) => {
-        const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+const key = [
+  normalizeArtistName(lineup.headliner),
+  normalizeArtistName(lineup.opener),
+  normalizeArtistName(lineup.second_opener)
+].join("|||");
         const votes = lineup.votes || 0;
         countMap[key] = (countMap[key] || 0) + 1 + votes;
       });      
@@ -1037,7 +1061,11 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
             </h2>
             <ul className="flex flex-col gap-4 items-center">
   {lineups.map((lineup, idx) => {
-    const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+const key = [
+  normalizeArtistName(lineup.headliner),
+  normalizeArtistName(lineup.opener),
+  normalizeArtistName(lineup.second_opener)
+].join("|||");
     const hasVoted = localStorage.getItem(`bce-voted-${dailyPrompt}`);
 
     return (
