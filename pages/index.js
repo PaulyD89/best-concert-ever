@@ -1248,8 +1248,8 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
             </h2>
             <ul className="flex flex-col gap-4 items-center text-white">
   <li className="text-sm">🎤 Promoted Lineups (So Far): <span className="font-bold">{submittedCount ?? "--"}</span></li>
-  <li className="text-sm">🏆 Lineups That Made the Top 10: <span className="font-bold">{topTenCount ?? "--"}</span></li>
-  <li className="text-sm">🥇 Lineups That Won It All: <span className="font-bold">{winningCount ?? "--"}</span></li>
+  <li className="text-sm">🏆 All-Time Top 10 Hits: <span className="font-bold">{topTenCount ?? "--"}</span></li>
+  <li className="text-sm">🥇 Winning Lineups: <span className="font-bold">{winningCount ?? "--"}</span></li>
   <li className="text-sm">📆 Longest Daily Streak: <span className="font-bold">{longestStreak ?? "--"}</span></li>
   <li className="text-sm">🌍 Global Rank: <span className="font-bold">{globalRank === "unranked" || globalRank === null ? "Not Ranked Yet" : `#${globalRank}`}
     </span>
