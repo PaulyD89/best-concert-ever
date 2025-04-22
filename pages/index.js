@@ -1309,7 +1309,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
       </div>
       </div>
     </div>
-    <div className="mt-12 mb-6 text-center text-xs text-gray-400 flex flex-col items-center">
+    <div className="mt-8 mb-4 text-center text-xs text-gray-400 flex flex-col items-center">
     <p className="mb-1 tracking-wide text-green-400">Powered by</p>
     <a
       href="https://spotify.com"
