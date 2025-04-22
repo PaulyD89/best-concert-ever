@@ -719,25 +719,7 @@ const topKeys = Object.entries(entries)
   .map(([key]) => key);
 
 userLineups.forEach((userLineup) => {
-  const normalizeArtistName = (artist) => {
-    if (!artist) return "";
-    if (typeof artist === "string") {
-      try {
-        const parsed = JSON.parse(artist);
-        return parsed?.name || artist;
-      } catch {
-        return artist;
-      }
-    }
-    return artist.name || "";
-  };
-  
-  const userKey = [
-    normalizeArtistName(userLineup.headliner),
-    normalizeArtistName(userLineup.opener),
-    normalizeArtistName(userLineup.second_opener)
-  ].join("|||");
-  
+  const userKey = `${userLineup.headliner?.name}|||${userLineup.opener?.name}|||${userLineup.second_opener?.name}`;
   if (topKeys.includes(userKey) && userLineup.prompt === prompt) {
     winTotal++;
   }
