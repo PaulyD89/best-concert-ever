@@ -459,6 +459,12 @@ const handleEmailSignup = async () => {
 
 
   useEffect(() => {
+    const bounceTimeout = setTimeout(() => {
+      if (typeof window !== 'undefined' && window.plausible) {
+        window.plausible("Engaged 10s+");
+      }
+    }, 10000);
+  
     const fetchSubmittedCount = async () => {
       const userId = localStorage.getItem("bce_user_id");
       if (!userId) return;
@@ -802,8 +808,8 @@ const normalize = (artist) => {
 
 fetchGlobalRank();
 
-
-  }, []);
+  return () => clearTimeout(bounceTimeout);
+}, []);
 
   useEffect(() => {
     const fetchYesterdaysWinner = async () => {
@@ -886,7 +892,10 @@ fetchGlobalRank();
         return;
       }
   
-      setSubmitted(true);
+      if (typeof window !== 'undefined' && window.plausible) {
+        window.plausible("Submit Lineup");
+      }
+      setSubmitted(true);      
       console.log("Lineup submitted:", { headliner, opener, secondOpener });
     }
   };  
@@ -965,6 +974,9 @@ fetchGlobalRank();
           </button>
           <button
   onClick={async () => {
+    if (typeof window !== 'undefined' && window.plausible) {
+      window.plausible("Download Lineup");
+    }    
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
   
@@ -1030,7 +1042,15 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
         </div>
       </div>
       
-      <div className="text-sm text-gray-300 underline cursor-pointer hover:text-white" onClick={() => setShowHowToPlay(true)}>
+      <div
+  className="text-sm text-gray-300 underline cursor-pointer hover:text-white"
+  onClick={() => {
+    setShowHowToPlay(true);
+    if (typeof window !== 'undefined' && window.plausible) {
+      window.plausible("How to Play Clicked");
+    }
+  }}
+>
   How to Play
 </div>
 <div className="mb-8 text-sm text-gray-300 underline cursor-pointer hover:text-white" onClick={() => setShowEmailSignup(true)}>
