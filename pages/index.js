@@ -1077,7 +1077,12 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
         {!hasVoted && (
           <button
           onClick={async () => {
-            localStorage.setItem(`bce-voted-${dailyPrompt}`, key);
+            onClick={async () => {
+              localStorage.setItem(`bce-voted-${dailyPrompt}`, key);
+            
+              if (typeof window !== "undefined" && window.plausible) {
+                window.plausible("Top 10 Vote Clicked");
+              }            
           
             if (!lineup.id) {
               alert("Oops, could not find lineup to vote for.");
@@ -1118,7 +1123,12 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     {!localStorage.getItem(`bce-voted-${dailyPrompt}`) && (
       <button
         onClick={async () => {
-          localStorage.setItem(`bce-voted-${dailyPrompt}`, "deepcut");
+          onClick={async () => {
+            localStorage.setItem(`bce-voted-${dailyPrompt}`, "deepcut");
+          
+            if (typeof window !== "undefined" && window.plausible) {
+              window.plausible("Deep Cut Vote Clicked");
+            }          
 
           if (!deepCutLineup.id) {
             alert("Oops, could not find Deep Cut lineup to vote for.");
