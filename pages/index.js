@@ -851,8 +851,6 @@ fetchGlobalRank();
   const [opener, setOpener] = useState(null);
   const [secondOpener, setSecondOpener] = useState(null);
   const [submitted, setSubmitted] = useState(false);
-  const [showVoteNudge, setShowVoteNudge] = useState(false);
-  const topTenRef = useRef(null);
 
   const handleSubmit = async () => {
     if (headliner && opener && secondOpener) {
@@ -897,36 +895,13 @@ fetchGlobalRank();
       if (typeof window !== 'undefined' && window.plausible) {
         window.plausible("Submit Lineup");
       }
-      setSubmitted(true);
-      setShowVoteNudge(true);
-      
-      setTimeout(() => setShowVoteNudge(false), 10000);
-      
-      console.log("Lineup submitted:", { headliner, opener, secondOpener });      
+      setSubmitted(true);      
+      console.log("Lineup submitted:", { headliner, opener, secondOpener });
     }
   };  
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen py-10 px-4 bg-gradient-to-b from-[#0f0f0f] to-[#1e1e1e] text-white font-sans">
-{showVoteNudge && (
-  <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-black text-yellow-300 border border-yellow-500 px-6 py-4 rounded-xl shadow-xl z-50 animate-flicker">
-    <p className="text-sm font-semibold mb-2 text-center">
-      🎉 Lineup submitted! Now go check out your rivals and vote 🔥 for your favorite!
-    </p>
-    <div className="flex justify-center">
-      <button
-        onClick={() => {
-          topTenRef.current?.scrollIntoView({ behavior: 'smooth' });
-          setShowVoteNudge(false);
-        }}
-        className="bg-yellow-400 text-black px-4 py-2 rounded-full font-bold hover:bg-yellow-300 transition"
-      >
-        🔥 Browse Top 10 & Vote
-      </button>
-    </div>
-  </div>
-)}
-
 {showHowToPlay && (
         <div className="fixed inset-0 z-50 flex justify-center items-center transition-opacity duration-300 bg-black/40 backdrop-blur-sm">
           <div className="bg-[#fdf6e3] text-black p-6 rounded-2xl w-[90%] max-w-xl text-left relative shadow-2xl border-[6px] border-black border-double">
@@ -1082,7 +1057,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 </div>
 
       <div className="mt-12 flex justify-center items-center w-full">
-      <div ref={topTenRef} className="relative w-full max-w-md text-center">
+        <div className="relative w-full max-w-md text-center">
           <div className="absolute inset-0 rounded-xl border-2 border-yellow-400 animate-pulse pointer-events-none"></div>
           <div className="relative bg-black rounded-xl p-6 border-2 border-yellow-400">
             <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-yellow-400 drop-shadow-[0_0_12px_yellow]">
