@@ -1076,7 +1076,6 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
         </div>
         {!hasVoted && (
           <button
-          onClick={async () => {
             onClick={async () => {
               localStorage.setItem(`bce-voted-${dailyPrompt}`, key);
             
@@ -1122,7 +1121,6 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 
     {!localStorage.getItem(`bce-voted-${dailyPrompt}`) && (
       <button
-        onClick={async () => {
           onClick={async () => {
             localStorage.setItem(`bce-voted-${dailyPrompt}`, "deepcut");
           
