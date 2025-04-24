@@ -909,7 +909,7 @@ fetchGlobalRank();
   return (
     <div className="flex flex-col items-center justify-start min-h-screen py-10 px-4 bg-gradient-to-b from-[#0f0f0f] to-[#1e1e1e] text-white font-sans">
 {showVoteNudge && (
-  <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-black text-yellow-300 border border-yellow-500 px-6 py-4 rounded-xl shadow-xl z-50 animate-flicker">
+  <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 w-[90%] max-w-md bg-black text-yellow-300 border border-yellow-500 px-6 py-4 rounded-xl shadow-xl z-50 animate-flicker">
     <p className="text-sm font-semibold mb-2 text-center">
       🎉 Lineup submitted! Now go check out your rivals and vote 🔥 for your favorite!
     </p>
