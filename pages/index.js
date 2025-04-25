@@ -1130,7 +1130,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   ) : (
     <p className="text-sm text-green-400">No votes yet.</p>
   )}
-  <p className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-[10px] text-green-300">
+  <p className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-[10px] text-green-300">
   Stats updated daily at 5:01 PM PST</p>
 </div>
       </div>
