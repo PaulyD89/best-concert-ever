@@ -5,8 +5,8 @@ from collections import defaultdict
 import os
 
 # Supabase credentials (set these securely as environment variables)
-SUPABASE_URL = https://beccyjiwjvlcilhixzmd.supabase.co("SUPABASE_URL")
-SUPABASE_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJlY2N5aml3anZsY2lsaGl4em1kIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NDA3NTgzNCwiZXhwIjoyMDU5NjUxODM0fQ.pohd2fYqL22K62uZiHPLu_rN99ziTUV10aTH9YQ9aus("SUPABASE_SERVICE_KEY")
+SUPABASE_URL = os.environ.get("SUPABASE_URL")
+SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_KEY")
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
