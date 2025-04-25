@@ -902,6 +902,8 @@ fetchGlobalRank();
       
       setTimeout(() => setShowVoteNudge(false), 10000);
       
+      await fetchTopLineups();
+      
       console.log("Lineup submitted:", { headliner, opener, secondOpener });      
     }
   };  
