@@ -400,12 +400,8 @@ const LineupSlot = ({ artist, label }) => (
 );
 
 export default function BestConcertEver() {
-  const [submittedCount, setSubmittedCount] = useState(null);
-  const [topTenCount, setTopTenCount] = useState(null);
-  const [longestStreak, setLongestStreak] = useState(null);
-  const [winningCount, setWinningCount] = useState(null);
+  const [userStats, setUserStats] = useState(null);
   const [mostVotedLineup, setMostVotedLineup] = useState(null);
-  const [globalRank, setGlobalRank] = useState(null);
   const flyerRef = React.useRef(null);
   const downloadRef = React.useRef(null);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
@@ -414,26 +410,27 @@ const [email, setEmail] = useState("");
 const [emailSubmitted, setEmailSubmitted] = useState(false);
 
 const handleBadgeClick = () => {
+  const rank = userStats?.global_rank;
+  if (!rank) return;
+
   let badgeUrl = "";
 
-  if (globalRank <= 10) {
+  if (rank <= 10) {
     badgeUrl = "/elitepromoter.jpg";
-  } else if (globalRank <= 50) {
+  } else if (rank <= 50) {
     badgeUrl = "/starbooker.jpg";
-  } else if (globalRank <= 100) {
+  } else if (rank <= 100) {
     badgeUrl = "/fanfavorite.jpg";
-  } else if (globalRank <= 250) {
+  } else if (rank <= 250) {
     badgeUrl = "/upandcomer.jpg";
-  } else if (globalRank <= 500) {
+  } else if (rank <= 500) {
     badgeUrl = "/openingact.jpg";
   } else {
-    return; // no badge available
+    return;
   }
 
   const newWindow = window.open(badgeUrl, "_blank");
-  if (newWindow) {
-    newWindow.focus();
-  }
+  if (newWindow) newWindow.focus();
 };
 
 const handleEmailSignup = async () => {
@@ -457,6 +454,23 @@ const handleEmailSignup = async () => {
   const [deepCutLineup, setDeepCutLineup] = useState(null);
   const [yesterdaysWinner, setYesterdaysWinner] = useState(null);
 
+  const fetchUserStats = async () => {
+    const userId = localStorage.getItem("bce_user_id");
+    if (!userId) return;
+  
+    const { data, error } = await supabase
+      .from("user_stats")
+      .select("*")
+      .eq("user_id", userId)
+      .single();
+  
+    if (error) {
+      console.error("Error fetching user stats:", error);
+      return;
+    }
+  
+    setUserStats(data);
+  };  
 
   useEffect(() => {
     const bounceTimeout = setTimeout(() => {
@@ -464,82 +478,8 @@ const handleEmailSignup = async () => {
         window.plausible("Engaged 10s+");
       }
     }, 10000);
-  
-    const fetchSubmittedCount = async () => {
-      const userId = localStorage.getItem("bce_user_id");
-      if (!userId) return;
 
-      const { data, count, error } = await supabase
-        .from("lineups")
-        .select("*", { count: "exact", head: true })
-        .eq("user_id", userId);
-
-      if (!error) {
-        setSubmittedCount(count);
-      } else {
-        console.error("Failed to fetch submitted count", error);
-      }
-    };
-
-    fetchSubmittedCount();
-
-    const fetchTopTenCount = async () => {
-      const userId = localStorage.getItem("bce_user_id");
-      if (!userId) return;
-
-      const { data: userLineups, error: userError } = await supabase
-        .from("lineups")
-        .select("headliner, opener, second_opener, prompt")
-        .eq("user_id", userId);
-
-      if (userError || !userLineups) {
-        console.error("Error fetching user lineups:", userError);
-        return;
-      }
-
-      const { data: allLineups, error: allError } = await supabase
-        .from("lineups")
-        .select("headliner, opener, second_opener, prompt, votes");
-
-      if (allError || !allLineups) {
-        console.error("Error fetching all lineups:", allError);
-        return;
-      }
-
-      const lineupsByPrompt = {};
-      allLineups.forEach((lineup) => {
-        const key = `${normalize(lineup.headliner)}|||${normalize(lineup.opener)}|||${normalize(lineup.second_opener)}`;
-        const prompt = lineup.prompt;
-        const votes = lineup.votes || 0;
-
-        if (!lineupsByPrompt[prompt]) lineupsByPrompt[prompt] = {};
-        lineupsByPrompt[prompt][key] = (lineupsByPrompt[prompt][key] || 0) + 1 + votes;
-      });
-
-      const top10KeysPerPrompt = {};
-      Object.entries(lineupsByPrompt).forEach(([prompt, lineups]) => {
-        const sorted = Object.entries(lineups)
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 10)
-          .map(([key]) => key);
-        top10KeysPerPrompt[prompt] = sorted;
-      });
-
-      const userKeys = userLineups.map(
-        (lineup) => `${normalize(lineup.headliner)}|||${normalize(lineup.opener)}|||${normalize(lineup.second_opener)}`
-      );
-
-      let totalTop10s = 0;
-      Object.entries(top10KeysPerPrompt).forEach(([prompt, keys]) => {
-        keys.forEach((key) => {
-          if (userKeys.includes(key)) totalTop10s++;
-        });
-      });
-
-      setTopTenCount(totalTop10s);
-    };
-
-    fetchTopTenCount();
+    fetchUserStats();
 
     const fetchTopLineups = async () => {
       const { data, error } = await supabase
@@ -623,41 +563,6 @@ setLineups(sortedLineups);
 
     fetchDeepCutLineup();
 
-
-    const fetchLongestStreak = async () => {
-      const userId = localStorage.getItem("bce_user_id");
-      if (!userId) return;
-
-      const { data, error } = await supabase
-        .from("lineups")
-        .select("created_at")
-        .eq("user_id", userId);
-
-      if (error || !data) {
-        console.error("Failed to fetch streak data:", error);
-        return;
-      }
-
-      const dates = [...new Set(data.map(d => new Date(d.created_at).toLocaleDateString("en-US", { timeZone: "America/Los_Angeles" })))]
-        .map(dateStr => new Date(dateStr))
-        .sort((a, b) => a - b);
-
-      let longest = 0, current = 1;
-      for (let i = 1; i < dates.length; i++) {
-        const diff = (dates[i] - dates[i - 1]) / (1000 * 60 * 60 * 24);
-        if (diff === 1) {
-          current++;
-          longest = Math.max(longest, current);
-        } else {
-          current = 1;
-        }
-      }
-
-      setLongestStreak(dates.length === 1 ? 1 : Math.max(longest, 1));
-    };
-
-    fetchLongestStreak();
-
     const fetchMostVotedLineup = async () => {
       const userId = localStorage.getItem("bce_user_id");
       if (!userId) return;
@@ -683,130 +588,13 @@ setLineups(sortedLineups);
 
     fetchMostVotedLineup();
 
-    fetchMostVotedLineup();
+    fetchMostVotedLineup();  
 
-    const fetchWinningCount = async () => {
-      const normalize = (artist) => {
-        if (typeof artist === "string") return artist.trim().toLowerCase();
-        if (artist && typeof artist === "object" && artist.name) return artist.name.trim().toLowerCase();
-        return "";
-      };
-    
-      const userId = localStorage.getItem("bce_user_id");
-      if (!userId) return;
-    
-      const { data: userLineups, error: userError } = await supabase
-        .from("lineups")
-        .select("headliner, opener, second_opener, prompt")
-        .eq("user_id", userId);
-    
-      if (userError || !userLineups) {
-        console.error("Error fetching user lineups:", userError);
-        return;
-      }
-    
-      const { data: allLineups, error: allError } = await supabase
-        .from("lineups")
-        .select("headliner, opener, second_opener, prompt, votes");
-    
-      if (allError || !allLineups) {
-        console.error("Error fetching all lineups:", allError);
-        return;
-      }
-    
-      const winnersByPrompt = {};
-      allLineups.forEach((lineup) => {
-        const key = `${normalize(lineup.headliner)}|||${normalize(lineup.opener)}|||${normalize(lineup.second_opener)}`;
-        const prompt = lineup.prompt;
-        const votes = lineup.votes || 0;
-        winnersByPrompt[prompt] = winnersByPrompt[prompt] || {};
-        winnersByPrompt[prompt][key] = (winnersByPrompt[prompt][key] || 0) + 1 + votes;
-      });
-    
-      let winTotal = 0;
-      Object.entries(winnersByPrompt).forEach(([prompt, entries]) => {
-        const maxScore = Math.max(...Object.values(entries));
-        const topKeys = Object.entries(entries)
-          .filter(([_, score]) => score === maxScore)
-          .map(([key]) => key);
-    
-        userLineups.forEach((userLineup) => {
-          const userKey = `${normalize(userLineup.headliner)}|||${normalize(userLineup.opener)}|||${normalize(userLineup.second_opener)}`;
-          if (topKeys.includes(userKey) && userLineup.prompt === prompt) {
-            winTotal++;
-          }
-        });
-      });
-    
-      setWinningCount(winTotal);
-    };    
-fetchWinningCount();
-
-const fetchGlobalRank = async () => {
-  const userId = localStorage.getItem("bce_user_id");
-  if (!userId) return;
-
-  const { data: allLineups, error } = await supabase
-    .from("lineups")
-    .select("user_id, votes");
-
-  if (error || !allLineups) {
-    console.error("Error fetching all lineups for global rank:", error);
-    return;
-  }
-
-  const userStats = {};
-  allLineups.forEach(({ user_id, votes }) => {
-    if (!userStats[user_id]) {
-      userStats[user_id] = { wins: 0, votes: 0 };
-    }
-    userStats[user_id].votes += votes || 0;
-  });
-
-  const winnersByPrompt = {};
-  allLineups.forEach((lineup) => {
-    const key = `${normalize(lineup.headliner)}|||${normalize(lineup.opener)}|||${normalize(lineup.second_opener)}`;
-    const prompt = lineup.prompt;
-    const votes = lineup.votes || 0;
-    winnersByPrompt[prompt] = winnersByPrompt[prompt] || {};
-    winnersByPrompt[prompt][key] = (winnersByPrompt[prompt][key] || { count: 0, userIds: [] });
-    winnersByPrompt[prompt][key].count += 1 + votes;
-    winnersByPrompt[prompt][key].userIds.push(lineup.user_id);
-  });
-
-  Object.entries(winnersByPrompt).forEach(([prompt, entries]) => {
-    const maxCount = Math.max(...Object.values(entries).map(e => e.count));
-const topEntries = Object.entries(entries).filter(([_, e]) => e.count === maxCount);
-
-topEntries.forEach(([_, entry]) => {
-  const uniqueUserIds = [...new Set(entry.userIds)];
-  uniqueUserIds.forEach((userId) => {
-    if (userStats[userId]) {
-      userStats[userId].wins += 1;
-    }
-  });
-});
-  });
-
-  const scores = Object.entries(userStats)
-    .map(([id, stats]) => ({ id, score: stats.wins * 10 + stats.votes }))
-    .sort((a, b) => b.score - a.score);
-
-  const rank = scores.findIndex(entry => entry.id === userId);
-
-  if (rank !== -1) {
-    setGlobalRank(rank + 1); // 1-based rank
-  } else {
-    setGlobalRank("unranked");
-  }
-};
 const normalize = (artist) => {
   if (typeof artist === "string") return artist.trim().toLowerCase();
   if (artist && typeof artist === "object" && artist.name) return artist.name.trim().toLowerCase();
   return "";
 };
-
-fetchGlobalRank();
 
   return () => clearTimeout(bounceTimeout);
 }, []);
@@ -1284,33 +1072,34 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
               Your Greatest Hits
             </h2>
             <ul className="flex flex-col gap-4 items-center text-white">
-  <li className="text-sm">🎤 Promoted Lineups (So Far): <span className="font-bold">{submittedCount ?? "--"}</span></li>
-  <li className="text-sm">🏆 All-Time Top 10 Hits: <span className="font-bold">{topTenCount ?? "--"}</span></li>
-  <li className="text-sm">🥇 Winning Lineups: <span className="font-bold">{winningCount ?? "--"}</span></li>
-  <li className="text-sm">📆 Longest Daily Streak: <span className="font-bold">{longestStreak ?? "--"}</span></li>
-  <li className="text-sm">🌍 Global Rank: <span className="font-bold">{globalRank === "unranked" || globalRank === null ? "Not Ranked Yet" : `#${globalRank}`}
-    </span>
-  </li>
-  {typeof globalRank === "number" && (
+  <li className="text-sm">🎤 Promoted Lineups (So Far): <span className="font-bold">{userStats?.total_lineups_submitted ?? "--"}</span></li>
+  <li className="text-sm">🏆 All-Time Top 10 Hits: <span className="font-bold">{userStats?.total_top_10s ?? "--"}</span></li>
+  <li className="text-sm">🥇 Winning Lineups: <span className="font-bold">{userStats?.total_wins ?? "--"}</span></li>
+  <li className="text-sm">📆 Longest Daily Streak: <span className="font-bold">{userStats?.longest_streak ?? "--"}</span></li>
+  <li className="text-sm">🌍 Global Rank: <span className="font-bold">
+    {userStats?.global_rank ? `#${userStats.global_rank}` : "Not Ranked Yet"}
+  </span></li>
+
+  {typeof userStats?.global_rank === "number" && (
   <li>
     <span
       onClick={handleBadgeClick}
       className={`inline-block px-3 py-1 rounded-full text-xs font-bold shadow-md cursor-pointer hover:scale-105 transition-transform
-        ${globalRank <= 10
+        ${userStats.global_rank <= 10
           ? "bg-yellow-300 text-black animate-pulse"
           : "bg-green-900 text-green-300"}
       `}
       title="Click to download your badge!"
     >
-      {globalRank <= 10
+      {userStats.global_rank <= 10
         ? "🏆 Elite Promoter"
-        : globalRank <= 50
+        : userStats.global_rank <= 50
         ? "🌟 Star Booker"
-        : globalRank <= 100
+        : userStats.global_rank <= 100
         ? "🔥 Fan Favorite"
-        : globalRank <= 250
+        : userStats.global_rank <= 250
         ? "🎶 Up-And-Comer"
-        : globalRank <= 500
+        : userStats.global_rank <= 500
         ? "🎤 Opening Act"
         : null}
     </span>
