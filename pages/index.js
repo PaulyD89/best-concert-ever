@@ -1130,7 +1130,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   ) : (
     <p className="text-sm text-green-400">No votes yet.</p>
   )}
-  <p className="pt-4 text-xs text-green-400 text-center border-t border-green-800 mt-6">
+  <p className="text-[10px] text-green-300 text-center">
   Stats updated daily at 5:01 PM PST</p>
 </div>
       </div>
