@@ -21,7 +21,7 @@ jobs:
         working-directory: ./scripts
 
       - name: Run refresh_user_stats
-        run: node refresh_user_stats.js
+        run: node refresh_user_stats.mjs
         working-directory: ./scripts
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
