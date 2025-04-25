@@ -1130,6 +1130,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   ) : (
     <p className="text-sm text-green-400">No votes yet.</p>
   )}
+  <p className="mt-2 text-xs text-green-300 text-center">Stats updated daily at 5:01 PM PST</p>
 </div>
       </div>
       </div>
