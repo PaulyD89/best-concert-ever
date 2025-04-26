@@ -405,6 +405,7 @@ export default function BestConcertEver() {
   const flyerRef = React.useRef(null);
   const downloadRef = React.useRef(null);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
+  const [showVotePrompt, setShowVotePrompt] = useState(false);
 const [showEmailSignup, setShowEmailSignup] = useState(false);
 const [email, setEmail] = useState("");
 const [emailSubmitted, setEmailSubmitted] = useState(false);
@@ -683,8 +684,10 @@ const normalize = (artist) => {
       if (typeof window !== 'undefined' && window.plausible) {
         window.plausible("Submit Lineup");
       }
-      setSubmitted(true);      
+      setSubmitted(true);
+      setShowVotePrompt(true);
       console.log("Lineup submitted:", { headliner, opener, secondOpener });
+      
     }
   };  
 
@@ -720,6 +723,34 @@ const normalize = (artist) => {
           </div>
         </div>
       )}
+
+{showVotePrompt && (
+  <div className="fixed inset-0 z-50 flex justify-center items-center transition-opacity duration-300 bg-black/40 backdrop-blur-sm">
+    <div className="bg-[#fdf6e3] text-black p-6 rounded-2xl w-[90%] max-w-sm text-center relative shadow-2xl border-[6px] border-black border-double">
+      <button
+        onClick={() => setShowVotePrompt(false)}
+        className="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black"
+      >
+        &times;
+      </button>
+      <h2 className="text-2xl font-bold mb-4">Thanks for submitting!</h2>
+      <p className="text-sm mb-6">Now complete today's game by voting for your favorite lineup! 🔥</p>
+      <button
+        onClick={() => {
+          setShowVotePrompt(false);
+          const top10Section = document.getElementById("top-10-section");
+          if (top10Section) {
+            top10Section.scrollIntoView({ behavior: "smooth" });
+          }
+        }}
+        className="bg-black text-yellow-300 font-bold py-2 px-6 rounded-full hover:bg-yellow-300 hover:text-black transition uppercase text-sm"
+      >
+        Browse Top 10 & Vote 🔥
+      </button>
+    </div>
+  </div>
+)}
+
     <div className="flex flex-col items-center justify-start min-h-screen py-10 px-4 bg-gradient-to-b from-[#0f0f0f] to-[#1e1e1e] text-white font-sans">
       <div ref={flyerRef} className="relative bg-[#fdf6e3] text-black rounded-xl shadow-2xl p-6 w-full max-w-md text-center border-[6px] border-black border-double bg-[url('/scratchy-background.png')] bg-repeat bg-opacity-30"
     >
@@ -844,7 +875,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   Sign Up for Daily Puzzles & Winners
 </div>
 
-      <div className="mt-12 flex justify-center items-center w-full">
+      <div id="top-10-section" className="mt-12 flex justify-center items-center w-full">
         <div className="relative w-full max-w-md text-center">
           <div className="absolute inset-0 rounded-xl border-2 border-yellow-400 animate-pulse pointer-events-none"></div>
           <div className="relative bg-black rounded-xl p-6 border-2 border-yellow-400">
