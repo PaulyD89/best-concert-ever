@@ -299,8 +299,6 @@ function getDailyPrompt() {
   return prompts[Math.abs(hash) % prompts.length];
 }
 
-const dailyPrompt = getDailyPrompt();
-
 function getYesterdayPrompt() {
   const now = new Date();
   const utcDate = new Date(now.toISOString().split("T")[0]);
@@ -315,8 +313,20 @@ function getYesterdayPrompt() {
   return prompts[Math.abs(hash) % prompts.length];
 }
 
-const yesterdayPrompt = getYesterdayPrompt();
+async function fetchPromptFromSupabase(dateString) {
+  const { data, error } = await supabase
+    .from('prompts')
+    .select('prompt_text')
+    .eq('date', dateString)
+    .single();
 
+  if (error) {
+    console.error("Error fetching prompt from Supabase:", error);
+    return null;
+  }
+
+  return data?.prompt_text || null;
+}
 
 const ArtistSearch = ({ label, onSelect, disabled }) => {
   const [query, setQuery] = useState("");
@@ -409,6 +419,8 @@ export default function BestConcertEver() {
 const [showEmailSignup, setShowEmailSignup] = useState(false);
 const [email, setEmail] = useState("");
 const [emailSubmitted, setEmailSubmitted] = useState(false);
+const [dailyPrompt, setDailyPrompt] = useState("");
+const [yesterdayPrompt, setYesterdayPrompt] = useState("");
 
 const handleBadgeClick = () => {
   const rank = userStats?.global_rank;
@@ -481,6 +493,33 @@ const handleEmailSignup = async () => {
     }, 10000);
 
     fetchUserStats();
+
+    const fetchPrompts = async () => {
+      const now = new Date();
+      const todayString = now.toISOString().split("T")[0];
+      const yesterdayDate = new Date(now);
+      yesterdayDate.setDate(now.getDate() - 1);
+      const yesterdayString = yesterdayDate.toISOString().split("T")[0];
+    
+      // Determine if today is on or after May 1, 2025
+      const mayFirst = new Date('2025-05-01T00:00:00');
+      if (now >= mayFirst) {
+        // After May 1: Pull from Supabase
+        const todaysPrompt = await fetchPromptFromSupabase(todayString);
+        const yesterdaysPrompt = await fetchPromptFromSupabase(yesterdayString);
+    
+        setDailyPrompt(todaysPrompt || getDailyPrompt()); // fallback to old if missing
+        setYesterdayPrompt(yesterdaysPrompt || getYesterdayPrompt());
+        console.log("Today's prompt:", todaysPrompt);
+        console.log("Yesterday's prompt:", yesterdaysPrompt);
+      } else {
+        // Before May 1: Use old system
+        setDailyPrompt(getDailyPrompt());
+        setYesterdayPrompt(getYesterdayPrompt());
+      }
+    };
+    
+    fetchPrompts();    
 
     const fetchTopLineups = async () => {
       const { data, error } = await supabase
