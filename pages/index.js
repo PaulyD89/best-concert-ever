@@ -734,7 +734,7 @@ const normalize = (artist) => {
         &times;
       </button>
       <h2 className="text-2xl font-bold mb-4">Thanks for submitting!</h2>
-      <p className="text-sm mb-6">Now complete today's game by voting for your favorite lineup! 🔥</p>
+      <p className="text-sm mb-6">Now complete today&apos;s game by voting for your favorite lineup! 🔥      </p>
       <button
         onClick={() => {
           setShowVotePrompt(false);
