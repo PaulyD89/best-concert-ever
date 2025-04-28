@@ -1,6 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 
+async function fetchDatabasePrompt() {
+  const today = new Date();
+  const yyyy = today.getUTCFullYear();
+  const mm = String(today.getUTCMonth() + 1).padStart(2, "0");
+  const dd = String(today.getUTCDate()).padStart(2, "0");
+  const formattedDate = `${yyyy}-${mm}-${dd}`;
+
+  const { data, error } = await supabase
+    .from("prompts")
+    .select("prompt")
+    .eq("prompt_date", formattedDate)
+    .single();
+
+  if (error || !data) {
+    console.error("Failed to fetch prompt from database:", error);
+    return null;
+  }
+
+  return data.prompt;
+}
+
 const prompts = [
   "Best 90s Band Lineup",
   "Best Bands from the 2000s",
@@ -299,7 +320,58 @@ function getDailyPrompt() {
   return prompts[Math.abs(hash) % prompts.length];
 }
 
-const dailyPrompt = getDailyPrompt();
+const [dailyPrompt, setDailyPrompt] = useState(getDailyPrompt());
+
+useEffect(() => {
+  async function updatePrompt() {
+    const today = new Date();
+    const cutoff = new Date("2025-05-01T00:00:00Z"); // May 1st, UTC midnight
+
+    if (today >= cutoff) {
+      const dbPrompt = await fetchDatabasePrompt();
+      if (dbPrompt) {
+        setDailyPrompt(dbPrompt);
+      } else {
+        console.error("Falling back to old prompt logic.");
+      }
+    }
+  }
+
+  updatePrompt();
+}, []);
+
+const [yesterdayPrompt, setYesterdayPrompt] = useState(getYesterdayPrompt());
+
+useEffect(() => {
+  async function updateYesterdayPrompt() {
+    const today = new Date();
+    const cutoff = new Date("2025-05-01T00:00:00Z"); // May 1st UTC
+
+    const yesterday = new Date();
+    yesterday.setUTCDate(today.getUTCDate() - 1);
+
+    const yyyy = yesterday.getUTCFullYear();
+    const mm = String(yesterday.getUTCMonth() + 1).padStart(2, "0");
+    const dd = String(yesterday.getUTCDate()).padStart(2, "0");
+    const formattedYesterday = `${yyyy}-${mm}-${dd}`;
+
+    if (today >= cutoff) {
+      const { data, error } = await supabase
+        .from("prompts")
+        .select("prompt")
+        .eq("prompt_date", formattedYesterday)
+        .single();
+
+      if (error || !data) {
+        console.error("Failed to fetch yesterday's prompt from database:", error);
+      } else {
+        setYesterdayPrompt(data.prompt);
+      }
+    }
+  }
+
+  updateYesterdayPrompt();
+}, []);
 
 function getYesterdayPrompt() {
   const now = new Date();
@@ -314,9 +386,6 @@ function getYesterdayPrompt() {
 
   return prompts[Math.abs(hash) % prompts.length];
 }
-
-const yesterdayPrompt = getYesterdayPrompt();
-
 
 const ArtistSearch = ({ label, onSelect, disabled }) => {
   const [query, setQuery] = useState("");
