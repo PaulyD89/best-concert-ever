@@ -319,60 +319,6 @@ function getDailyPrompt() {
 
   return prompts[Math.abs(hash) % prompts.length];
 }
-
-const [dailyPrompt, setDailyPrompt] = useState(getDailyPrompt());
-
-useEffect(() => {
-  async function updatePrompt() {
-    const today = new Date();
-    const cutoff = new Date("2025-05-01T00:00:00Z"); // May 1st, UTC midnight
-
-    if (today >= cutoff) {
-      const dbPrompt = await fetchDatabasePrompt();
-      if (dbPrompt) {
-        setDailyPrompt(dbPrompt);
-      } else {
-        console.error("Falling back to old prompt logic.");
-      }
-    }
-  }
-
-  updatePrompt();
-}, []);
-
-const [yesterdayPrompt, setYesterdayPrompt] = useState(getYesterdayPrompt());
-
-useEffect(() => {
-  async function updateYesterdayPrompt() {
-    const today = new Date();
-    const cutoff = new Date("2025-05-01T00:00:00Z"); // May 1st UTC
-
-    const yesterday = new Date();
-    yesterday.setUTCDate(today.getUTCDate() - 1);
-
-    const yyyy = yesterday.getUTCFullYear();
-    const mm = String(yesterday.getUTCMonth() + 1).padStart(2, "0");
-    const dd = String(yesterday.getUTCDate()).padStart(2, "0");
-    const formattedYesterday = `${yyyy}-${mm}-${dd}`;
-
-    if (today >= cutoff) {
-      const { data, error } = await supabase
-        .from("prompts")
-        .select("prompt")
-        .eq("prompt_date", formattedYesterday)
-        .single();
-
-      if (error || !data) {
-        console.error("Failed to fetch yesterday's prompt from database:", error);
-      } else {
-        setYesterdayPrompt(data.prompt);
-      }
-    }
-  }
-
-  updateYesterdayPrompt();
-}, []);
-
 function getYesterdayPrompt() {
   const now = new Date();
   const utcDate = new Date(now.toISOString().split("T")[0]);
@@ -469,6 +415,53 @@ const LineupSlot = ({ artist, label }) => (
 );
 
 export default function BestConcertEver() {
+  const [dailyPrompt, setDailyPrompt] = useState(getDailyPrompt());
+const [yesterdayPrompt, setYesterdayPrompt] = useState(getYesterdayPrompt());
+
+useEffect(() => {
+  async function updatePrompt() {
+    const today = new Date();
+    const cutoff = new Date("2025-05-01T00:00:00Z"); // May 1st UTC midnight
+    if (today >= cutoff) {
+      const dbPrompt = await fetchDatabasePrompt();
+      if (dbPrompt) {
+        setDailyPrompt(dbPrompt);
+      } else {
+        console.error("Falling back to old prompt logic.");
+      }
+    }
+  }
+  updatePrompt();
+}, []);
+
+useEffect(() => {
+  async function updateYesterdayPrompt() {
+    const today = new Date();
+    const cutoff = new Date("2025-05-01T00:00:00Z");
+    const yesterday = new Date();
+    yesterday.setUTCDate(today.getUTCDate() - 1);
+
+    const yyyy = yesterday.getUTCFullYear();
+    const mm = String(yesterday.getUTCMonth() + 1).padStart(2, "0");
+    const dd = String(yesterday.getUTCDate()).padStart(2, "0");
+    const formattedYesterday = `${yyyy}-${mm}-${dd}`;
+
+    if (today >= cutoff) {
+      const { data, error } = await supabase
+        .from("prompts")
+        .select("prompt")
+        .eq("prompt_date", formattedYesterday)
+        .single();
+
+      if (error || !data) {
+        console.error("Failed to fetch yesterday's prompt from database:", error);
+      } else {
+        setYesterdayPrompt(data.prompt);
+      }
+    }
+  }
+  updateYesterdayPrompt();
+}, []);
   const [userStats, setUserStats] = useState(null);
   const [mostVotedLineup, setMostVotedLineup] = useState(null);
   const flyerRef = React.useRef(null);
