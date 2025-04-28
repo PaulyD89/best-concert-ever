@@ -299,8 +299,6 @@ function getDailyPrompt() {
   return prompts[Math.abs(hash) % prompts.length];
 }
 
-const dailyPrompt = getDailyPrompt();
-
 function getYesterdayPrompt() {
   const now = new Date();
   const utcDate = new Date(now.toISOString().split("T")[0]);
@@ -315,10 +313,22 @@ function getYesterdayPrompt() {
   return prompts[Math.abs(hash) % prompts.length];
 }
 
-const yesterdayPrompt = getYesterdayPrompt();
+async function fetchPromptFromSupabase(dateString) {
+  const { data, error } = await supabase
+    .from('prompts')
+    .select('prompt_text')
+    .eq('date', dateString)
+    .single();
 
+  if (error) {
+    console.error("Error fetching prompt from Supabase:", error);
+    return null;
+  }
 
-const ArtistSearch = ({ label, onSelect, disabled }) => {
+  return data?.prompt_text || null;
+}
+
+const ArtistSearch = ({ label, onSelect, disabled, dailyPrompt }) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -335,6 +345,60 @@ const ArtistSearch = ({ label, onSelect, disabled }) => {
     const delayDebounce = setTimeout(fetchResults, 300);
     return () => clearTimeout(delayDebounce);
   }, [query]);
+
+  useEffect(() => {
+    if (!dailyPrompt) return; // Wait until dailyPrompt is ready
+  
+    const fetchTopLineups = async () => {
+      const { data, error } = await supabase
+        .from("lineups")
+        .select("id, headliner, opener, second_opener, votes")
+        .eq("prompt", dailyPrompt);
+  
+      if (!error && data) {
+        const countMap = {};
+  
+        data.forEach((lineup) => {
+          const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+          const votes = lineup.votes || 0;
+          countMap[key] = (countMap[key] || 0) + 1 + votes;
+        });
+  
+        const allEntries = Object.entries(countMap);
+  
+        const voted = allEntries.filter(([_, score]) => score > 1);
+        const zeroVoted = allEntries.filter(([_, score]) => score === 1);
+  
+        for (let i = zeroVoted.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [zeroVoted[i], zeroVoted[j]] = [zeroVoted[j], zeroVoted[i]];
+        }
+  
+        const combined = [...voted.sort((a, b) => b[1] - a[1]), ...zeroVoted].slice(0, 10);
+  
+        const sortedLineups = combined.map(([key]) => {
+          const [headlinerName, openerName, secondOpenerName] = key.split("|||");
+  
+          const matchingLineup = data.find(
+            (entry) =>
+              entry.headliner?.name === headlinerName &&
+              entry.opener?.name === openerName &&
+              entry.second_opener?.name === secondOpenerName
+          );
+  
+          return matchingLineup ?? {
+            headliner: { name: headlinerName },
+            opener: { name: openerName },
+            second_opener: { name: secondOpenerName }
+          };
+        });
+  
+        setLineups(sortedLineups);
+      }
+    };
+  
+    fetchTopLineups();
+  }, [dailyPrompt]);  
 
   return (
     <div className="relative w-full">
@@ -409,6 +473,8 @@ export default function BestConcertEver() {
 const [showEmailSignup, setShowEmailSignup] = useState(false);
 const [email, setEmail] = useState("");
 const [emailSubmitted, setEmailSubmitted] = useState(false);
+const [dailyPrompt, setDailyPrompt] = useState("");
+const [yesterdayPrompt, setYesterdayPrompt] = useState("");
 
 const handleBadgeClick = () => {
   const rank = userStats?.global_rank;
@@ -482,55 +548,32 @@ const handleEmailSignup = async () => {
 
     fetchUserStats();
 
-    const fetchTopLineups = async () => {
-      const { data, error } = await supabase
-      .from("lineups")
-      .select("id, headliner, opener, second_opener, votes")
-      .eq("prompt", dailyPrompt);    
-
-    if (!error && data) {
-      const countMap = {};
-
-      data.forEach((lineup) => {
-        const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
-        const votes = lineup.votes || 0;
-        countMap[key] = (countMap[key] || 0) + 1 + votes;
-      });      
-
-      const allEntries = Object.entries(countMap);
-
-const voted = allEntries.filter(([_, score]) => score > 1);
-const zeroVoted = allEntries.filter(([_, score]) => score === 1);
-
-for (let i = zeroVoted.length - 1; i > 0; i--) {
-  const j = Math.floor(Math.random() * (i + 1));
-  [zeroVoted[i], zeroVoted[j]] = [zeroVoted[j], zeroVoted[i]];
-}
-
-const combined = [...voted.sort((a, b) => b[1] - a[1]), ...zeroVoted].slice(0, 10);
-
-const sortedLineups = combined.map(([key]) => {
-  const [headlinerName, openerName, secondOpenerName] = key.split("|||");
-
-  const matchingLineup = data.find(
-    (entry) =>
-      entry.headliner?.name === headlinerName &&
-      entry.opener?.name === openerName &&
-      entry.second_opener?.name === secondOpenerName
-  );
-
-  return matchingLineup ?? {
-    headliner: { name: headlinerName },
-    opener: { name: openerName },
-    second_opener: { name: secondOpenerName }
-  };
-});
-
-setLineups(sortedLineups);
+    const fetchPrompts = async () => {
+      const now = new Date();
+      const todayString = now.toISOString().split("T")[0];
+      const yesterdayDate = new Date(now);
+      yesterdayDate.setDate(now.getDate() - 1);
+      const yesterdayString = yesterdayDate.toISOString().split("T")[0];
+    
+      // Determine if today is on or after May 1, 2025
+      const mayFirst = new Date('2025-05-01T00:00:00');
+      if (now >= mayFirst) {
+        // After May 1: Pull from Supabase
+        const todaysPrompt = await fetchPromptFromSupabase(todayString);
+        const yesterdaysPrompt = await fetchPromptFromSupabase(yesterdayString);
+    
+        setDailyPrompt(todaysPrompt || getDailyPrompt()); // fallback to old if missing
+        setYesterdayPrompt(yesterdaysPrompt || getYesterdayPrompt());
+        console.log("Today's prompt:", todaysPrompt);
+        console.log("Yesterday's prompt:", yesterdaysPrompt);
+      } else {
+        // Before May 1: Use old system
+        setDailyPrompt(getDailyPrompt());
+        setYesterdayPrompt(getYesterdayPrompt());
       }
     };
-
-    fetchTopLineups();
+    
+    fetchPrompts();    
 
     const fetchDeepCutLineup = async () => {
       const now = new Date();
@@ -759,16 +802,18 @@ const normalize = (artist) => {
           <img src="/logo.png" alt="Best Concert Ever Logo" className="w-full h-full object-cover" style={{ objectFit: "cover", objectPosition: "center" }} crossOrigin="anonymous" />
         </div>
 
-        <div className="mt-16 mb-4 text-base font-extrabold uppercase tracking-widest text-black inline-block px-4 py-1 border-2 border-black rotate-[-2deg] bg-white shadow-md font-mono">
-          {dailyPrompt}
-        </div>
+        {dailyPrompt && (
+  <div className="mt-16 mb-4 text-base font-extrabold uppercase tracking-widest text-black inline-block px-4 py-1 border-2 border-black rotate-[-2deg] bg-white shadow-md font-mono">
+    {dailyPrompt}
+  </div>
+)}
 
         <div className="grid grid-cols-2 gap-3 mb-4">
-          <ArtistSearch label="Opener" onSelect={setOpener} disabled={submitted} />
-          <ArtistSearch label="2nd Opener" onSelect={setSecondOpener} disabled={submitted} />
+        <ArtistSearch label="Opener" onSelect={setOpener} disabled={submitted} dailyPrompt={dailyPrompt} />
+        <ArtistSearch label="2nd Opener" onSelect={setSecondOpener} disabled={submitted} dailyPrompt={dailyPrompt} />
         </div>
 
-        <ArtistSearch label="Headliner" onSelect={setHeadliner} disabled={submitted} />
+        <ArtistSearch label="Headliner" onSelect={setHeadliner} disabled={submitted} dailyPrompt={dailyPrompt} />
 
         <div className="mt-8 grid grid-cols-2 gap-4 items-start justify-center">
           <LineupSlot artist={opener} label="Opener" />
@@ -986,9 +1031,11 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
               <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-red-400 drop-shadow-[0_0_12px_red]">
                 Yesterday&apos;s Winning Lineup
               </h2>
-              <div className="mb-6 text-base font-extrabold uppercase tracking-widest text-red-400 inline-block px-4 py-1 border-2 border-red-400 rotate-[-2deg] bg-black shadow-md font-mono">
-                {yesterdayPrompt}
-              </div>
+              {yesterdayPrompt && (
+  <div className="mb-6 text-base font-extrabold uppercase tracking-widest text-red-400 inline-block px-4 py-1 border-2 border-red-400 rotate-[-2deg] bg-black shadow-md font-mono">
+    {yesterdayPrompt}
+  </div>
+)}
               <ul className="flex flex-col gap-4 items-center">
                 {[yesterdaysWinner.headliner, yesterdaysWinner.second_opener, yesterdaysWinner.opener].map((artist, idx) => (
                   <li key={idx} className="text-white flex flex-col items-center">
