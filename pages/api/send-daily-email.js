@@ -508,21 +508,23 @@ if (!recipients || recipients.length === 0) {
       console.log("Sending emails to:", recipients.length, "recipients");
 
       try {
-        await resend.emails.send({
+        const messages = recipients.map((email) => ({
           from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
-          to: 'noreply@bestconcertevergame.com',
-          bcc: recipients,
+          to: [email],
           subject: `🎸 What's Your Best Concert Ever for "${dailyPrompt}"?`,
-          html
-        });
-        console.log(`✅ Sent to all ${recipients.length} recipients`);
+          html,
+        }));
+  
+        await resend.batch.send(messages);
+        console.log(`✅ Sent batch to ${recipients.length} recipients`);
       } catch (err) {
-        console.error("❌ Failed to send bulk email:", err);
-      }      
+        console.error("❌ Failed to send batch emails:", err);
+      }
+  
       console.log("Email HTML content:", html);
       return res.status(200).json({ message: "Emails sent" });      
-  } catch (err) {
-    console.error("Failed to send email:", err);
-    return res.status(500).json({ message: "Email send failed" });
-  }
+    } catch (err) {
+      console.error("Failed to send email:", err);
+      return res.status(500).json({ message: "Email send failed" });
+    }  
 }
