@@ -347,8 +347,50 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const dailyPrompt = getDailyPrompt();
-  const yesterdayPrompt = getYesterdayPrompt();
+  let dailyPrompt;
+  let yesterdayPrompt;
+  
+  // New logic: if after May 1, use database prompts; else fallback to hash method
+  const today = new Date();
+  const cutoff = new Date("2025-05-01T00:00:00Z");
+  
+  if (today >= cutoff) {
+    // May 1 or later: Pull from database
+    const todayDateStr = today.toISOString().split("T")[0];
+    const yesterdayDate = new Date(today);
+    yesterdayDate.setUTCDate(yesterdayDate.getUTCDate() - 1);
+    const yesterdayDateStr = yesterdayDate.toISOString().split("T")[0];
+  
+    const { data: todayData, error: todayError } = await supabase
+      .from("prompts")
+      .select("prompt")
+      .eq("prompt_date", todayDateStr)
+      .single();
+  
+    const { data: yesterdayData, error: yesterdayError } = await supabase
+      .from("prompts")
+      .select("prompt")
+      .eq("prompt_date", yesterdayDateStr)
+      .single();
+  
+    if (todayError || !todayData) {
+      console.error("Failed to fetch today's prompt from database:", todayError);
+      dailyPrompt = getDailyPrompt(); // fallback to hash
+    } else {
+      dailyPrompt = todayData.prompt;
+    }
+  
+    if (yesterdayError || !yesterdayData) {
+      console.error("Failed to fetch yesterday's prompt from database:", yesterdayError);
+      yesterdayPrompt = getYesterdayPrompt(); // fallback to hash
+    } else {
+      yesterdayPrompt = yesterdayData.prompt;
+    }
+  } else {
+    // Before May 1: Still use hash-based method
+    dailyPrompt = getDailyPrompt();
+    yesterdayPrompt = getYesterdayPrompt();
+  }  
 
   const { data, error } = await supabase
     .from('lineups')
