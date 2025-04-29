@@ -789,7 +789,7 @@ const normalize = (artist) => {
               <li>Use the drop-down menus to select THREE ARTISTS who fit the bill.</li>
               <li>CHOOSE THE ORDER for your show - the OPENER, 2ND OPENER and HEADLINER.</li>
               <li>Once you have made your selections, hit <b>SUBMIT LINEUP</b>. Click DOWNLOAD LINEUP for your own personal concert poster that you can SHARE ON SOCIAL MEDIA.</li>
-              <li>Today&apos;s TOP 10 will be posted daily. <b>VOTE</b> for your favorite lineup from the Top 10 by clicking the FIRE 🔥 EMOJI. Sometimes a player&apos;s DEEP CUT could also show up.</li>
+              <li>Today&apos;s TOP 10 will be posted daily. <b>VOTE</b> for your favorite lineup from the Top 10 or Recent Drops by clicking the FIRE 🔥 EMOJI. Sometimes a player&apos;s DEEP CUT may appear as well.</li>
               <li>Lineups with the MOST VOTES will win the day.</li>
               <li>NEW GAMES and YESTERDAY&apos;S WINNERS are posted every single day at 5pm PST.</li>
             </ul>
