@@ -1073,7 +1073,9 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     <div className="relative w-full max-w-md text-center">
       <div className="absolute inset-0 rounded-xl border-2 border-blue-400 animate-pulse pointer-events-none"></div>
       <div className="relative bg-black rounded-xl p-6 border-2 border-blue-400">
-        <div className="text-blue-400 font-bold mb-1 text-md">🆕 Recent Drops</div>
+      <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-blue-400 drop-shadow-[0_0_12px_#60A5FA]">
+  Recent Drops
+</h2>
         <ul className="flex flex-col gap-4 items-center">
           {recentLineups.map((lineup, idx) => {
             const hasVoted = localStorage.getItem(`bce-voted-${dailyPrompt}`);
