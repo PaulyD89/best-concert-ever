@@ -421,7 +421,7 @@ const [yesterdayPrompt, setYesterdayPrompt] = useState(getYesterdayPrompt());
 useEffect(() => {
   async function updatePrompt() {
     const today = new Date();
-    const cutoff = new Date("2025-05-01T00:00:00Z");
+    const cutoff = new Date("2025-05-01T00:00:00Z"); // May 1st UTC midnight
     if (today >= cutoff) {
       const dbPrompt = await fetchDatabasePrompt();
       if (dbPrompt) {
@@ -515,7 +515,6 @@ const handleEmailSignup = async () => {
 
   const [lineups, setLineups] = useState([]);
   const [deepCutLineup, setDeepCutLineup] = useState(null);
-  const [recentLineups, setRecentLineups] = useState([]);
   const [yesterdaysWinner, setYesterdaysWinner] = useState(null);
 
   const fetchUserStats = async () => {
@@ -593,35 +592,7 @@ setLineups(sortedLineups);
       }
     };
 
-    fetchTopLineups().then(fetchRecentLineups);
-
-    const fetchRecentLineups = async () => {
-      const { data, error } = await supabase
-        .from("lineups")
-        .select("id, headliner, opener, second_opener, votes, created_at")
-        .eq("prompt", dailyPrompt)
-        .order("created_at", { ascending: false })
-        .limit(20);
-    
-      if (error || !data) return;
-    
-      const top10Keys = new Set(
-        lineups.map((lineup) =>
-          `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`
-        )
-      );
-    
-      const filteredRecent = data.filter((lineup) => {
-        const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
-        return !top10Keys.has(key);
-      });
-    
-      if (filteredRecent.length >= 5) {
-        setRecentLineups(filteredRecent.slice(0, 5));
-      } else {
-        setRecentLineups([]);
-      }
-    };    
+    fetchTopLineups();
 
     const fetchDeepCutLineup = async () => {
       const now = new Date();
@@ -1067,61 +1038,6 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
           </div>
         </div>
       </div>
-
-      {lineups.length === 10 && recentLineups.length === 5 && (
-  <div className="mt-12 flex justify-center items-center w-full">
-    <div className="relative w-full max-w-md text-center">
-      <div className="absolute inset-0 rounded-xl border-2 border-blue-400 animate-pulse pointer-events-none"></div>
-      <div className="relative bg-black rounded-xl p-6 border-2 border-blue-400">
-        <div className="text-blue-400 font-bold mb-1 text-md">🆕 Recent Drops</div>
-        <ul className="flex flex-col gap-4 items-center">
-          {recentLineups.map((lineup, idx) => {
-            const hasVoted = localStorage.getItem(`bce-voted-${dailyPrompt}`);
-            return (
-              <li key={idx} className="text-white text-center">
-                <div>
-                  {lineup.opener?.name} / {lineup.second_opener?.name} / {lineup.headliner?.name}
-                </div>
-                {!hasVoted && (
-                  <button
-                    onClick={async () => {
-                      localStorage.setItem(`bce-voted-${dailyPrompt}`, `recent-${idx}`);
-                      if (typeof window !== "undefined" && window.plausible) {
-                        window.plausible("Recent Drop Vote Clicked");
-                      }
-
-                      if (!lineup.id) {
-                        alert("Oops, could not find lineup to vote for.");
-                        return;
-                      }
-
-                      const { error: voteError } = await supabase
-                        .from("lineups")
-                        .update({ votes: (lineup.votes || 0) + 1 })
-                        .eq("id", lineup.id);
-
-                      if (voteError) {
-                        console.error("Vote failed:", voteError);
-                        alert("Oops, there was an issue recording your vote.");
-                      } else {
-                        alert("🔥 Your vote has been counted!");
-                        window.location.reload();
-                      }
-                    }}
-                    className="mt-1 text-xl hover:scale-110 transition-transform"
-                    title="Vote for this Recent Drop lineup"
-                  >
-                    🔥
-                  </button>
-                )}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
-    </div>
-  </div>
-)}
 
       {yesterdaysWinner && (
         <div className="mt-12 flex justify-center items-center w-full">
