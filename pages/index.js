@@ -551,27 +551,16 @@ const handleEmailSignup = async () => {
         .select("id, headliner, opener, second_opener, votes, created_at")
         .eq("prompt", dailyPrompt)
         .order("created_at", { ascending: false })
-        .limit(20);
+        .limit(5); // Only get the newest 5 directly
     
-      if (error || !data) return;
-    
-      const top10Keys = new Set(
-        lineups.map((lineup) =>
-          `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`
-        )
-      );
-    
-      const filteredRecent = data.filter((lineup) => {
-        const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
-        return !top10Keys.has(key);
-      });
-    
-      if (filteredRecent.length >= 5) {
-        setRecentLineups(filteredRecent.slice(0, 5));
-      } else {
+      if (error || !data) {
+        console.error("Error fetching recent lineups:", error);
         setRecentLineups([]);
+        return;
       }
-    };    
+    
+      setRecentLineups(data);
+    };     
 
     const fetchTopLineups = async () => {
       const { data, error } = await supabase
