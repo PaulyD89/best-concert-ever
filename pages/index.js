@@ -980,6 +980,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
             
               if (typeof window !== "undefined" && window.plausible) {
                 window.plausible("Top 10 Vote Clicked");
+                window.plausible("Any Vote Cast");
               }            
           
             if (!lineup.id) {
@@ -1025,6 +1026,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
           
             if (typeof window !== "undefined" && window.plausible) {
               window.plausible("Deep Cut Vote Clicked");
+              window.plausible("Any Vote Cast");
             }          
 
           if (!deepCutLineup.id) {
@@ -1079,6 +1081,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
                       localStorage.setItem(`bce-voted-${dailyPrompt}`, `recent-${idx}`);
                       if (typeof window !== "undefined" && window.plausible) {
                         window.plausible("Recent Drop Vote Clicked");
+                        window.plausible("Any Vote Cast");
                       }
 
                       if (!lineup.id) {
