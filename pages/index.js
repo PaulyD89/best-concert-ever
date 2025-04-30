@@ -1311,7 +1311,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     <div className="mt-8 mb-4 text-center text-xs text-gray-400 flex flex-col items-center">
     <p className="mb-1 tracking-wide text-green-400">Powered by</p>
     <a
-      href="https://spotify.com"
+      href="https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=bc22a0a934e44b2e"
       target="_blank"
       rel="noopener noreferrer"
       className="hover:opacity-80 transition"
