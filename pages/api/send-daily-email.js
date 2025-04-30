@@ -471,13 +471,6 @@ const playlistUrl = `https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?
             <div style="display: inline-block; border: 2px solid #ff6b6b; padding: 6px 14px; font-weight: bold; font-size: 14px; letter-spacing: 1px; color: #ff6b6b; text-transform: uppercase; background-color: #000; text-shadow: 0 0 5px #ff6b6b; transform: rotate(-2deg);">
               ${yesterdayPrompt}
             </div>
-            <p style="font-size: 14px; color: #ffee33; text-align: center; margin-top: 12px;">
-  🎧 <strong>Now Streaming:</strong>
-  <a href="${playlistUrl}" style="color: #ffee33; text-decoration: underline;">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Spotify_icon.svg" alt="Spotify" width="16" height="16" style="vertical-align: text-bottom; margin-right: 4px;" />
-    ${yesterdayPrompt}.Playlist.Ever
-  </a>
-</p>
           </div>
 
           <div style="text-align: center; margin-bottom: 30px;">
@@ -504,6 +497,14 @@ const playlistUrl = `https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?
               </div>
             </div>
           </div>
+
+          <p style="font-size: 14px; color: #ffee33; text-align: center; margin-top: 12px;">
+  🎧 <strong>Now Streaming:</strong>
+  <a href="${playlistUrl}" style="color: #ffee33; text-decoration: underline;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Spotify_icon.svg" alt="Spotify" width="16" height="16" style="vertical-align: text-bottom; margin-right: 4px;" />
+    ${yesterdayPrompt}.Playlist.Ever
+  </a>
+</p>
 
           <p style="margin-top: 10px; font-size: 16px; text-align: center;">
             Think you have what it takes to be the ultimate Music Promoter?<br/>
