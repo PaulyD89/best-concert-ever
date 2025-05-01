@@ -467,7 +467,6 @@ useEffect(() => {
   const [mostVotedLineup, setMostVotedLineup] = useState(null);
   const flyerRef = React.useRef(null);
   const downloadRef = React.useRef(null);
-  const ticketRef = React.useRef(null);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [showVotePrompt, setShowVotePrompt] = useState(false);
 const [showEmailSignup, setShowEmailSignup] = useState(false);
@@ -773,86 +772,6 @@ const normalize = (artist) => {
     }
   };  
 
-  const handleDownloadPoster = async () => {
-    try {
-      const link = document.createElement("a");
-      link.href = "/bestconcertdownloadimage.png";
-      link.download = "BestConcertEver_LineupPoster.png";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-  
-      if (typeof window !== 'undefined' && window.plausible) {
-        window.plausible("Lineup Poster Downloaded");
-      }
-    } catch (err) {
-      console.error("Error downloading poster:", err);
-      alert("Oops! There was a problem downloading your poster.");
-    }
-  };
-
-  const handleDownloadTicket = async () => {
-    try {
-      const canvas = ticketRef.current.querySelector("#ticketCanvas");
-      const ctx = canvas.getContext("2d");
-  
-      // Load ticket background
-      const background = new Image();
-      background.crossOrigin = "anonymous";
-      background.src = "/BCEticketstub.png";
-  
-      background.onload = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
-        ctx.drawImage(background, 0, 0, 768, 512); // Draw ticket background
-  
-        // Set font style
-        ctx.font = "20px VT323, monospace";
-        ctx.fillStyle = "black";
-        ctx.textAlign = "left";
-  
-        const startX = 180; // Align all text from here
-  
-        // Print info
-        ctx.fillText(dailyPrompt || "Loading Prompt...", startX, 140);       // Prompt
-        ctx.fillText(headliner?.name || "Headliner", startX, 190);            // Headliner
-        ctx.fillText(secondOpener?.name || "Second Opener", startX, 240);     // 2nd Opener
-        ctx.fillText(opener?.name || "Opener", startX, 290);                  // Opener
-  
-        // Create BCE-Code
-        const today = new Date();
-        const mm = String(today.getMonth() + 1).padStart(2, "0");
-        const dd = String(today.getDate()).padStart(2, "0");
-        const yyyy = today.getFullYear();
-        const dateCode = `${mm}${dd}${yyyy}`;
-        const promptCode = (dailyPrompt || "").toUpperCase().replace(/[^A-Z]/g, "").substring(0, 8) || "PROMPT";
-  
-        const bceCode = `BCE-${dateCode}-${promptCode}`;
-        ctx.fillText(bceCode, startX + 50, 340); // BCE- code line
-
-        const imageData = canvas.toDataURL("image/png");
-const newTab = window.open();
-if (newTab) {
-  newTab.document.body.style.margin = "0";
-  newTab.document.body.style.background = "black";
-  const img = newTab.document.createElement("img");
-  img.src = imageData;
-  img.style.width = "100%";
-  img.style.height = "auto";
-  img.style.display = "block";
-  newTab.document.body.appendChild(img);
-  if (typeof window !== 'undefined' && window.plausible) {
-    window.plausible("Ticket Downloaded");
-  }
-} else {
-  alert("Please allow popups to see your ticket!");
-}
-      };
-    } catch (err) {
-      console.error("Error generating ticket:", err);
-      alert("Oops! There was a problem generating your ticket.");
-    }
-  };  
-
   return (
     <div className="flex flex-col items-center justify-start min-h-screen py-10 px-4 bg-gradient-to-b from-[#0f0f0f] to-[#1e1e1e] text-white font-sans">
 {showHowToPlay && (
@@ -942,36 +861,85 @@ if (newTab) {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
-  <button
-    onClick={handleSubmit}
-    disabled={submitted || !(headliner && opener && secondOpener)}
-    className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide transition shadow ${
-      submitted || !(headliner && opener && secondOpener)
-        ? "bg-gray-400 cursor-not-allowed text-white"
-        : "bg-black text-yellow-300 hover:bg-yellow-400 hover:text-black"
-    }`}
-  >
-    Submit Lineup
-  </button>
+          <button
+            onClick={handleSubmit}
+            disabled={submitted || !(headliner && opener && secondOpener)}
+            className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide transition shadow ${
+              submitted || !(headliner && opener && secondOpener)
+                ? "bg-gray-400 cursor-not-allowed text-white"
+                : "bg-black text-yellow-300 hover:bg-yellow-400 hover:text-black"
+            }`}
+          >
+            Submit Lineup
+          </button>
+          <button
+  onClick={async () => {
+    if (typeof window !== 'undefined' && window.plausible) {
+      window.plausible("Download Lineup");
+    }    
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+  
+    const background = new Image();
+    background.src = "/bestconcertdownloadimage.png";
+    background.crossOrigin = "anonymous";
+  
+    background.onload = async () => {
+      const WIDTH = background.width;
+      const HEIGHT = background.height;
+      canvas.width = WIDTH;
+      canvas.height = HEIGHT;
+  
+      ctx.drawImage(background, 0, 0, WIDTH, HEIGHT);
+  
+      const loadImage = (src) =>
+        new Promise((resolve) => {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.src = src;
+          img.onload = () => resolve(img);
+        });
+  
+      try {
+        const [headlinerImg, openerImg, secondOpenerImg] = await Promise.all([
+          loadImage(headliner?.image),
+          loadImage(opener?.image),
+          loadImage(secondOpener?.image),
+        ]);
+  
+ctx.drawImage(headlinerImg, WIDTH / 2 - 125, HEIGHT - 660, 250, 250);
+ctx.drawImage(openerImg, WIDTH / 2 - 250, HEIGHT - 380, 200, 200);
+ctx.drawImage(secondOpenerImg, WIDTH / 2 + 50, HEIGHT - 380, 200, 200);
 
-  {submitted && (
-    <div className="flex flex-col gap-2 sm:flex-row">
-      <button
-        onClick={handleDownloadPoster}
-        className="px-5 py-2 rounded-full font-bold border-2 border-white text-white hover:bg-yellow-300 hover:text-black transition uppercase text-xs"
-      >
-        Download Lineup
-      </button>
+ctx.font = "bold 24px Arial";
+ctx.fillStyle = "#ffffff";
+ctx.textAlign = "center";
 
-      <button
-  onClick={handleDownloadTicket}
-  className="px-5 py-2 rounded-full font-bold border-2 border-white text-white hover:bg-yellow-300 hover:text-black transition uppercase text-xs"
->
-  Share Your Ticket
-</button>
-    </div>
-  )}
-</div>
+ctx.fillText(headliner?.name || "", WIDTH / 2, HEIGHT - 440 + 40);
+ctx.fillText(opener?.name || "", WIDTH / 2 - 140, HEIGHT - 160);
+ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
+
+  
+        const link = document.createElement("a");
+        link.download = "best-concert-ever.jpg";
+        link.href = canvas.toDataURL("image/jpeg", 0.95);
+        link.click();
+      } catch (err) {
+        console.error("Image download failed:", err);
+      }
+    };
+  }}
+                 
+            disabled={!submitted}
+            className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide border transition ${
+              submitted
+                ? "border-black bg-white text-black hover:bg-yellow-100"
+                : "text-gray-400 border-gray-500 cursor-not-allowed"
+            }`}
+          >
+            Download Lineup
+          </button>
+        </div>
       </div>
       
       <div
@@ -1196,13 +1164,11 @@ if (newTab) {
       crossOrigin="anonymous"
     />
 
+   {/* Prompt Styled Like Yesterday's Winning Lineup */}
 {dailyPrompt && (
   <div className="absolute top-[140px] left-1/2 transform -translate-x-1/2 rotate-[-2deg]">
     <div className="text-center text-red-500 text-lg font-bold uppercase border-2 border-red-500 px-6 py-2 tracking-wider whitespace-nowrap bg-black">
       {dailyPrompt}
-      <div ref={ticketRef} className="absolute left-[-9999px]">
-  <canvas id="ticketCanvas" width="768" height="512"></canvas>
-</div>
     </div>
   </div>
 )}
