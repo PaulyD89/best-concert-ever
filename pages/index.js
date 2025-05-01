@@ -545,6 +545,11 @@ const handleEmailSignup = async () => {
       }
     }, 10000);
 
+    const previouslySubmitted = localStorage.getItem('bce-submitted');
+if (previouslySubmitted === 'true') {
+  setSubmitted(true);
+}
+    
     fetchUserStats();
 
     const fetchRecentLineups = async () => {
@@ -767,6 +772,7 @@ const normalize = (artist) => {
         window.plausible("Submit Lineup");
       }
       setSubmitted(true);
+      localStorage.setItem('bce-submitted', 'true');
       setShowVotePrompt(true);
       console.log("Lineup submitted:", { headliner, opener, secondOpener });
       
@@ -869,7 +875,7 @@ const normalize = (artist) => {
         const promptCode = (dailyPrompt || "").toUpperCase().replace(/[^A-Z]/g, "").substring(0, 8) || "PROMPT";
   
         const bceCode = `${dateCode}-${promptCode}`;
-        ctx.fillText(bceCode, 260, 382);
+        ctx.fillText(bceCode, 260, 372);
   
         const imageData = canvas.toDataURL("image/png");
         const newTab = window.open();
