@@ -844,7 +844,6 @@ const normalize = (artist) => {
       const canvas = ticketRef.current.querySelector("#ticketCanvas");
       const ctx = canvas.getContext("2d");
   
-      // Load ticket background
       const background = new Image();
       background.crossOrigin = "anonymous";
       background.src = "/BCEticketstub.png";
@@ -853,18 +852,15 @@ const normalize = (artist) => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(background, 0, 0, 768, 512);
   
-        // Set the font (Courier New for dot-matrix look)
         ctx.font = "20px Courier New, monospace";
         ctx.fillStyle = "black";
         ctx.textAlign = "left";
   
-        // Draw each line individually (fine-tuned positions)
-        ctx.fillText(dailyPrompt || "Loading Prompt...", 140, 150);      // Prompt (move left & down)
-        ctx.fillText(headliner?.name || "Headliner", 210, 200);           // Headliner (move left & down)
-        ctx.fillText(secondOpener?.name || "Second Opener", 220, 250);    // 2nd Opener (move left & down)
-        ctx.fillText(opener?.name || "Opener", 190, 300);                 // Opener (move left & down)
+        ctx.fillText((dailyPrompt || "Loading Prompt...").toUpperCase(), 140, 152);
+        ctx.fillText((headliner?.name || "Headliner").toUpperCase(), 210, 200);
+        ctx.fillText((secondOpener?.name || "Second Opener").toUpperCase(), 210, 250);
+        ctx.fillText((opener?.name || "Opener").toUpperCase(), 190, 298);
   
-        // Create BCE Code (no extra "BCE-" text)
         const today = new Date();
         const mm = String(today.getMonth() + 1).padStart(2, "0");
         const dd = String(today.getDate()).padStart(2, "0");
@@ -873,9 +869,8 @@ const normalize = (artist) => {
         const promptCode = (dailyPrompt || "").toUpperCase().replace(/[^A-Z]/g, "").substring(0, 8) || "PROMPT";
   
         const bceCode = `${dateCode}-${promptCode}`;
-        ctx.fillText(bceCode, 260, 354);  // BCE code (move up + left)
+        ctx.fillText(bceCode, 260, 384);
   
-        // Now open in a new tab
         const imageData = canvas.toDataURL("image/png");
         const newTab = window.open();
         if (newTab) {
