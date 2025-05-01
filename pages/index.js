@@ -415,29 +415,29 @@ const LineupSlot = ({ artist, label }) => (
 );
 
 export default function BestConcertEver() {
-  const [dailyPrompt, setDailyPrompt] = useState(getDailyPrompt());
-const [yesterdayPrompt, setYesterdayPrompt] = useState(getYesterdayPrompt());
+const [dailyPrompt, setDailyPrompt] = useState(null);
+const [yesterdayPrompt, setYesterdayPrompt] = useState(null);  
 
 useEffect(() => {
   async function updatePrompt() {
-    const today = new Date();
-    const cutoff = new Date("2025-05-01T00:00:00Z");
-    if (today >= cutoff) {
-      const dbPrompt = await fetchDatabasePrompt();
-      if (dbPrompt) {
-        setDailyPrompt(dbPrompt);
-      } else {
-        console.error("Falling back to old prompt logic.");
-      }
+    const dbPrompt = await fetchDatabasePrompt();
+
+    if (dbPrompt) {
+      console.log("✅ Prompt pulled from Supabase DB:", dbPrompt);
+      setDailyPrompt(dbPrompt);
+    } else {
+      const fallback = getDailyPrompt();
+      console.warn("⚠️ Supabase prompt missing or failed. Falling back to:", fallback);
+      setDailyPrompt(fallback);
     }
   }
+
   updatePrompt();
 }, []);
 
 useEffect(() => {
   async function updateYesterdayPrompt() {
     const today = new Date();
-    const cutoff = new Date("2025-05-01T00:00:00Z");
     const yesterday = new Date();
     yesterday.setUTCDate(today.getUTCDate() - 1);
 
@@ -446,22 +446,25 @@ useEffect(() => {
     const dd = String(yesterday.getUTCDate()).padStart(2, "0");
     const formattedYesterday = `${yyyy}-${mm}-${dd}`;
 
-    if (today >= cutoff) {
-      const { data, error } = await supabase
-        .from("prompts")
-        .select("prompt")
-        .eq("prompt_date", formattedYesterday)
-        .single();
+    const { data, error } = await supabase
+      .from("prompts")
+      .select("prompt")
+      .eq("prompt_date", formattedYesterday)
+      .single();
 
-      if (error || !data) {
-        console.error("Failed to fetch yesterday's prompt from database:", error);
-      } else {
-        setYesterdayPrompt(data.prompt);
-      }
+    if (error || !data) {
+      const fallback = getYesterdayPrompt();
+      console.warn("⚠️ Yesterday prompt fallback used:", fallback);
+      setYesterdayPrompt(fallback);
+    } else {
+      console.log("✅ Pulled yesterday prompt from DB:", data.prompt);
+      setYesterdayPrompt(data.prompt);
     }
   }
+
   updateYesterdayPrompt();
 }, []);
+
   const [userStats, setUserStats] = useState(null);
   const [mostVotedLineup, setMostVotedLineup] = useState(null);
   const flyerRef = React.useRef(null);
@@ -770,6 +773,14 @@ const normalize = (artist) => {
       
     }
   };  
+
+  if (!dailyPrompt || !yesterdayPrompt) {
+    return (
+      <div className="text-white flex items-center justify-center h-screen text-lg font-bold">
+        Loading today’s concert prompt...
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen py-10 px-4 bg-gradient-to-b from-[#0f0f0f] to-[#1e1e1e] text-white font-sans">
