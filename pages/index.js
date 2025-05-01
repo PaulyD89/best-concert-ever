@@ -467,6 +467,7 @@ useEffect(() => {
   const [mostVotedLineup, setMostVotedLineup] = useState(null);
   const flyerRef = React.useRef(null);
   const downloadRef = React.useRef(null);
+  const ticketRef = React.useRef(null);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [showVotePrompt, setShowVotePrompt] = useState(false);
 const [showEmailSignup, setShowEmailSignup] = useState(false);
@@ -772,6 +773,153 @@ const normalize = (artist) => {
     }
   };  
 
+  const handleDownloadPoster = async () => {
+    try {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+  
+      const background = new Image();
+      background.src = "/bestconcertdownloadimage.png";
+      background.crossOrigin = "anonymous";
+  
+      background.onload = async () => {
+        const WIDTH = background.width;
+        const HEIGHT = background.height;
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
+  
+        ctx.drawImage(background, 0, 0, WIDTH, HEIGHT);
+  
+        const loadImage = (src) =>
+          new Promise((resolve) => {
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.src = src;
+            img.onload = () => resolve(img);
+          });
+  
+        try {
+          const [headlinerImg, openerImg, secondOpenerImg] = await Promise.all([
+            loadImage(headliner?.image),
+            loadImage(opener?.image),
+            loadImage(secondOpener?.image),
+          ]);
+  
+          // Draw band images on the poster
+          ctx.drawImage(headlinerImg, WIDTH / 2 - 125, HEIGHT - 660, 250, 250); // Headliner in the middle top
+          ctx.drawImage(openerImg, WIDTH / 2 - 250, HEIGHT - 380, 200, 200);    // Opener on the left
+          ctx.drawImage(secondOpenerImg, WIDTH / 2 + 50, HEIGHT - 380, 200, 200); // 2nd Opener on the right
+  
+          // Add band names under images
+          ctx.font = "bold 24px Arial";
+          ctx.fillStyle = "#ffffff";
+          ctx.textAlign = "center";
+  
+          ctx.fillText(headliner?.name || "", WIDTH / 2, HEIGHT - 440 + 40);
+          ctx.fillText(opener?.name || "", WIDTH / 2 - 140, HEIGHT - 160);
+          ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
+  
+          // Download the poster
+          const link = document.createElement("a");
+          link.download = "BestConcertEver_LineupPoster.png";
+          link.href = canvas.toDataURL("image/png");
+          link.click();
+  
+          if (typeof window !== 'undefined' && window.plausible) {
+            window.plausible("Lineup Poster Downloaded");
+          }
+        } catch (err) {
+          console.error("Image download failed:", err);
+          alert("Oops! There was a problem downloading your poster.");
+        }
+      };
+    } catch (err) {
+      console.error("Error downloading poster:", err);
+      alert("Oops! There was a problem downloading your poster.");
+    }
+  };  
+
+  const handleDownloadTicket = async () => {
+    try {
+      const canvas = ticketRef.current.querySelector("#ticketCanvas");
+      const ctx = canvas.getContext("2d");
+  
+      // Load ticket background
+      const background = new Image();
+      background.crossOrigin = "anonymous";
+      background.src = "/BCEticketstub.png";
+  
+      background.onload = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(background, 0, 0, 768, 512);
+      
+        // Set the font
+        ctx.font = "20px VT323, monospace";
+        ctx.fillStyle = "black";
+        ctx.textAlign = "left";
+      
+        // Individual text positions
+        ctx.fillText(dailyPrompt || "Loading Prompt...", 165, 138);        // Prompt: move DOWN and LEFT
+        ctx.fillText(headliner?.name || "Headliner", 245, 188);             // Headliner: move DOWN only
+        ctx.fillText(secondOpener?.name || "Second Opener", 260, 238);      // 2nd Opener: move DOWN and RIGHT
+        ctx.fillText(opener?.name || "Opener", 205, 288);                   // Opener: move LEFT
+      
+        // BCE- code (without duplicating "BCE-")
+        const today = new Date();
+        const mm = String(today.getMonth() + 1).padStart(2, "0");
+        const dd = String(today.getDate()).padStart(2, "0");
+        const yyyy = today.getFullYear();
+        const dateCode = `${mm}${dd}${yyyy}`;
+        const promptCode = (dailyPrompt || "").toUpperCase().replace(/[^A-Z]/g, "").substring(0, 8) || "PROMPT";
+      
+        const bceCode = `${dateCode}-${promptCode}`; // <== NO "BCE-" printed here
+        ctx.fillText(bceCode, 300, 372);  // Push UP to align next to printed BCE-
+      
+        // Now open the ticket in a new tab
+        const imageData = canvas.toDataURL("image/png");
+        const newTab = window.open();
+        if (newTab) {
+          newTab.document.write(`
+            <html>
+              <head>
+                <title>Your Concert Ticket</title>
+                <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+                <style>
+                  body {
+                    margin: 0;
+                    background: black;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                  }
+                  img {
+                    width: 768px;
+                    height: auto;
+                    image-rendering: crisp-edges;
+                    font-family: 'VT323', monospace;
+                  }
+                </style>
+              </head>
+              <body>
+                <img src="${imageData}" alt="Concert Ticket" />
+              </body>
+            </html>
+          `);
+          newTab.document.close();
+          if (typeof window !== 'undefined' && window.plausible) {
+            window.plausible("Ticket Downloaded");
+          }
+        } else {
+          alert("Please allow popups to see your ticket!");
+        }
+      };      
+    } catch (err) {
+      console.error("Error generating ticket:", err);
+      alert("Oops! There was a problem generating your ticket.");
+    }
+  };  
+
   return (
     <div className="flex flex-col items-center justify-start min-h-screen py-10 px-4 bg-gradient-to-b from-[#0f0f0f] to-[#1e1e1e] text-white font-sans">
 {showHowToPlay && (
@@ -861,85 +1009,36 @@ const normalize = (artist) => {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
-          <button
-            onClick={handleSubmit}
-            disabled={submitted || !(headliner && opener && secondOpener)}
-            className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide transition shadow ${
-              submitted || !(headliner && opener && secondOpener)
-                ? "bg-gray-400 cursor-not-allowed text-white"
-                : "bg-black text-yellow-300 hover:bg-yellow-400 hover:text-black"
-            }`}
-          >
-            Submit Lineup
-          </button>
-          <button
-  onClick={async () => {
-    if (typeof window !== 'undefined' && window.plausible) {
-      window.plausible("Download Lineup");
-    }    
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-  
-    const background = new Image();
-    background.src = "/bestconcertdownloadimage.png";
-    background.crossOrigin = "anonymous";
-  
-    background.onload = async () => {
-      const WIDTH = background.width;
-      const HEIGHT = background.height;
-      canvas.width = WIDTH;
-      canvas.height = HEIGHT;
-  
-      ctx.drawImage(background, 0, 0, WIDTH, HEIGHT);
-  
-      const loadImage = (src) =>
-        new Promise((resolve) => {
-          const img = new Image();
-          img.crossOrigin = "anonymous";
-          img.src = src;
-          img.onload = () => resolve(img);
-        });
-  
-      try {
-        const [headlinerImg, openerImg, secondOpenerImg] = await Promise.all([
-          loadImage(headliner?.image),
-          loadImage(opener?.image),
-          loadImage(secondOpener?.image),
-        ]);
-  
-ctx.drawImage(headlinerImg, WIDTH / 2 - 125, HEIGHT - 660, 250, 250);
-ctx.drawImage(openerImg, WIDTH / 2 - 250, HEIGHT - 380, 200, 200);
-ctx.drawImage(secondOpenerImg, WIDTH / 2 + 50, HEIGHT - 380, 200, 200);
+  <button
+    onClick={handleSubmit}
+    disabled={submitted || !(headliner && opener && secondOpener)}
+    className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide transition shadow ${
+      submitted || !(headliner && opener && secondOpener)
+        ? "bg-gray-400 cursor-not-allowed text-white"
+        : "bg-black text-yellow-300 hover:bg-yellow-400 hover:text-black"
+    }`}
+  >
+    Submit Lineup
+  </button>
 
-ctx.font = "bold 24px Arial";
-ctx.fillStyle = "#ffffff";
-ctx.textAlign = "center";
+  {submitted && (
+    <div className="flex flex-col gap-2 sm:flex-row">
+      <button
+        onClick={handleDownloadPoster}
+        className="px-5 py-2 rounded-full font-bold border-2 border-white text-white hover:bg-yellow-300 hover:text-black transition uppercase text-xs"
+      >
+        Download Lineup
+      </button>
 
-ctx.fillText(headliner?.name || "", WIDTH / 2, HEIGHT - 440 + 40);
-ctx.fillText(opener?.name || "", WIDTH / 2 - 140, HEIGHT - 160);
-ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
-
-  
-        const link = document.createElement("a");
-        link.download = "best-concert-ever.jpg";
-        link.href = canvas.toDataURL("image/jpeg", 0.95);
-        link.click();
-      } catch (err) {
-        console.error("Image download failed:", err);
-      }
-    };
-  }}
-                 
-            disabled={!submitted}
-            className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide border transition ${
-              submitted
-                ? "border-black bg-white text-black hover:bg-yellow-100"
-                : "text-gray-400 border-gray-500 cursor-not-allowed"
-            }`}
-          >
-            Download Lineup
-          </button>
-        </div>
+      <button
+  onClick={handleDownloadTicket}
+  className="px-5 py-2 rounded-full font-bold border-2 border-white text-white hover:bg-yellow-300 hover:text-black transition uppercase text-xs"
+>
+  Share Your Ticket
+</button>
+    </div>
+  )}
+</div>
       </div>
       
       <div
@@ -1164,11 +1263,13 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
       crossOrigin="anonymous"
     />
 
-   {/* Prompt Styled Like Yesterday's Winning Lineup */}
 {dailyPrompt && (
   <div className="absolute top-[140px] left-1/2 transform -translate-x-1/2 rotate-[-2deg]">
     <div className="text-center text-red-500 text-lg font-bold uppercase border-2 border-red-500 px-6 py-2 tracking-wider whitespace-nowrap bg-black">
       {dailyPrompt}
+      <div ref={ticketRef} className="absolute left-[-9999px]">
+  <canvas id="ticketCanvas" width="768" height="512"></canvas>
+</div>
     </div>
   </div>
 )}
