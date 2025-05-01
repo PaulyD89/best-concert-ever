@@ -852,30 +852,30 @@ const normalize = (artist) => {
       background.onload = () => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(background, 0, 0, 768, 512);
-      
-        // Set the font
-        ctx.font = "20px VT323, monospace";
+  
+        // Set the font (Courier New for dot-matrix look)
+        ctx.font = "20px Courier New, monospace";
         ctx.fillStyle = "black";
         ctx.textAlign = "left";
-      
-        // Individual text positions
-        ctx.fillText(dailyPrompt || "Loading Prompt...", 165, 138);        // Prompt: move DOWN and LEFT
-        ctx.fillText(headliner?.name || "Headliner", 245, 188);             // Headliner: move DOWN only
-        ctx.fillText(secondOpener?.name || "Second Opener", 260, 238);      // 2nd Opener: move DOWN and RIGHT
-        ctx.fillText(opener?.name || "Opener", 205, 288);                   // Opener: move LEFT
-      
-        // BCE- code (without duplicating "BCE-")
+  
+        // Draw each line individually (fine-tuned positions)
+        ctx.fillText(dailyPrompt || "Loading Prompt...", 140, 150);      // Prompt (move left & down)
+        ctx.fillText(headliner?.name || "Headliner", 210, 200);           // Headliner (move left & down)
+        ctx.fillText(secondOpener?.name || "Second Opener", 220, 250);    // 2nd Opener (move left & down)
+        ctx.fillText(opener?.name || "Opener", 190, 300);                 // Opener (move left & down)
+  
+        // Create BCE Code (no extra "BCE-" text)
         const today = new Date();
         const mm = String(today.getMonth() + 1).padStart(2, "0");
         const dd = String(today.getDate()).padStart(2, "0");
         const yyyy = today.getFullYear();
         const dateCode = `${mm}${dd}${yyyy}`;
         const promptCode = (dailyPrompt || "").toUpperCase().replace(/[^A-Z]/g, "").substring(0, 8) || "PROMPT";
-      
-        const bceCode = `${dateCode}-${promptCode}`; // <== NO "BCE-" printed here
-        ctx.fillText(bceCode, 300, 372);  // Push UP to align next to printed BCE-
-      
-        // Now open the ticket in a new tab
+  
+        const bceCode = `${dateCode}-${promptCode}`;
+        ctx.fillText(bceCode, 260, 354);  // BCE code (move up + left)
+  
+        // Now open in a new tab
         const imageData = canvas.toDataURL("image/png");
         const newTab = window.open();
         if (newTab) {
@@ -913,12 +913,12 @@ const normalize = (artist) => {
         } else {
           alert("Please allow popups to see your ticket!");
         }
-      };      
+      };
     } catch (err) {
       console.error("Error generating ticket:", err);
       alert("Oops! There was a problem generating your ticket.");
     }
-  };  
+  };   
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen py-10 px-4 bg-gradient-to-b from-[#0f0f0f] to-[#1e1e1e] text-white font-sans">
