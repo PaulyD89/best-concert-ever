@@ -858,8 +858,8 @@ const normalize = (artist) => {
   
         ctx.fillText((dailyPrompt || "Loading Prompt...").toUpperCase(), 140, 152);
         ctx.fillText((headliner?.name || "Headliner").toUpperCase(), 210, 200);
-        ctx.fillText((secondOpener?.name || "Second Opener").toUpperCase(), 210, 250);
-        ctx.fillText((opener?.name || "Opener").toUpperCase(), 190, 298);
+        ctx.fillText((secondOpener?.name || "Second Opener").toUpperCase(), 210, 248);
+        ctx.fillText((opener?.name || "Opener").toUpperCase(), 190, 296);
   
         const today = new Date();
         const mm = String(today.getMonth() + 1).padStart(2, "0");
@@ -869,7 +869,7 @@ const normalize = (artist) => {
         const promptCode = (dailyPrompt || "").toUpperCase().replace(/[^A-Z]/g, "").substring(0, 8) || "PROMPT";
   
         const bceCode = `${dateCode}-${promptCode}`;
-        ctx.fillText(bceCode, 260, 384);
+        ctx.fillText(bceCode, 260, 382);
   
         const imageData = canvas.toDataURL("image/png");
         const newTab = window.open();
