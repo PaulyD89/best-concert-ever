@@ -557,6 +557,20 @@ const savedSecondOpener = localStorage.getItem('bce-secondOpener');
 if (savedHeadliner) setHeadliner(JSON.parse(savedHeadliner));
 if (savedOpener) setOpener(JSON.parse(savedOpener));
 if (savedSecondOpener) setSecondOpener(JSON.parse(savedSecondOpener));
+
+const savedPrompt = localStorage.getItem('bce-prompt');
+if (savedPrompt && savedPrompt !== dailyPrompt) {
+  // Prompt changed! Clear old data
+  localStorage.removeItem('bce-submitted');
+  localStorage.removeItem('bce-headliner');
+  localStorage.removeItem('bce-opener');
+  localStorage.removeItem('bce-secondOpener');
+  localStorage.removeItem('bce-prompt');
+  setSubmitted(false);
+  setHeadliner(null);
+  setOpener(null);
+  setSecondOpener(null);
+}
     
     fetchUserStats();
 
@@ -781,6 +795,7 @@ const normalize = (artist) => {
       }
       setSubmitted(true);
       localStorage.setItem('bce-submitted', 'true');
+      localStorage.setItem('bce-prompt', dailyPrompt);
       localStorage.setItem('bce-headliner', JSON.stringify(headliner));
       localStorage.setItem('bce-opener', JSON.stringify(opener));
       localStorage.setItem('bce-secondOpener', JSON.stringify(secondOpener));
