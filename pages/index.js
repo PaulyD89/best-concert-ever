@@ -549,6 +549,14 @@ const handleEmailSignup = async () => {
 if (previouslySubmitted === 'true') {
   setSubmitted(true);
 }
+
+const savedHeadliner = localStorage.getItem('bce-headliner');
+const savedOpener = localStorage.getItem('bce-opener');
+const savedSecondOpener = localStorage.getItem('bce-secondOpener');
+
+if (savedHeadliner) setHeadliner(JSON.parse(savedHeadliner));
+if (savedOpener) setOpener(JSON.parse(savedOpener));
+if (savedSecondOpener) setSecondOpener(JSON.parse(savedSecondOpener));
     
     fetchUserStats();
 
@@ -773,6 +781,9 @@ const normalize = (artist) => {
       }
       setSubmitted(true);
       localStorage.setItem('bce-submitted', 'true');
+      localStorage.setItem('bce-headliner', JSON.stringify(headliner));
+      localStorage.setItem('bce-opener', JSON.stringify(opener));
+      localStorage.setItem('bce-secondOpener', JSON.stringify(secondOpener));
       setShowVotePrompt(true);
       console.log("Lineup submitted:", { headliner, opener, secondOpener });
       
