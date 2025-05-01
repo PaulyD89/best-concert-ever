@@ -425,6 +425,7 @@ useEffect(() => {
     if (today >= cutoff) {
       const dbPrompt = await fetchDatabasePrompt();
       if (dbPrompt) {
+        console.log("✅ Prompt pulled from Supabase DB:", dbPrompt);
         setDailyPrompt(dbPrompt);
       } else {
         console.error("Falling back to old prompt logic.");
