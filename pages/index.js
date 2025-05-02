@@ -22,6 +22,317 @@ async function fetchDatabasePrompt() {
   return data.prompt;
 }
 
+const prompts = [
+  "Best 90s Band Lineup",
+  "Best Bands from the 2000s",
+  "Best Festival Headliners",
+  "Best One-Hit Wonders",
+  "Best Indie Bands of the 2010s",
+  "Best Garage Rock Revival Bands",
+  "Best LA Punk Bands",
+  "Best Bands You Saw in High School",
+  "Best Synth-Pop Acts",
+  "Best British Invasion Artists",
+  "Best Grunge Acts",
+  "Best Pop-Punk Lineup",
+  "Best Supergroups",
+  "Best Bands with Only 2 Members",
+  "Best Bands with Horn Sections",
+  "Best Live Bands Ever",
+  "Best Bands That Broke Up Too Soon",
+  "Best Comeback Tours",
+  "Best Bands Fronted by Women",
+  "Best Alt-Rock Artists of the 2000s",
+  "Best Bands from New York",
+  "Best Bands from the Midwest",
+  "Best Summer Festival Lineup",
+  "Best Underground Hip-Hop Artists",
+  "Best Country Crossover Acts",
+  "Best Shoegaze Bands",
+  "Best Folk Rock Acts",
+  "Best Bands with Wild Stage Shows",
+  "Best Bands for a Road Trip",
+  "Best Reunion Lineup",
+  "Best Scandinavian Artists",
+  "Best Emo Bands",
+  "Best Acoustic Sets",
+  "Best Songs to Cry To Live",
+  "Best Arena Rock Bands",
+  "Best Punk Revival Acts",
+  "Best Bands Who Only Released One Album",
+  "Best Funk Fusion Groups",
+  "Best Bands from the UK",
+  "Best Tiny Desk-Style Lineup",
+  "Best Jazz Fusion Acts",
+  "Best Experimental Artists",
+  "Best Lo-Fi Indie Acts",
+  "Best Power Trios",
+  "Best MTV Unplugged Artists",
+  "Best Cover Bands Ever",
+  "Best Pop Acts of the 80s",
+  "Best Bands to See at Night",
+  "Best College Radio Legends",
+  "Best World Music Lineups",
+  "Best 80s Rock",
+  "Best 90s Hip-Hop",
+  "Best Female Icons",
+  "Best Acoustic Acts",
+  "Best Garage Bands",
+  "Best R&B Bands",
+  "Best Funk Bands",
+  "Best Festival Headliners",
+  "Best Tiny Desk Acts",
+  "Best One-Hit Wonders",
+  "Best Arena Rock",
+  "Best Punk Bands",
+  "Best Indie Darlings",
+  "Best Sunset Sets",
+  "Best After-Hours Artists",
+  "Best British Invasion Bands",
+  "Best Unplugged Acts",
+  "Best Synth Pop Acts",
+  "Best Boy Bands",
+  "Best Girl Groups",
+  "Best Supergroups",
+  "Best Country Crossovers",
+  "Best World Music Acts",
+  "Best Jazz Fusion Groups",
+  "Best 2000s Alt Rockers",
+  "Best Scandinavian Pop",
+  "Best LGBTQ+ Artists",
+  "Best Protest Music",
+  "Best Ballad Bands",
+  "Best Breakup Artists",
+  "Best Funk-Pop Crossovers",
+  "Best Rappers",
+  "Best Covers Acts",
+  "Best Super Bowl Halftime Tributes",
+  "Best Soul Music Nights",
+  "Best Disco Revivals",
+  "Best Sadcore Bands",
+  "Best New Wave Bands",
+  "Best Dad Rock Bands",
+  "Best Wine O’Clock Acts",
+  "Best Gen Z Anthems",
+  "Best Millennial Nostalgia Trip",
+  "Best Bass-In-Your-Face Acts",
+  "Best Prog Rockers",
+  "Best Opening Acts Turned Headliners",
+  "Best Throwback Hip-Hop",
+  "Best Emo Revival Sets",
+  "Best Pop-Punk Bands",
+  "Best Riot Grrrl Groups",
+  "Best Country Singers",
+  "Best Slow Jams",
+  "Best Top 10 Talents",
+  "Best Alt Pop Artists",
+  "Best French Pop",
+  "Best Reggae Nights",
+  "Best Latin Pop Powerhouses",
+  "Best K-Pop Artists",
+  "Best TikTok Breakout Artists",
+  "Best B-Side Performances",
+  "Best Lo-Fi Chill Sets",
+  "Best Dream Pop Bands",
+  "Best Shoegaze Bands",
+  "Best DJs",
+  "Best Sibling Bands",
+  "Best Movie Soundtrack Stars",
+  "Best Vinyl-Only Lineups",
+  "Best College Radio Bands",
+  "Best Musical Duos",
+  "Best Live Collabs",
+  "Best Surprise Guests",
+  "Best Sad-Girl Artists",
+  "Best Rage-to-Redemption Arc Sets",
+  "Best Songs You Cried To",
+  "Best Make-Out Artists",
+  "Best Road Trip Radio",
+  "Best Breakout Artists",
+  "Best NPR Darlings",
+  "Best Hometown Bands",
+  "Best Bands from the Future",
+  "Best Fictional Bands",
+  "Best New York Bands",
+  "Best Los Angeles Bands",
+  "Best Motown Acts",
+  "Best Brass Sections",
+  "Best Bands That Broke Up",
+  "Best Debut Artists",
+  "Best Reunion Tours",
+  "Best Farewell Concerts",
+  "Best Underrated Icons",
+  "Best Artist Comebacks",
+  "Best Philly Sound Acts",
+  "Best Solo Artists",
+  "Best Bands You Saw Before They Blew Up",
+  "Best Guilty Pleasures",
+  "Best Viral Stars",
+  "Best DIY Punk",
+  "Best Female Guitarists",
+  "Best Motor City Bands",
+  "Best Cult Bands",
+  "Best Summer Anthem Artists",
+  "Best Grunge Bands",
+  "Best Eclectic Vibes Only",
+  "Best Deep Cuts Night",
+  "Best Storytellers",
+  "Best Artists With Alter Egos",
+  "Best Cover-to-Cover Album Shows",
+  "Best Artists Named After Places",
+  "Best Artists with Color Names",
+  "Best Miami Sound Artists",
+  "Best Guitar Heroes",
+  "Best Anime Soundtrack Artists",
+  "Best Small Venue Vibes",
+  "Best Rainy Day Music",
+  "Best Sunshine Jams",
+  "Best Goth Bands",
+  "Best High School Playlist Live",
+  "Best Carpool Karaoke Set",
+  "Best Techno Artists",
+  "Best Cozy Campfire Acts",
+  "Best Experimental Artists",
+  "Best Thrift Store Artists",
+  "Best Album Art Come to Life",
+  "Best Artists With One-Word Names",
+  "Best Seattle Sound Bands",
+  "Best Autotune Artists",
+  "Best Artists Who Started on YouTube",
+  "Best Artists That Scare You (in a good way)",
+  "Best Spoken Word/Poetry Integration",
+  "Best Environmental Activists",
+  "Best Bands Your Parents Love Too",
+  "Best Bands with Food Names",
+  "Best Bands with Animal Names",
+  "Best Retro Futurism Vibes",
+  "Best Rockabilly Acts",
+  "Best Artists Who Should’ve Been Bigger",
+  "Best Unlikely Collaborations",
+  "Best Cosmic Vibes",
+  "Best Artists With Iconic Logos",
+  "Best Artists to Get Married To",
+  "Best Artists to Break Up To",
+  "Best Artists That Also Act",
+  "Best Bands to Play at 2am",
+  "Best Soundtrack to a Movie That Doesn’t Exist",
+  "Best Covers of 90s Hits",
+  "Best Covers of 80s Ballads",
+  "Best SNL Musical Guests",
+  "Best MTV VMAs Performers",
+  "Best Artists Live",
+  "Best Bands With An Actor",
+  "Best Artists with Secret Identities",
+  "Best Artists You Discovered Randomly",
+  "Best Artists Who Grew on You",
+  "Best Artists With Iconic Music Videos",
+  "Best Bands You Grew Up With",
+  "Best Stage Banter",
+  "Best Artists to Hear Outdoors",
+  "Best Bands to See With Friends",
+  "Best Bands to Listen To Alone",
+  "Best Artists To Make You Cry",
+  "Best Artists To Make You Dance",
+  "Best Artists To Fall in Love To",
+  "Best Artists For a Montage",
+  "Best Artists For a Theme Song",
+  "Best Artists With Iconic Debuts",
+  "Best Genre Crossover Artists",
+  "Best Artist Names You’ve Mispronounced",
+  "Best Bands to Cook By",
+  "Best Bands to Start Your Day",
+  "Best Bands to End Your Day",
+  "Best Beach Vibe Bands",
+  "Best Skatepark Soundtrack",
+  "Best Bands for a Snow Day",
+  "Best Bands For a BBQ",
+  "Best Artists to Get Lost In",
+  "Best Artists for a Night Drive",
+  "Best Artists to Fall Asleep To",
+  "Best Bands to Time Travel With",
+  "Best Artists With Theatrical Live Shows",
+  "Best Artists Who Score Movies",
+  "Best Singalong Bands",
+  "Best Artists That Go Full Chaos Mode",
+  "Best Folk Artists",
+  "Best Artists for a Good Cry",
+  "Best Scream-o Bands",
+  "Best Yacht Rockers",
+  "Best Dead Artists",
+  "Best Jam Bands", 
+  "Best Solo Artists - Rock",
+  "Best Solo Artists - Country", 
+  "Best Solo Artists - R&B",
+  "Best Solo Artists - Top 40",
+  "Best Solo Artists - Pop",
+  "Best Solo Artists - Yacht Rock",
+  "Best Solo Artists - Hip-Hop",
+  "Best Dynamic Duos",
+  "Best Power Trios", 
+  "Best Synthwave Bands",
+  "Best Alternative Bands",
+  "Best Indie Rock Bands",
+  "Best Math Rock Bands",
+  "Best Soul Music Artists",
+  "Best Ska Bands",
+  "Best EDM Artists",
+  "Best Disco Acts",
+  "Best Death Metal Bands",
+  "Best Hardcore Bands",
+  "Best Christian Metal Bands",
+  "Best Canadian Artists",
+  "Best Artists From Down Under",
+  "Best NWOBHM Bands",
+  "Best Synth-Pop Acts",
+  "Best Vaporwave Artists",
+  "Best Eurovision Winners",
+  "Best Party-Starters",
+  "Best Vocalists",
+  "Best Drummers", 
+  "Best Where-Are-They-Now Bands",
+  "Best Industrial Artists",
+  "Best Psychedelic Bands",
+  "Best Instrumental Bands",
+  "Best Underground Acts",
+  "Best Blues Artists",
+  "Best Honky Tonk Artists",
+  "Best Southern Rock Bands",
+  "Best Lounge Acts",
+  "Best Drum & Bass",
+  "Best Kraut Rock",
+  "Best House Music Artists",
+  "Best Mod Music Acts",
+  "Best Manchester Sound Bands",
+  "Best Cult Bands",
+  "Best Hair Metal Bands"
+];
+
+function getDailyPrompt() {
+  const now = new Date();
+  const utcDate = new Date(now.toISOString().split("T")[0]); // UTC midnight date string
+  const today = utcDate.toISOString().split("T")[0];
+
+  let hash = 0;
+  for (let i = 0; i < today.length; i++) {
+    hash = today.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  return prompts[Math.abs(hash) % prompts.length];
+}
+function getYesterdayPrompt() {
+  const now = new Date();
+  const utcDate = new Date(now.toISOString().split("T")[0]);
+  utcDate.setDate(utcDate.getDate() - 1);
+  const yesterday = utcDate.toISOString().split("T")[0];
+
+  let hash = 0;
+  for (let i = 0; i < yesterday.length; i++) {
+    hash = yesterday.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  return prompts[Math.abs(hash) % prompts.length];
+}
+
 const ArtistSearch = ({ label, onSelect, disabled }) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -104,8 +415,8 @@ const LineupSlot = ({ artist, label }) => (
 );
 
 export default function BestConcertEver() {
-  const [dailyPrompt, setDailyPrompt] = useState("");
-  const [yesterdayPrompt, setYesterdayPrompt] = useState("");
+  const [dailyPrompt, setDailyPrompt] = useState(getDailyPrompt());
+const [yesterdayPrompt, setYesterdayPrompt] = useState(getYesterdayPrompt());
 
 useEffect(() => {
   async function updatePrompt() {
@@ -123,17 +434,6 @@ useEffect(() => {
   }
   updatePrompt();
 }, []);
-
-useEffect(() => {
-  if (!dailyPrompt) return;
-
-  const fetchLineups = async () => {
-    await fetchTopLineups();
-    await fetchRecentLineups();
-  };
-
-  fetchLineups();
-}, [dailyPrompt]);
 
 useEffect(() => {
   async function updateYesterdayPrompt() {
@@ -167,7 +467,6 @@ useEffect(() => {
   const [mostVotedLineup, setMostVotedLineup] = useState(null);
   const flyerRef = React.useRef(null);
   const downloadRef = React.useRef(null);
-  const ticketRef = React.useRef(null);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [showVotePrompt, setShowVotePrompt] = useState(false);
 const [showEmailSignup, setShowEmailSignup] = useState(false);
@@ -245,40 +544,13 @@ const handleEmailSignup = async () => {
       }
     }, 10000);
 
-    const previouslySubmitted = localStorage.getItem('bce-submitted');
-if (previouslySubmitted === 'true') {
-  setSubmitted(true);
-}
-
-const savedHeadliner = localStorage.getItem('bce-headliner');
-const savedOpener = localStorage.getItem('bce-opener');
-const savedSecondOpener = localStorage.getItem('bce-secondOpener');
-
-if (savedHeadliner) setHeadliner(JSON.parse(savedHeadliner));
-if (savedOpener) setOpener(JSON.parse(savedOpener));
-if (savedSecondOpener) setSecondOpener(JSON.parse(savedSecondOpener));
-
-const savedPrompt = localStorage.getItem('bce-prompt');
-if (savedPrompt && savedPrompt !== dailyPrompt) {
-  // Prompt changed! Clear old data
-  localStorage.removeItem('bce-submitted');
-  localStorage.removeItem('bce-headliner');
-  localStorage.removeItem('bce-opener');
-  localStorage.removeItem('bce-secondOpener');
-  localStorage.removeItem('bce-prompt');
-  setSubmitted(false);
-  setHeadliner(null);
-  setOpener(null);
-  setSecondOpener(null);
-}
-    
     fetchUserStats();
 
     const fetchRecentLineups = async () => {
       const { data, error } = await supabase
         .from("lineups")
         .select("id, headliner, opener, second_opener, votes, created_at")
-        .ilike("prompt", `%${dailyPrompt}%`)
+        .eq("prompt", dailyPrompt)
         .order("created_at", { ascending: false })
         .limit(5); // Only get the newest 5 directly
     
@@ -295,7 +567,7 @@ if (savedPrompt && savedPrompt !== dailyPrompt) {
       const { data, error } = await supabase
       .from("lineups")
       .select("id, headliner, opener, second_opener, votes")
-      .ilike("prompt", `%${dailyPrompt}%`)  
+      .eq("prompt", dailyPrompt);    
 
     if (!error && data) {
       const countMap = {};
@@ -339,6 +611,8 @@ setLineups(sortedLineups);
       }
     };
 
+    fetchTopLineups().then(fetchRecentLineups);  
+
     const fetchDeepCutLineup = async () => {
       const now = new Date();
       const utcMidnight = new Date();
@@ -351,7 +625,7 @@ setLineups(sortedLineups);
       const { data, error } = await supabase
         .from("lineups")
         .select("id, headliner, opener, second_opener, votes")
-        .ilike("prompt", `%${dailyPrompt}%`)
+        .eq("prompt", dailyPrompt);
 
       if (error || !data) return;
 
@@ -412,7 +686,7 @@ const normalize = (artist) => {
       const { data, error } = await supabase
         .from("lineups")
         .select("headliner, opener, second_opener, votes")
-        .ilike("prompt", `%${yesterdayPrompt}%`)
+        .eq("prompt", yesterdayPrompt);
   
       if (error || !data) return;
   
@@ -492,158 +766,11 @@ const normalize = (artist) => {
         window.plausible("Submit Lineup");
       }
       setSubmitted(true);
-      localStorage.setItem('bce-submitted', 'true');
-      localStorage.setItem('bce-prompt', dailyPrompt);
-      localStorage.setItem('bce-headliner', JSON.stringify(headliner));
-      localStorage.setItem('bce-opener', JSON.stringify(opener));
-      localStorage.setItem('bce-secondOpener', JSON.stringify(secondOpener));
       setShowVotePrompt(true);
       console.log("Lineup submitted:", { headliner, opener, secondOpener });
       
     }
   };  
-
-  const handleDownloadPoster = async () => {
-    try {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-  
-      const background = new Image();
-      background.src = "/bestconcertdownloadimage.png";
-      background.crossOrigin = "anonymous";
-  
-      background.onload = async () => {
-        const WIDTH = background.width;
-        const HEIGHT = background.height;
-        canvas.width = WIDTH;
-        canvas.height = HEIGHT;
-  
-        ctx.drawImage(background, 0, 0, WIDTH, HEIGHT);
-  
-        const loadImage = (src) =>
-          new Promise((resolve) => {
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.src = src;
-            img.onload = () => resolve(img);
-          });
-  
-        try {
-          const [headlinerImg, openerImg, secondOpenerImg] = await Promise.all([
-            loadImage(headliner?.image),
-            loadImage(opener?.image),
-            loadImage(secondOpener?.image),
-          ]);
-  
-          // Draw band images on the poster
-          ctx.drawImage(headlinerImg, WIDTH / 2 - 125, HEIGHT - 660, 250, 250); // Headliner in the middle top
-          ctx.drawImage(openerImg, WIDTH / 2 - 250, HEIGHT - 380, 200, 200);    // Opener on the left
-          ctx.drawImage(secondOpenerImg, WIDTH / 2 + 50, HEIGHT - 380, 200, 200); // 2nd Opener on the right
-  
-          // Add band names under images
-          ctx.font = "bold 24px Arial";
-          ctx.fillStyle = "#ffffff";
-          ctx.textAlign = "center";
-  
-          ctx.fillText(headliner?.name || "", WIDTH / 2, HEIGHT - 440 + 40);
-          ctx.fillText(opener?.name || "", WIDTH / 2 - 140, HEIGHT - 160);
-          ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
-  
-          // Download the poster
-          const link = document.createElement("a");
-          link.download = "BestConcertEver_LineupPoster.png";
-          link.href = canvas.toDataURL("image/png");
-          link.click();
-  
-          if (typeof window !== 'undefined' && window.plausible) {
-            window.plausible("Lineup Poster Downloaded");
-          }
-        } catch (err) {
-          console.error("Image download failed:", err);
-          alert("Oops! There was a problem downloading your poster.");
-        }
-      };
-    } catch (err) {
-      console.error("Error downloading poster:", err);
-      alert("Oops! There was a problem downloading your poster.");
-    }
-  };  
-
-  const handleDownloadTicket = async () => {
-    try {
-      const canvas = ticketRef.current.querySelector("#ticketCanvas");
-      const ctx = canvas.getContext("2d");
-  
-      const background = new Image();
-      background.crossOrigin = "anonymous";
-      background.src = "/BCEticketstub.png";
-  
-      background.onload = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(background, 0, 0, 768, 512);
-  
-        ctx.font = "20px Courier New, monospace";
-        ctx.fillStyle = "black";
-        ctx.textAlign = "left";
-  
-        ctx.fillText((dailyPrompt || "Loading Prompt...").toUpperCase(), 140, 152);
-        ctx.fillText((headliner?.name || "Headliner").toUpperCase(), 210, 200);
-        ctx.fillText((secondOpener?.name || "Second Opener").toUpperCase(), 210, 248);
-        ctx.fillText((opener?.name || "Opener").toUpperCase(), 190, 296);
-  
-        const today = new Date();
-        const mm = String(today.getMonth() + 1).padStart(2, "0");
-        const dd = String(today.getDate()).padStart(2, "0");
-        const yyyy = today.getFullYear();
-        const dateCode = `${mm}${dd}${yyyy}`;
-        const promptCode = (dailyPrompt || "").toUpperCase().replace(/[^A-Z]/g, "").substring(0, 8) || "PROMPT";
-  
-        const bceCode = `${dateCode}-${promptCode}`;
-        ctx.fillText(bceCode, 260, 372);
-  
-        const imageData = canvas.toDataURL("image/png");
-        const newTab = window.open();
-        if (newTab) {
-          newTab.document.write(`
-            <html>
-              <head>
-                <title>Your Concert Ticket</title>
-                <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-                <style>
-                  body {
-                    margin: 0;
-                    background: black;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    height: 100vh;
-                  }
-                  img {
-                    width: 768px;
-                    height: auto;
-                    image-rendering: crisp-edges;
-                    font-family: 'VT323', monospace;
-                  }
-                </style>
-              </head>
-              <body>
-                <img src="${imageData}" alt="Concert Ticket" />
-              </body>
-            </html>
-          `);
-          newTab.document.close();
-          if (typeof window !== 'undefined' && window.plausible) {
-            window.plausible("Ticket Downloaded");
-          }
-        } else {
-          alert("Please allow popups to see your ticket!");
-        }
-      };
-    } catch (err) {
-      console.error("Error generating ticket:", err);
-      alert("Oops! There was a problem generating your ticket.");
-    }
-  };   
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen py-10 px-4 bg-gradient-to-b from-[#0f0f0f] to-[#1e1e1e] text-white font-sans">
@@ -734,36 +861,85 @@ const normalize = (artist) => {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
-  <button
-    onClick={handleSubmit}
-    disabled={submitted || !(headliner && opener && secondOpener)}
-    className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide transition shadow ${
-      submitted || !(headliner && opener && secondOpener)
-        ? "bg-gray-400 cursor-not-allowed text-white"
-        : "bg-black text-yellow-300 hover:bg-yellow-400 hover:text-black"
-    }`}
-  >
-    Submit Lineup
-  </button>
+          <button
+            onClick={handleSubmit}
+            disabled={submitted || !(headliner && opener && secondOpener)}
+            className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide transition shadow ${
+              submitted || !(headliner && opener && secondOpener)
+                ? "bg-gray-400 cursor-not-allowed text-white"
+                : "bg-black text-yellow-300 hover:bg-yellow-400 hover:text-black"
+            }`}
+          >
+            Submit Lineup
+          </button>
+          <button
+  onClick={async () => {
+    if (typeof window !== 'undefined' && window.plausible) {
+      window.plausible("Download Lineup");
+    }    
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+  
+    const background = new Image();
+    background.src = "/bestconcertdownloadimage.png";
+    background.crossOrigin = "anonymous";
+  
+    background.onload = async () => {
+      const WIDTH = background.width;
+      const HEIGHT = background.height;
+      canvas.width = WIDTH;
+      canvas.height = HEIGHT;
+  
+      ctx.drawImage(background, 0, 0, WIDTH, HEIGHT);
+  
+      const loadImage = (src) =>
+        new Promise((resolve) => {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.src = src;
+          img.onload = () => resolve(img);
+        });
+  
+      try {
+        const [headlinerImg, openerImg, secondOpenerImg] = await Promise.all([
+          loadImage(headliner?.image),
+          loadImage(opener?.image),
+          loadImage(secondOpener?.image),
+        ]);
+  
+ctx.drawImage(headlinerImg, WIDTH / 2 - 125, HEIGHT - 660, 250, 250);
+ctx.drawImage(openerImg, WIDTH / 2 - 250, HEIGHT - 380, 200, 200);
+ctx.drawImage(secondOpenerImg, WIDTH / 2 + 50, HEIGHT - 380, 200, 200);
 
-  {submitted && (
-    <div className="flex flex-col gap-2 sm:flex-row">
-      <button
-        onClick={handleDownloadPoster}
-        className="px-5 py-2 rounded-full font-bold border-2 border-white text-white hover:bg-yellow-300 hover:text-black transition uppercase text-xs"
-      >
-        Download Lineup
-      </button>
+ctx.font = "bold 24px Arial";
+ctx.fillStyle = "#ffffff";
+ctx.textAlign = "center";
 
-      <button
-  onClick={handleDownloadTicket}
-  className="px-5 py-2 rounded-full font-bold border-2 border-white text-white hover:bg-yellow-300 hover:text-black transition uppercase text-xs"
->
-  Share Your Ticket
-</button>
-    </div>
-  )}
-</div>
+ctx.fillText(headliner?.name || "", WIDTH / 2, HEIGHT - 440 + 40);
+ctx.fillText(opener?.name || "", WIDTH / 2 - 140, HEIGHT - 160);
+ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
+
+  
+        const link = document.createElement("a");
+        link.download = "best-concert-ever.jpg";
+        link.href = canvas.toDataURL("image/jpeg", 0.95);
+        link.click();
+      } catch (err) {
+        console.error("Image download failed:", err);
+      }
+    };
+  }}
+                 
+            disabled={!submitted}
+            className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide border transition ${
+              submitted
+                ? "border-black bg-white text-black hover:bg-yellow-100"
+                : "text-gray-400 border-gray-500 cursor-not-allowed"
+            }`}
+          >
+            Download Lineup
+          </button>
+        </div>
       </div>
       
       <div
@@ -988,13 +1164,11 @@ const normalize = (artist) => {
       crossOrigin="anonymous"
     />
 
+   {/* Prompt Styled Like Yesterday's Winning Lineup */}
 {dailyPrompt && (
   <div className="absolute top-[140px] left-1/2 transform -translate-x-1/2 rotate-[-2deg]">
     <div className="text-center text-red-500 text-lg font-bold uppercase border-2 border-red-500 px-6 py-2 tracking-wider whitespace-nowrap bg-black">
       {dailyPrompt}
-      <div ref={ticketRef} className="absolute left-[-9999px]">
-  <canvas id="ticketCanvas" width="768" height="512"></canvas>
-</div>
     </div>
   </div>
 )}
