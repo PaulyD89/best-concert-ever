@@ -415,24 +415,30 @@ const LineupSlot = ({ artist, label }) => (
 );
 
 export default function BestConcertEver() {
-  const [dailyPrompt, setDailyPrompt] = useState(getDailyPrompt());
+  const [dailyPrompt, setDailyPrompt] = useState(null);
 const [yesterdayPrompt, setYesterdayPrompt] = useState(getYesterdayPrompt());
 
 useEffect(() => {
-  async function updatePrompt() {
+  async function initializePromptAndLineups() {
     const today = new Date();
     const cutoff = new Date("2025-05-01T00:00:00Z");
+
+    let promptToUse = getDailyPrompt(); // fallback
+
     if (today >= cutoff) {
       const dbPrompt = await fetchDatabasePrompt();
       if (dbPrompt) {
         console.log("✅ Prompt pulled from Supabase DB:", dbPrompt);
-        setDailyPrompt(dbPrompt);
+        promptToUse = dbPrompt;
       } else {
         console.error("Falling back to old prompt logic.");
       }
     }
+
+    setDailyPrompt(promptToUse);
   }
-  updatePrompt();
+
+  initializePromptAndLineups();
 }, []);
 
 useEffect(() => {
@@ -563,56 +569,6 @@ const handleEmailSignup = async () => {
       setRecentLineups(data);
     };     
 
-    const fetchTopLineups = async () => {
-      const { data, error } = await supabase
-      .from("lineups")
-      .select("id, headliner, opener, second_opener, votes")
-      .eq("prompt", dailyPrompt);    
-
-    if (!error && data) {
-      const countMap = {};
-
-      data.forEach((lineup) => {
-        const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
-        const votes = lineup.votes || 0;
-        countMap[key] = (countMap[key] || 0) + 1 + votes;
-      });      
-
-      const allEntries = Object.entries(countMap);
-
-const voted = allEntries.filter(([_, score]) => score > 1);
-const zeroVoted = allEntries.filter(([_, score]) => score === 1);
-
-for (let i = zeroVoted.length - 1; i > 0; i--) {
-  const j = Math.floor(Math.random() * (i + 1));
-  [zeroVoted[i], zeroVoted[j]] = [zeroVoted[j], zeroVoted[i]];
-}
-
-const combined = [...voted.sort((a, b) => b[1] - a[1]), ...zeroVoted].slice(0, 10);
-
-const sortedLineups = combined.map(([key]) => {
-  const [headlinerName, openerName, secondOpenerName] = key.split("|||");
-
-  const matchingLineup = data.find(
-    (entry) =>
-      entry.headliner?.name === headlinerName &&
-      entry.opener?.name === openerName &&
-      entry.second_opener?.name === secondOpenerName
-  );
-
-  return matchingLineup ?? {
-    headliner: { name: headlinerName },
-    opener: { name: openerName },
-    second_opener: { name: secondOpenerName }
-  };
-});
-
-setLineups(sortedLineups);
-      }
-    };
-
-    fetchTopLineups().then(fetchRecentLineups);  
-
     const fetchDeepCutLineup = async () => {
       const now = new Date();
       const utcMidnight = new Date();
@@ -680,6 +636,62 @@ const normalize = (artist) => {
 
   return () => clearTimeout(bounceTimeout);
 }, []);
+
+useEffect(() => {
+  if (!dailyPrompt) return; // wait for the correct prompt
+
+  const fetchTopLineups = async () => {
+    const { data, error } = await supabase
+      .from("lineups")
+      .select("id, headliner, opener, second_opener, votes")
+      .eq("prompt", dailyPrompt);
+
+    if (!error && data) {
+      const countMap = {};
+
+      data.forEach((lineup) => {
+        const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+        const votes = lineup.votes || 0;
+        countMap[key] = (countMap[key] || 0) + 1 + votes;
+      });
+
+      const allEntries = Object.entries(countMap);
+
+      const voted = allEntries.filter(([_, score]) => score > 1);
+      const zeroVoted = allEntries.filter(([_, score]) => score === 1);
+
+      for (let i = zeroVoted.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [zeroVoted[i], zeroVoted[j]] = [zeroVoted[j], zeroVoted[i]];
+      }
+
+      const combined = [...voted.sort((a, b) => b[1] - a[1]), ...zeroVoted].slice(0, 10);
+
+      const sortedLineups = combined.map(([key]) => {
+        const [headlinerName, openerName, secondOpenerName] = key.split("|||");
+
+        const matchingLineup = data.find(
+          (entry) =>
+            entry.headliner?.name === headlinerName &&
+            entry.opener?.name === openerName &&
+            entry.second_opener?.name === secondOpenerName
+        );
+
+        return matchingLineup ?? {
+          headliner: { name: headlinerName },
+          opener: { name: openerName },
+          second_opener: { name: secondOpenerName }
+        };
+      });
+
+      setLineups(sortedLineups);
+    } else {
+      setLineups([]);
+    }
+  };
+
+  fetchTopLineups();
+}, [dailyPrompt]);
 
   useEffect(() => {
     const fetchYesterdaysWinner = async () => {
