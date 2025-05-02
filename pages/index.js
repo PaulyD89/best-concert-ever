@@ -973,7 +973,7 @@ useEffect(() => {
 
           ctx.drawImage(background, 0, 0, WIDTH, HEIGHT);
 
-          ctx.font = "bold 26px 'Courier New', monospace";
+          ctx.font = "bold 24px 'Courier New', monospace";
 ctx.fillStyle = "#000000";
 ctx.textAlign = "left";
 
@@ -986,7 +986,9 @@ ctx.fillText(`HEADLINER: ${headliner?.name?.toUpperCase() || ""}`, startX, start
 ctx.fillText(`2ND OPENER: ${secondOpener?.name?.toUpperCase() || ""}`, startX, startY + lineSpacing * 2);
 ctx.fillText(`OPENER: ${opener?.name?.toUpperCase() || ""}`, startX, startY + lineSpacing * 3);
 
-ctx.font = "bold 24px 'Courier New', monospace";
+ctx.font = "bold 22px 'Courier New', monospace";
+ctx.textAlign = "right";
+
 const today = new Date();
 const mm = String(today.getUTCMonth() + 1).padStart(2, "0");
 const dd = String(today.getUTCDate()).padStart(2, "0");
@@ -999,7 +1001,7 @@ const promptCode = (dailyPrompt || "")
 
 const bceCode = `${mm}${dd}${yyyy}-${promptCode}`;
 
-ctx.fillText(bceCode, startX, startY + lineSpacing * 5);
+ctx.fillText(bceCode, 710, 470); 
 
           const dataUrl = canvas.toDataURL("image/jpeg", 0.95);
           const newTab = window.open();
