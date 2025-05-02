@@ -567,7 +567,10 @@ const handleEmailSignup = async () => {
       }
     
       setRecentLineups(data);
-    };     
+    };
+
+    fetchRecentLineups();
+
 
     const fetchDeepCutLineup = async () => {
       const now = new Date();
