@@ -962,7 +962,7 @@ useEffect(() => {
         const ctx = canvas.getContext("2d");
 
         const background = new Image();
-        background.src = "/BCEticketstub.png"; // your ticket background
+        background.src = "/BCEticketstub.png";
         background.crossOrigin = "anonymous";
 
         background.onload = () => {
@@ -973,29 +973,33 @@ useEffect(() => {
 
           ctx.drawImage(background, 0, 0, WIDTH, HEIGHT);
 
-          ctx.font = "bold 18px 'Courier New', monospace"; // Dot-matrix style
-          ctx.fillStyle = "#000000";
-          ctx.textAlign = "left";
+          ctx.font = "bold 26px 'Courier New', monospace";
+ctx.fillStyle = "#000000";
+ctx.textAlign = "left";
 
-          ctx.fillText(`PROMPT: ${dailyPrompt?.toUpperCase() || ""}`, 30, 100);
-          ctx.fillText(`HEADLINER: ${headliner?.name?.toUpperCase() || ""}`, 30, 160);
-          ctx.fillText(`2ND OPENER: ${secondOpener?.name?.toUpperCase() || ""}`, 30, 220);
-          ctx.fillText(`OPENER: ${opener?.name?.toUpperCase() || ""}`, 30, 280);
+const startX = 40;
+let startY = 120;
+const lineSpacing = 70;
 
-          const today = new Date();
-          const mm = String(today.getUTCMonth() + 1).padStart(2, "0");
-          const dd = String(today.getUTCDate()).padStart(2, "0");
-          const yyyy = today.getUTCFullYear();
+ctx.fillText(`PROMPT: ${dailyPrompt?.toUpperCase() || ""}`, startX, startY);
+ctx.fillText(`HEADLINER: ${headliner?.name?.toUpperCase() || ""}`, startX, startY + lineSpacing);
+ctx.fillText(`2ND OPENER: ${secondOpener?.name?.toUpperCase() || ""}`, startX, startY + lineSpacing * 2);
+ctx.fillText(`OPENER: ${opener?.name?.toUpperCase() || ""}`, startX, startY + lineSpacing * 3);
+
+ctx.font = "bold 24px 'Courier New', monospace";
+const today = new Date();
+const mm = String(today.getUTCMonth() + 1).padStart(2, "0");
+const dd = String(today.getUTCDate()).padStart(2, "0");
+const yyyy = today.getUTCFullYear();
 
 const promptCode = (dailyPrompt || "")
-  .replace(/[^a-zA-Z]/g, "") // Remove anything not A-Z or a-z
+  .replace(/[^a-zA-Z]/g, "")
   .toUpperCase()
   .substring(0, 8);
 
 const bceCode = `${mm}${dd}${yyyy}-${promptCode}`;
 
-ctx.fillText(bceCode, 30, 340); // X,Y position - adjust if needed
-
+ctx.fillText(bceCode, startX, startY + lineSpacing * 5);
 
           const dataUrl = canvas.toDataURL("image/jpeg", 0.95);
           const newTab = window.open();
