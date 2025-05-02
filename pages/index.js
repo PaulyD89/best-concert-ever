@@ -611,8 +611,6 @@ setLineups(sortedLineups);
       }
     };
 
-    fetchTopLineups().then(fetchRecentLineups);  
-
     const fetchDeepCutLineup = async () => {
       const now = new Date();
       const utcMidnight = new Date();
@@ -716,6 +714,17 @@ const normalize = (artist) => {
   
     fetchYesterdaysWinner();
   }, []);  
+
+  useEffect(() => {
+    if (!dailyPrompt) return;
+  
+    const fetchLineups = async () => {
+      await fetchTopLineups();
+      await fetchRecentLineups();
+    };
+  
+    fetchLineups();
+  }, [dailyPrompt]);  
 
   const [headliner, setHeadliner] = useState(null);
   const [opener, setOpener] = useState(null);
