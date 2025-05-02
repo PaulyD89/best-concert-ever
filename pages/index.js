@@ -740,15 +740,6 @@ useEffect(() => {
   const [secondOpener, setSecondOpener] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
-  useEffect(() => {
-    if (!dailyPrompt) return;
-    
-    const hasSubmitted = localStorage.getItem(`bce-submitted-${dailyPrompt}`);
-    if (hasSubmitted) {
-      setSubmitted(true);
-    }
-  }, [dailyPrompt]);  
-
   const handleSubmit = async () => {
     if (headliner && opener && secondOpener) {
       if (!localStorage.getItem("bce_user_id")) {
@@ -793,7 +784,6 @@ useEffect(() => {
         window.plausible("Submit Lineup");
       }
       setSubmitted(true);
-      localStorage.setItem(`bce-submitted-${dailyPrompt}`, "true");
       setShowVotePrompt(true);
       console.log("Lineup submitted:", { headliner, opener, secondOpener });
       
@@ -888,149 +878,86 @@ useEffect(() => {
           <LineupSlot artist={headliner} label="Headliner" />
         </div>
 
-        {submitted ? (
-  <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
-    {/* Download Lineup Button */}
-    <button
-      onClick={async () => {
-        if (typeof window !== 'undefined' && window.plausible) {
-          window.plausible("Download Lineup");
-        }
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-      
-        const background = new Image();
-        background.src = "/bestconcertdownloadimage.png";
-        background.crossOrigin = "anonymous";
-      
-        background.onload = async () => {
-          const WIDTH = background.width;
-          const HEIGHT = background.height;
-          canvas.width = WIDTH;
-          canvas.height = HEIGHT;
-      
-          ctx.drawImage(background, 0, 0, WIDTH, HEIGHT);
-      
-          const loadImage = (src) =>
-            new Promise((resolve) => {
-              const img = new Image();
-              img.crossOrigin = "anonymous";
-              img.src = src;
-              img.onload = () => resolve(img);
-            });
-      
-          try {
-            const [headlinerImg, openerImg, secondOpenerImg] = await Promise.all([
-              loadImage(headliner?.image),
-              loadImage(opener?.image),
-              loadImage(secondOpener?.image),
-            ]);
-      
-            ctx.drawImage(headlinerImg, WIDTH / 2 - 125, HEIGHT - 660, 250, 250);
-            ctx.drawImage(openerImg, WIDTH / 2 - 250, HEIGHT - 380, 200, 200);
-            ctx.drawImage(secondOpenerImg, WIDTH / 2 + 50, HEIGHT - 380, 200, 200);
-      
-            ctx.font = "bold 24px Arial";
-            ctx.fillStyle = "#ffffff";
-            ctx.textAlign = "center";
-      
-            ctx.fillText(headliner?.name || "", WIDTH / 2, HEIGHT - 440 + 40);
-            ctx.fillText(opener?.name || "", WIDTH / 2 - 140, HEIGHT - 160);
-            ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
-      
-            const link = document.createElement("a");
-            link.download = "best-concert-ever.jpg";
-            link.href = canvas.toDataURL("image/jpeg", 0.95);
-            link.click();
-          } catch (err) {
-            console.error("Image download failed:", err);
-          }
-        };
-      }}
-      
-      className="w-40 px-6 py-2 rounded-full font-bold uppercase tracking-wide border border-black bg-white text-black hover:bg-yellow-100 transition"
-    >
-      Download Lineup
-    </button>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
+          <button
+            onClick={handleSubmit}
+            disabled={submitted || !(headliner && opener && secondOpener)}
+            className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide transition shadow ${
+              submitted || !(headliner && opener && secondOpener)
+                ? "bg-gray-400 cursor-not-allowed text-white"
+                : "bg-black text-yellow-300 hover:bg-yellow-400 hover:text-black"
+            }`}
+          >
+            Submit Lineup
+          </button>
+          <button
+  onClick={async () => {
+    if (typeof window !== 'undefined' && window.plausible) {
+      window.plausible("Download Lineup");
+    }    
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+  
+    const background = new Image();
+    background.src = "/bestconcertdownloadimage.png";
+    background.crossOrigin = "anonymous";
+  
+    background.onload = async () => {
+      const WIDTH = background.width;
+      const HEIGHT = background.height;
+      canvas.width = WIDTH;
+      canvas.height = HEIGHT;
+  
+      ctx.drawImage(background, 0, 0, WIDTH, HEIGHT);
+  
+      const loadImage = (src) =>
+        new Promise((resolve) => {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.src = src;
+          img.onload = () => resolve(img);
+        });
+  
+      try {
+        const [headlinerImg, openerImg, secondOpenerImg] = await Promise.all([
+          loadImage(headliner?.image),
+          loadImage(opener?.image),
+          loadImage(secondOpener?.image),
+        ]);
+  
+ctx.drawImage(headlinerImg, WIDTH / 2 - 125, HEIGHT - 660, 250, 250);
+ctx.drawImage(openerImg, WIDTH / 2 - 250, HEIGHT - 380, 200, 200);
+ctx.drawImage(secondOpenerImg, WIDTH / 2 + 50, HEIGHT - 380, 200, 200);
 
-    {/* Share My Ticket Button */}
-    <button
-      onClick={async () => {
-        if (typeof window !== 'undefined' && window.plausible) {
-          window.plausible("Share Ticket");
-        }
-      
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-      
-        const background = new Image();
-        background.src = "/BCEticketstub.png"; 
-        background.crossOrigin = "anonymous";
-      
-        background.onload = () => {
-          const WIDTH = background.width;
-          const HEIGHT = background.height;
-          canvas.width = WIDTH;
-          canvas.height = HEIGHT;
-      
-          ctx.drawImage(background, 0, 0, WIDTH, HEIGHT);
-      
-          ctx.fillStyle = "#000000";
-          ctx.textAlign = "left";
-      
-          ctx.font = "bold 28px 'Courier New', monospace";
-          ctx.fillText(`${dailyPrompt?.toUpperCase() || ""}`, 155, 100);  // Prompt title
-          ctx.fillText(`${headliner?.name?.toUpperCase() || ""}`, 185, 180);  // Headliner
-          ctx.fillText(`${secondOpener?.name?.toUpperCase() || ""}`, 205, 260);  // 2nd Opener
-          ctx.fillText(`${opener?.name?.toUpperCase() || ""}`, 170, 340);  // Opener
+ctx.font = "bold 24px Arial";
+ctx.fillStyle = "#ffffff";
+ctx.textAlign = "center";
 
-          ctx.font = "bold 22px 'Courier New', monospace";
-          ctx.textAlign = "right";
-      
-          const today = new Date();
-          const mm = String(today.getUTCMonth() + 1).padStart(2, "0");
-          const dd = String(today.getUTCDate()).padStart(2, "0");
-          const yyyy = today.getUTCFullYear();
-      
-          const promptCode = (dailyPrompt || "")
-            .replace(/[^a-zA-Z]/g, "")   // Remove non-letters
-            .toUpperCase()
-            .substring(0, 8);             // Keep it short
-      
-          const bceCode = `${mm}${dd}${yyyy}-${promptCode}`;
-      
-          ctx.font = "bold 22px 'Courier New', monospace";
-          ctx.textAlign = "right";
-          ctx.fillText(bceCode, 690, HEIGHT - 90);
+ctx.fillText(headliner?.name || "", WIDTH / 2, HEIGHT - 440 + 40);
+ctx.fillText(opener?.name || "", WIDTH / 2 - 140, HEIGHT - 160);
+ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 
-          const dataUrl = canvas.toDataURL("image/jpeg", 0.95);
-          const newTab = window.open();
-          if (newTab) {
-            newTab.document.body.innerHTML = `<img src="${dataUrl}" style="width:100%;height:auto;"/>`;
-          }
-        };
-      }}      
-
-      className="w-40 px-6 py-2 rounded-full font-bold uppercase tracking-wide border border-black bg-white text-black hover:bg-yellow-100 transition"
-    >
-      Share My Ticket
-    </button>
-  </div>
-) : (
-  <div className="flex justify-center mt-6">
-    <button
-      onClick={handleSubmit}
-      disabled={!(headliner && opener && secondOpener)}
-      className={`w-40 px-6 py-2 rounded-full font-bold uppercase tracking-wide transition shadow ${
-        !(headliner && opener && secondOpener)
-          ? "bg-gray-400 cursor-not-allowed text-white"
-          : "bg-black text-yellow-300 hover:bg-yellow-400 hover:text-black"
-      }`}
-    >
-      Submit Lineup
-    </button>
-  </div>
-)}
+  
+        const link = document.createElement("a");
+        link.download = "best-concert-ever.jpg";
+        link.href = canvas.toDataURL("image/jpeg", 0.95);
+        link.click();
+      } catch (err) {
+        console.error("Image download failed:", err);
+      }
+    };
+  }}
+                 
+            disabled={!submitted}
+            className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide border transition ${
+              submitted
+                ? "border-black bg-white text-black hover:bg-yellow-100"
+                : "text-gray-400 border-gray-500 cursor-not-allowed"
+            }`}
+          >
+            Download Lineup
+          </button>
+        </div>
       </div>
       
       <div
