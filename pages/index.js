@@ -278,7 +278,7 @@ if (savedPrompt && savedPrompt !== dailyPrompt) {
       const { data, error } = await supabase
         .from("lineups")
         .select("id, headliner, opener, second_opener, votes, created_at")
-        .eq("prompt", dailyPrompt)
+        .ilike("prompt", `%${dailyPrompt}%`)
         .order("created_at", { ascending: false })
         .limit(5); // Only get the newest 5 directly
     
@@ -295,7 +295,7 @@ if (savedPrompt && savedPrompt !== dailyPrompt) {
       const { data, error } = await supabase
       .from("lineups")
       .select("id, headliner, opener, second_opener, votes")
-      .eq("prompt", dailyPrompt);    
+      .ilike("prompt", `%${dailyPrompt}%`)  
 
     if (!error && data) {
       const countMap = {};
@@ -351,7 +351,7 @@ setLineups(sortedLineups);
       const { data, error } = await supabase
         .from("lineups")
         .select("id, headliner, opener, second_opener, votes")
-        .eq("prompt", dailyPrompt);
+        .ilike("prompt", `%${dailyPrompt}%`)
 
       if (error || !data) return;
 
@@ -412,7 +412,7 @@ const normalize = (artist) => {
       const { data, error } = await supabase
         .from("lineups")
         .select("headliner, opener, second_opener, votes")
-        .eq("prompt", yesterdayPrompt);
+        .ilike("prompt", `%${yesterdayPrompt}%`)
   
       if (error || !data) return;
   
