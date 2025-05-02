@@ -436,6 +436,17 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
+  if (!dailyPrompt) return;
+
+  const fetchLineups = async () => {
+    await fetchTopLineups();
+    await fetchRecentLineups();
+  };
+
+  fetchLineups();
+}, [dailyPrompt]);
+
+useEffect(() => {
   async function updateYesterdayPrompt() {
     const today = new Date();
     const cutoff = new Date("2025-05-01T00:00:00Z");
@@ -638,8 +649,6 @@ const sortedLineups = combined.map(([key]) => {
 setLineups(sortedLineups);
       }
     };
-
-    fetchTopLineups().then(fetchRecentLineups);  
 
     const fetchDeepCutLineup = async () => {
       const now = new Date();
