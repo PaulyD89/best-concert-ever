@@ -442,6 +442,29 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
+  if (!dailyPrompt) return; // Don't run until dailyPrompt is ready
+
+  const fetchRecentLineups = async () => {
+    const { data, error } = await supabase
+      .from("lineups")
+      .select("id, headliner, opener, second_opener, votes, created_at")
+      .eq("prompt", dailyPrompt)
+      .order("created_at", { ascending: false })
+      .limit(5);
+
+    if (error || !data) {
+      console.error("Error fetching recent lineups:", error);
+      setRecentLineups([]);
+      return;
+    }
+
+    setRecentLineups(data);
+  };
+
+  fetchRecentLineups();
+}, [dailyPrompt]);
+
+useEffect(() => {
   async function updateYesterdayPrompt() {
     const today = new Date();
     const cutoff = new Date("2025-05-01T00:00:00Z");
@@ -551,26 +574,6 @@ const handleEmailSignup = async () => {
     }, 10000);
 
     fetchUserStats();
-
-    const fetchRecentLineups = async () => {
-      const { data, error } = await supabase
-        .from("lineups")
-        .select("id, headliner, opener, second_opener, votes, created_at")
-        .eq("prompt", dailyPrompt)
-        .order("created_at", { ascending: false })
-        .limit(5); // Only get the newest 5 directly
-    
-      if (error || !data) {
-        console.error("Error fetching recent lineups:", error);
-        setRecentLineups([]);
-        return;
-      }
-    
-      setRecentLineups(data);
-    };
-
-    fetchRecentLineups();
-
 
     const fetchDeepCutLineup = async () => {
       const now = new Date();
