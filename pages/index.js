@@ -333,63 +333,6 @@ function getYesterdayPrompt() {
   return prompts[Math.abs(hash) % prompts.length];
 }
 
-function createShareTicket(prompt, headliner, secondOpener, opener, code) {
-  if (typeof document !== "undefined") {
-    // all your existing code stays here
-    // create div, image, link, style, insert into top10Container
-  }
-  // Prevent duplicates
-  if (document.getElementById('shareTicketDiv')) return;
-
-  const shareTicketDiv = document.createElement('div');
-  shareTicketDiv.id = 'shareTicketDiv';
-  shareTicketDiv.style.opacity = 0;
-  shareTicketDiv.style.transition = 'opacity 0.5s';
-  shareTicketDiv.style.textAlign = 'center';
-  shareTicketDiv.style.margin = '30px 0';
-
-  const ticketIcon = document.createElement('img');
-  ticketIcon.src = '/ticketicon.png'; // ⚡ Make sure this file exists!
-  ticketIcon.alt = 'Ticket Icon';
-  ticketIcon.style.width = '50px';
-  ticketIcon.style.marginBottom = '10px';
-  ticketIcon.style.animation = 'bounce 1s infinite';
-
-  const shareLink = document.createElement('a');
-  shareLink.href = `/ticket.html?prompt=${encodeURIComponent(prompt)}&headliner=${encodeURIComponent(headliner)}&secondOpener=${encodeURIComponent(secondOpener)}&opener=${encodeURIComponent(opener)}&code=${encodeURIComponent(code)}`;
-  shareLink.target = '_blank';
-  shareLink.style.display = 'block';
-  shareLink.style.marginTop = '8px';
-  shareLink.style.fontWeight = 'bold';
-  shareLink.style.fontSize = '18px';
-  shareLink.style.color = 'yellow';
-  shareLink.innerText = 'Share Your Ticket';
-
-  shareTicketDiv.appendChild(ticketIcon);
-  shareTicketDiv.appendChild(shareLink);
-
-  const insertPoint = document.getElementById('top10Container'); // 👈 Your "Today's Top 10" outer box must have id="top10Container"
-  insertPoint.parentNode.insertBefore(shareTicketDiv, insertPoint);
-
-  setTimeout(() => {
-    shareTicketDiv.style.opacity = 1;
-  }, 100);
-}
-
-// ====== CSS animation for bouncing ticket icon ======
-const style = document.createElement('style');
-style.innerHTML = `
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-}
-`;
-document.head.appendChild(style);
-
 const ArtistSearch = ({ label, onSelect, disabled }) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -822,13 +765,6 @@ useEffect(() => {
         alert("You've already submitted a lineup for today's prompt!");
         return;
       }
-
-const today = new Date();
-const month = String(today.getMonth() + 1).padStart(2, '0');
-const day = String(today.getDate()).padStart(2, '0');
-const year = today.getFullYear();
-const shortPrompt = dailyPrompt.replace(/[^A-Za-z0-9]/g, '').substring(0, 8).toUpperCase();
-const lineupCode = `${month}${day}${year}-${shortPrompt}`;
   
       const { error } = await supabase.from("lineups").insert([
         {
@@ -837,7 +773,6 @@ const lineupCode = `${month}${day}${year}-${shortPrompt}`;
           opener,
           second_opener: secondOpener,
           user_id: userId,
-          lineup_code: lineupCode,
         },
       ]);
   
@@ -846,8 +781,6 @@ const lineupCode = `${month}${day}${year}-${shortPrompt}`;
         alert("There was an error submitting your lineup.");
         return;
       }
-
-      createShareTicket(dailyPrompt, headliner, secondOpener, opener, lineupCode);
   
       if (typeof window !== 'undefined' && window.plausible) {
         window.plausible("Submit Lineup");
@@ -1044,7 +977,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   Sign Up for Daily Puzzles & Winners
 </div>
 
-<div id="top10Container" className="mt-12 flex justify-center items-center w-full">
+      <div id="top-10-section" className="mt-12 flex justify-center items-center w-full">
         <div className="relative w-full max-w-md text-center">
           <div className="absolute inset-0 rounded-xl border-2 border-yellow-400 animate-pulse pointer-events-none"></div>
           <div className="relative bg-black rounded-xl p-6 border-2 border-yellow-400">
