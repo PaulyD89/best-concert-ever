@@ -334,6 +334,10 @@ function getYesterdayPrompt() {
 }
 
 function createShareTicket(prompt, headliner, secondOpener, opener, code) {
+  if (typeof document !== "undefined") {
+    // all your existing code stays here
+    // create div, image, link, style, insert into top10Container
+  }
   // Prevent duplicates
   if (document.getElementById('shareTicketDiv')) return;
 
