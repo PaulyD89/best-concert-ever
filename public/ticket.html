@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Best Concert Ever Ticket</title>
+        <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+        <style>
+          body {
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+          }
+        </style>
+      </head>      
+<body>
+
+<canvas id="ticketCanvas" width="1536" height="1024"></canvas>
+
+<script>
+// ========== Helper to read URL params ==========
+function getQueryParam(param) {
+  return new URLSearchParams(window.location.search).get(param) || '';
+}
+
+// ========== Grab lineup data from URL ==========
+const promptText = getQueryParam('prompt');
+const headlinerText = getQueryParam('headliner');
+const secondOpenerText = getQueryParam('secondOpener');
+const openerText = getQueryParam('opener');
+const barcodeCodeText = getQueryParam('code');
+
+// ========== Setup Canvas ==========
+const canvas = document.getElementById('ticketCanvas');
+const ctx = canvas.getContext('2d');
+
+// Load ticket background image
+const ticket = new Image();
+ticket.src = 'BCEticketstub.png'; // Make sure this file is available in the same folder or correct the path
+
+ticket.onload = () => {
+  // Set canvas size to match background image
+  canvas.width = ticket.width;
+  canvas.height = ticket.height;
+
+  // Draw background
+  ctx.drawImage(ticket, 0, 0);
+
+  // Set text style
+  ctx.font = '48px "Share Tech Mono", monospace';
+  ctx.fillStyle = 'black';
+  ctx.textBaseline = 'top';
+
+  // Draw each text field at pre-measured locations
+  ctx.fillText(promptText.toUpperCase(), 245, 283);         // Prompt
+  ctx.fillText(headlinerText.toUpperCase(), 370, 371);       // Headliner
+  ctx.fillText(secondOpenerText.toUpperCase(), 396, 461);    // 2nd Opener
+  ctx.fillText(openerText.toUpperCase(), 258, 558);          // Opener
+  ctx.fillText(barcodeCodeText.toUpperCase(), 153, 659);     // Code under barcode
+};
+</script>
+
+</body>
+</html>
