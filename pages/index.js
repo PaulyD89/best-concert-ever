@@ -699,41 +699,43 @@ useEffect(() => {
   fetchTopLineups();
 }, [dailyPrompt]);
 
-  useEffect(() => {
-    const fetchYesterdaysWinner = async () => {
-      const { data, error } = await supabase
-        .from("lineups")
-        .select("headliner, opener, second_opener, votes")
-        .eq("prompt", yesterdayPrompt);
-  
-      if (error || !data) return;
-  
-      const countMap = {};
-  
-      data.forEach((lineup) => {
-        const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
-        const votes = lineup.votes || 0;
-        countMap[key] = (countMap[key] || 0) + 1 + votes;
-      });      
-  
-      const maxCount = Math.max(...Object.values(countMap));
-      const topLineups = Object.entries(countMap)
-        .filter(([_, count]) => count === maxCount)
-        .map(([key]) => {
-          const [headliner, opener, second_opener] = key.split("|||");
-          return {
-            headliner: data.find(d => d.headliner?.name === headliner)?.headliner,
-            opener: data.find(d => d.opener?.name === opener)?.opener,
-            second_opener: data.find(d => d.second_opener?.name === second_opener)?.second_opener
-          };
-        });
-  
-      const winner = topLineups[Math.floor(Math.random() * topLineups.length)];
-      setYesterdaysWinner(winner);
-    };
-  
-    fetchYesterdaysWinner();
-  }, []);  
+useEffect(() => {
+  if (!yesterdayPrompt) return; // don't run until it's ready
+
+  const fetchYesterdaysWinner = async () => {
+    const { data, error } = await supabase
+      .from("lineups")
+      .select("headliner, opener, second_opener, votes")
+      .eq("prompt", yesterdayPrompt);
+
+    if (error || !data) return;
+
+    const countMap = {};
+
+    data.forEach((lineup) => {
+      const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+      const votes = lineup.votes || 0;
+      countMap[key] = (countMap[key] || 0) + 1 + votes;
+    });
+
+    const maxCount = Math.max(...Object.values(countMap));
+    const topLineups = Object.entries(countMap)
+      .filter(([_, count]) => count === maxCount)
+      .map(([key]) => {
+        const [headliner, opener, second_opener] = key.split("|||");
+        return {
+          headliner: data.find(d => d.headliner?.name === headliner)?.headliner,
+          opener: data.find(d => d.opener?.name === opener)?.opener,
+          second_opener: data.find(d => d.second_opener?.name === second_opener)?.second_opener
+        };
+      });
+
+    const winner = topLineups[Math.floor(Math.random() * topLineups.length)];
+    setYesterdaysWinner(winner);
+  };
+
+  fetchYesterdaysWinner();
+}, [yesterdayPrompt]); // <-- dependency on yesterdayPrompt 
 
   const [headliner, setHeadliner] = useState(null);
   const [opener, setOpener] = useState(null);
