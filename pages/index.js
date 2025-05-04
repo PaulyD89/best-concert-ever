@@ -1032,7 +1032,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
                   background.onload = () => {
                     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
                     ctx.fillStyle = 'black';
-                    ctx.font = '32px "Courier New", monospace';
+                    ctx.font = '32px "OCR A Std", monospace';
                     ctx.textAlign = 'left';
                     ctx.textBaseline = 'top';
       
