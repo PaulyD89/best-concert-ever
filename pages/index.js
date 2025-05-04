@@ -423,6 +423,14 @@ useEffect(() => {
     const today = new Date();
     const cutoff = new Date("2025-05-01T00:00:00Z");
 
+    const todayDateString = today.toISOString().split('T')[0];
+    const storedPromptDate = localStorage.getItem('lastPromptDate');
+
+    if (storedPromptDate !== todayDateString) {
+      localStorage.removeItem('ticketReadyToday');
+      localStorage.setItem('lastPromptDate', todayDateString);
+    }
+
     let promptToUse = getDailyPrompt(); // fallback
 
     if (today >= cutoff) {
@@ -439,6 +447,13 @@ useEffect(() => {
   }
 
   initializePromptAndLineups();
+}, []);
+
+useEffect(() => {
+  const storedTicketReady = localStorage.getItem('ticketReadyToday') === 'true';
+  if (storedTicketReady) {
+    setTicketReady(true);
+  }
 }, []);
 
 useEffect(() => {
@@ -741,6 +756,7 @@ useEffect(() => {
   const [opener, setOpener] = useState(null);
   const [secondOpener, setSecondOpener] = useState(null);
   const [submitted, setSubmitted] = useState(false);
+  const [ticketReady, setTicketReady] = useState(false);
 
   const handleSubmit = async () => {
     if (headliner && opener && secondOpener) {
@@ -787,8 +803,9 @@ useEffect(() => {
       }
       setSubmitted(true);
       setShowVotePrompt(true);
-      console.log("Lineup submitted:", { headliner, opener, secondOpener });
-      
+      setTicketReady(true);
+      localStorage.setItem('ticketReadyToday', 'true');
+      console.log("Lineup submitted:", { headliner, opener, secondOpener });      
     }
   };  
 
@@ -976,6 +993,73 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 <div className="mb-8 text-sm text-gray-300 underline cursor-pointer hover:text-white" onClick={() => setShowEmailSignup(true)}>
   Sign Up for Daily Puzzles & Winners
 </div>
+
+{ticketReady && (
+  <div className="flex flex-col items-center my-6 animate-fade-in">
+    <button
+      onClick={async () => {
+        const today = new Date();
+        const formattedDate = String(today.getMonth() + 1).padStart(2, '0') + String(today.getDate()).padStart(2, '0') + today.getFullYear();
+        const trimmedPrompt = (dailyPrompt || "").replace(/\s+/g, "").substring(0, 7).toUpperCase();
+        const barcodeCodeTextFinal = `${formattedDate}-${trimmedPrompt}`;
+      
+        const win = window.open("", "_blank");
+        if (!win) return;
+      
+        setTimeout(() => {
+          win.document.write(`
+            <html>
+              <head>
+                <title>Your BCE Ticket</title>
+              </head>
+              <body style="margin:0;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:black;">
+                <canvas id="ticketCanvas" width="1536" height="1024"></canvas>
+                <button id="downloadBtn" style="margin-top:20px;padding:10px 20px;font-size:18px;background:yellow;border:none;border-radius:5px;cursor:pointer;">Download Ticket</button>
+                <script>
+                  const canvas = document.getElementById('ticketCanvas');
+                  const ctx = canvas.getContext('2d');
+                  const background = new Image();
+                  background.src = '/BCEticketstub.png';
+                  background.onload = () => {
+                    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = 'black';
+                    ctx.font = '32px "Courier New", monospace';
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'top';
+      
+                    const promptText = "${(dailyPrompt || "").toUpperCase().replace(/"/g, '\\"')}";
+                    const headlinerText = "${(headliner?.name || "").toUpperCase().replace(/"/g, '\\"')}";
+                    const secondOpenerText = "${(secondOpener?.name || "").toUpperCase().replace(/"/g, '\\"')}";
+                    const openerText = "${(opener?.name || "").toUpperCase().replace(/"/g, '\\"')}";
+                    const barcodeCodeText = "${barcodeCodeTextFinal.replace(/"/g, '\\"')}";
+      
+                    ctx.fillText(promptText, 245, 290);
+                    ctx.fillText(headlinerText, 370, 378);
+                    ctx.fillText(secondOpenerText, 396, 468);
+                    ctx.fillText(openerText, 258, 565);
+                    ctx.fillText(barcodeCodeText, 153, 666);
+                  };
+      
+                  document.getElementById('downloadBtn').onclick = () => {
+                    const link = document.createElement('a');
+                    link.download = 'BCE-ticket.jpg';
+                    link.href = canvas.toDataURL('image/jpeg', 0.95);
+                    link.click();
+                  };
+                </script>
+              </body>
+            </html>
+          `);
+          win.document.close(); // Very important to trigger proper rendering
+        }, 0);
+      }}              
+      
+      className="flex items-center space-x-2 bg-black text-cyan-400 font-bold px-6 py-3 rounded-full border-2 border-cyan-400 hover:text-white hover:border-white hover:shadow-lg transition-all duration-300 shadow-[0_0_15px_rgba(0,255,255,0.7)] uppercase tracking-widest"
+>
+  <span>🎟️ Share Your Ticket</span>
+</button>
+  </div>
+)}
 
       <div id="top-10-section" className="mt-12 flex justify-center items-center w-full">
         <div className="relative w-full max-w-md text-center">
@@ -1345,6 +1429,15 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     </a>
   </div>
 </div>
+<style jsx global>{`
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .animate-fade-in {
+    animation: fade-in 1s ease-out forwards;
+  }
+`}</style>
 </div>
 );
 }
