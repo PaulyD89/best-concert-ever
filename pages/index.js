@@ -1003,10 +1003,14 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   <div className="flex flex-col items-center my-6 animate-fade-in">
     <button
       onClick={async () => {
+        if (typeof window !== "undefined" && window.plausible) {
+          window.plausible("share_ticket");
+        }
+      
         const today = new Date();
         const formattedDate = String(today.getMonth() + 1).padStart(2, '0') + String(today.getDate()).padStart(2, '0') + today.getFullYear();
         const trimmedPrompt = (dailyPrompt || "").replace(/\s+/g, "").substring(0, 7).toUpperCase();
-        const barcodeCodeTextFinal = `${formattedDate}-${trimmedPrompt}`;
+        const barcodeCodeTextFinal = `${formattedDate}-${trimmedPrompt}`;      
       
         const win = window.open("", "_blank");
         if (!win) return;
