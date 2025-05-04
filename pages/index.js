@@ -805,7 +805,12 @@ useEffect(() => {
       setShowVotePrompt(true);
       setTicketReady(true);
       localStorage.setItem('ticketReadyToday', 'true');
-      console.log("Lineup submitted:", { headliner, opener, secondOpener });      
+      setTicketReady(true);
+      localStorage.setItem('ticketReadyToday', 'true');
+      localStorage.setItem('savedHeadliner', headliner?.name || "");
+      localStorage.setItem('savedSecondOpener', secondOpener?.name || "");
+      localStorage.setItem('savedOpener', opener?.name || "");
+      console.log("Lineup submitted:", { headliner, opener, secondOpener });    
     }
   };  
 
@@ -1028,9 +1033,9 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
                     ctx.textBaseline = 'top';
       
                     const promptText = "${(dailyPrompt || "").toUpperCase().replace(/"/g, '\\"')}";
-                    const headlinerText = "${(headliner?.name || "").toUpperCase().replace(/"/g, '\\"')}";
-                    const secondOpenerText = "${(secondOpener?.name || "").toUpperCase().replace(/"/g, '\\"')}";
-                    const openerText = "${(opener?.name || "").toUpperCase().replace(/"/g, '\\"')}";
+                    const headlinerText = (localStorage.getItem('savedHeadliner') || "").toUpperCase();
+                    const secondOpenerText = (localStorage.getItem('savedSecondOpener') || "").toUpperCase();
+                    const openerText = (localStorage.getItem('savedOpener') || "").toUpperCase();
                     const barcodeCodeText = "${barcodeCodeTextFinal.replace(/"/g, '\\"')}";
       
                     ctx.fillText(promptText, 245, 290);
