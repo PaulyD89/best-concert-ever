@@ -734,11 +734,11 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
                     const openerText = (localStorage.getItem('savedOpener') || "").toUpperCase();
                     const barcodeCodeText = "${barcodeCodeTextFinal.replace(/"/g, '\\"')}";
       
-                    ctx.fillText(promptText, 245, 290);
-                    ctx.fillText(headlinerText, 370, 378);
-                    ctx.fillText(secondOpenerText, 396, 468);
-                    ctx.fillText(openerText, 258, 565);
-                    ctx.fillText(barcodeCodeText, 153, 666);
+                    ctx.fillText(promptText, 245, 287);
+                    ctx.fillText(headlinerText, 370, 375);
+                    ctx.fillText(secondOpenerText, 396, 465);
+                    ctx.fillText(openerText, 258, 562);
+                    ctx.fillText(barcodeCodeText, 153, 663);
                   };
       
                   document.getElementById('downloadBtn').onclick = () => {
