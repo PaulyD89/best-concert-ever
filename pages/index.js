@@ -1441,7 +1441,8 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
       />
     </a>
   </div>
-  <style jsx global>{`
+</div>
+<style jsx global>{`
   @keyframes fade-in {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -1450,7 +1451,6 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     animation: fade-in 1s ease-out forwards;
   }
 `}</style>
-</div>
 </div>
 );
 }
