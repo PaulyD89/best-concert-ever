@@ -741,6 +741,7 @@ useEffect(() => {
   const [opener, setOpener] = useState(null);
   const [secondOpener, setSecondOpener] = useState(null);
   const [submitted, setSubmitted] = useState(false);
+  const [ticketReady, setTicketReady] = useState(false);
 
   const handleSubmit = async () => {
     if (headliner && opener && secondOpener) {
@@ -787,8 +788,8 @@ useEffect(() => {
       }
       setSubmitted(true);
       setShowVotePrompt(true);
-      console.log("Lineup submitted:", { headliner, opener, secondOpener });
-      
+      setTicketReady(true);
+      console.log("Lineup submitted:", { headliner, opener, secondOpener });      
     }
   };  
 
@@ -1256,6 +1257,102 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   </div>
 )}
 
+{ticketReady && (
+  <div className="flex flex-col items-center my-6 animate-fade-in">
+    <button
+      onClick={async () => {
+        const win = window.open("", "_blank");
+        if (!win) {
+          alert("Please allow popups for this site!");
+          return;
+        }
+      
+        win.document.write(`
+          <html>
+          <head>
+            <title>Your BCE Ticket</title>
+            <style>
+              body {
+                margin: 0;
+                padding: 0;
+                background: black;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+              }
+              canvas {
+                border: 2px solid black;
+                max-width: 100%;
+                height: auto;
+              }
+              .download-btn {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: yellow;
+                color: black;
+                font-weight: bold;
+                border: none;
+                padding: 10px 20px;
+                cursor: pointer;
+                border-radius: 8px;
+                z-index: 10;
+              }
+            </style>
+          </head>
+          <body>
+            <button class="download-btn" onclick="downloadTicket()">Download Ticket</button>
+            <canvas id="ticketCanvas" width="1536" height="1024"></canvas>
+      
+            <script>
+              const canvas = document.getElementById('ticketCanvas');
+              const ctx = canvas.getContext('2d');
+      
+              const background = new Image();
+              background.src = '/BCEticketstub.png';
+      
+              background.onload = function() {
+                ctx.drawImage(background, 0, 0, 1536, 1024);
+      
+                ctx.fillStyle = 'black';
+                ctx.font = 'bold 36px monospace';
+                ctx.textAlign = 'left';
+      
+                const promptText = "${(dailyPrompt || '').toUpperCase().replace(/"/g, '\\"')}";
+                const headlinerText = "${(headliner?.name || '').toUpperCase().replace(/"/g, '\\"')}";
+                const secondOpenerText = "${(secondOpener?.name || '').toUpperCase().replace(/"/g, '\\"')}";
+                const openerText = "${(opener?.name || '').toUpperCase().replace(/"/g, '\\"')}";
+                const barcodeCodeText = "${("BCE-" + new Date().toISOString().split('T')[0].replace(/-/g, '') + "-" + (dailyPrompt || '').replace(/\\s+/g, '').substring(0,8).toUpperCase()).replace(/"/g, '\\"')}";
+      
+                ctx.fillText(promptText, 245, 283);
+                ctx.fillText(headlinerText, 370, 371);
+                ctx.fillText(secondOpenerText, 396, 461);
+                ctx.fillText(openerText, 258, 558);
+                ctx.fillText(barcodeCodeText, 153, 659);
+              };
+      
+              function downloadTicket() {
+                const link = document.createElement('a');
+                link.download = 'BCE-ticket.jpg';
+                link.href = canvas.toDataURL('image/jpeg', 0.95);
+                link.click();
+              }
+            </script>
+          </body>
+          </html>
+        `);
+      
+        win.document.close();
+      }}      
+      
+      className="flex items-center space-x-2 bg-yellow-300 text-black font-bold px-4 py-2 rounded-full border-2 border-black hover:bg-yellow-400 transition shadow-md uppercase tracking-widest"
+    >
+      <span>🎟️ Share Your Ticket</span>
+    </button>
+  </div>
+)}
+
       {/* YOUR GREATEST HITS SECTION */}
       <div className="mt-12 flex justify-center items-center w-full">
         <div className="relative w-full max-w-md text-center">
@@ -1344,6 +1441,15 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
       />
     </a>
   </div>
+  <style jsx global>{`
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .animate-fade-in {
+    animation: fade-in 1s ease-out forwards;
+  }
+`}</style>
 </div>
 </div>
 );
