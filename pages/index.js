@@ -744,6 +744,7 @@ font.load().then(function(loadedFont) {
     ctx.fillText(openerText, 258, 559);
     ctx.fillText(barcodeCodeText, 153, 660);
   };
+  });
       
                   document.getElementById('downloadBtn').onclick = () => {
                     const link = document.createElement('a');
