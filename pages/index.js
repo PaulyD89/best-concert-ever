@@ -719,27 +719,31 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
                 <script>
                   const canvas = document.getElementById('ticketCanvas');
                   const ctx = canvas.getContext('2d');
-                  const background = new Image();
-                  background.src = '/BCEticketstub.png';
-                  background.onload = () => {
-                    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-                    ctx.fillStyle = 'black';
-                    ctx.font = '32px "OCR A Std", monospace';
-                    ctx.textAlign = 'left';
-                    ctx.textBaseline = 'top';
-      
-                    const promptText = "${(dailyPrompt || "").toUpperCase().replace(/"/g, '\\"')}";
-                    const headlinerText = (localStorage.getItem('savedHeadliner') || "").toUpperCase();
-                    const secondOpenerText = (localStorage.getItem('savedSecondOpener') || "").toUpperCase();
-                    const openerText = (localStorage.getItem('savedOpener') || "").toUpperCase();
-                    const barcodeCodeText = "${barcodeCodeTextFinal.replace(/"/g, '\\"')}";
-      
-                    ctx.fillText(promptText, 245, 284);
-                    ctx.fillText(headlinerText, 370, 375);
-                    ctx.fillText(secondOpenerText, 396, 465);
-                    ctx.fillText(openerText, 258, 559);
-                    ctx.fillText(barcodeCodeText, 153, 660);
-                  };
+                  const font = new FontFace('DataErrorHoriz', 'url("/DataErrorHoriz.woff")');
+font.load().then(function(loadedFont) {
+  document.fonts.add(loadedFont);
+
+  const background = new Image();
+  background.src = '/BCEticketstub.png';
+  background.onload = () => {
+    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'black';
+    ctx.font = '32px "DataErrorHoriz"';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+
+    const promptText = "${(dailyPrompt || "").toUpperCase().replace(/"/g, '\\"')}";
+    const headlinerText = (localStorage.getItem('savedHeadliner') || "").toUpperCase();
+    const secondOpenerText = (localStorage.getItem('savedSecondOpener') || "").toUpperCase();
+    const openerText = (localStorage.getItem('savedOpener') || "").toUpperCase();
+    const barcodeCodeText = "${barcodeCodeTextFinal.replace(/"/g, '\\"')}";
+
+    ctx.fillText(promptText, 245, 284);
+    ctx.fillText(headlinerText, 370, 375);
+    ctx.fillText(secondOpenerText, 396, 465);
+    ctx.fillText(openerText, 258, 559);
+    ctx.fillText(barcodeCodeText, 153, 660);
+  };
       
                   document.getElementById('downloadBtn').onclick = () => {
                     const link = document.createElement('a');
