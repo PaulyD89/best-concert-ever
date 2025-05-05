@@ -728,7 +728,7 @@ font.load().then(function(loadedFont) {
   background.onload = () => {
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'black';
-    ctx.font = '40px "DataErrorHoriz"';
+    ctx.font = '44px "DataErrorHoriz"';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
 
