@@ -728,7 +728,7 @@ font.load().then(function(loadedFont) {
   background.onload = () => {
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'black';
-    ctx.font = '32px "DataErrorHoriz"';
+    ctx.font = '40px "DataErrorHoriz"';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
 
@@ -738,11 +738,11 @@ font.load().then(function(loadedFont) {
     const openerText = (localStorage.getItem('savedOpener') || "").toUpperCase();
     const barcodeCodeText = "${barcodeCodeTextFinal.replace(/"/g, '\\"')}";
 
-    ctx.fillText(promptText, 245, 284);
-    ctx.fillText(headlinerText, 370, 375);
-    ctx.fillText(secondOpenerText, 396, 465);
-    ctx.fillText(openerText, 258, 559);
-    ctx.fillText(barcodeCodeText, 153, 660);
+    ctx.fillText(promptText, 245, 279);
+    ctx.fillText(headlinerText, 370, 370);
+    ctx.fillText(secondOpenerText, 396, 460);
+    ctx.fillText(openerText, 258, 554);
+    ctx.fillText(barcodeCodeText, 153, 655);
   };
   });
       
