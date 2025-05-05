@@ -696,7 +696,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     <button
       onClick={async () => {
         if (typeof window !== "undefined" && window.plausible) {
-          window.plausible("share_ticket");
+          window.plausible("Share Ticket");
         }
       
         const today = new Date();
@@ -762,7 +762,7 @@ font.load().then(function(loadedFont) {
       
       className="flex items-center space-x-2 bg-black text-cyan-400 font-bold px-6 py-3 rounded-full border-2 border-cyan-400 hover:text-white hover:border-white hover:shadow-lg transition-all duration-300 shadow-[0_0_15px_rgba(0,255,255,0.7)] uppercase tracking-widest"
 >
-  <span>🎟️ Share Your Ticket</span>
+  <span>🎟️ Share My Ticket</span>
 </button>
   </div>
 )}
