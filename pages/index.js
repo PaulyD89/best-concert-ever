@@ -738,11 +738,11 @@ font.load().then(function(loadedFont) {
     const openerText = (localStorage.getItem('savedOpener') || "").toUpperCase();
     const barcodeCodeText = "${barcodeCodeTextFinal.replace(/"/g, '\\"')}";
 
-    ctx.fillText(promptText, 245, 279);
-    ctx.fillText(headlinerText, 370, 370);
-    ctx.fillText(secondOpenerText, 396, 460);
-    ctx.fillText(openerText, 258, 554);
-    ctx.fillText(barcodeCodeText, 153, 655);
+    ctx.fillText(promptText, 245, 272);
+    ctx.fillText(headlinerText, 370, 365);
+    ctx.fillText(secondOpenerText, 396, 455);
+    ctx.fillText(openerText, 258, 549);
+    ctx.fillText(barcodeCodeText, 153, 650);
   };
   });
       
