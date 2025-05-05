@@ -739,10 +739,10 @@ font.load().then(function(loadedFont) {
     const barcodeCodeText = "${barcodeCodeTextFinal.replace(/"/g, '\\"')}";
 
     ctx.fillText(promptText, 245, 271);
-    ctx.fillText(headlinerText, 366, 363);
-    ctx.fillText(secondOpenerText, 394, 455);
-    ctx.fillText(openerText, 256, 547);
-    ctx.fillText(barcodeCodeText, 151, 648);
+    ctx.fillText(headlinerText, 362, 363);
+    ctx.fillText(secondOpenerText, 392, 455);
+    ctx.fillText(openerText, 254, 546);
+    ctx.fillText(barcodeCodeText, 150, 647);
   };
   });
       
