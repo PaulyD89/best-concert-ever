@@ -692,7 +692,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 </div>
 
 {ticketReady && (
-  <div className="flex flex-col items-center my-6 animate-fade-in">
+  <div className="flex flex-col items-center my-4 animate-fade-in">
     <button
       onClick={async () => {
         if (typeof window !== "undefined" && window.plausible) {
