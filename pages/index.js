@@ -312,8 +312,6 @@ const handleEmailSignup = async () => {
       }
     };
 
-    fetchDeepCutLineup();
-
     const fetchMostVotedLineup = async () => {
       const userId = localStorage.getItem("bce_user_id");
       if (!userId) return;
@@ -404,6 +402,7 @@ useEffect(() => {
   };
 
   fetchTopLineups();
+  fetchDeepCutLineup();
 }, [dailyPrompt]);
 
 useEffect(() => {
