@@ -282,38 +282,6 @@ const handleEmailSignup = async () => {
 
     fetchUserStats();
 
-    const fetchDeepCutLineup = async () => {
-      const now = new Date();
-      const utcMidnight = new Date();
-      utcMidnight.setUTCHours(0, 0, 0, 0);
-
-      const tenHoursLater = new Date(utcMidnight.getTime() + 10 * 60 * 60 * 1000);
-
-      if (now < tenHoursLater) return;
-
-      const { data, error } = await supabase
-        .from("lineups")
-        .select("id, headliner, opener, second_opener, votes")
-        .eq("prompt", dailyPrompt);
-
-      if (error || !data) return;
-
-      const eligible = data.filter(lineup => {
-        const totalFollowers =
-          (lineup.headliner?.followers || 0) +
-          (lineup.opener?.followers || 0) +
-          (lineup.second_opener?.followers || 0);
-        return totalFollowers < 250000;
-      });
-
-      if (eligible.length > 0) {
-        const randomIndex = Math.floor(Math.random() * eligible.length);
-        setDeepCutLineup(eligible[randomIndex]);
-      }
-    };
-
-    fetchDeepCutLineup();
-
     const fetchMostVotedLineup = async () => {
       const userId = localStorage.getItem("bce_user_id");
       if (!userId) return;
@@ -404,6 +372,47 @@ useEffect(() => {
   };
 
   fetchTopLineups();
+}, [dailyPrompt]);
+
+useEffect(() => {
+  if (!dailyPrompt) return; // wait until dailyPrompt is ready
+
+  const fetchDeepCutLineup = async () => {
+    const now = new Date();
+    const utcMidnight = new Date();
+    utcMidnight.setUTCHours(0, 0, 0, 0);
+
+    const tenHoursLater = new Date(utcMidnight.getTime() + 10 * 60 * 60 * 1000);
+
+    if (now < tenHoursLater) return;
+
+    const { data, error } = await supabase
+      .from("lineups")
+      .select("id, headliner (name, followers), opener (name, followers), second_opener (name, followers), votes")
+      .eq("prompt", dailyPrompt);
+
+    if (error || !data) {
+      console.error("Error fetching deep cut lineups:", error);
+      return;
+    }
+
+    const eligible = data.filter(lineup => {
+      const totalFollowers =
+        (lineup.headliner?.followers || 0) +
+        (lineup.opener?.followers || 0) +
+        (lineup.second_opener?.followers || 0);
+      return totalFollowers < 250000;
+    });
+
+    if (eligible.length > 0) {
+      const randomIndex = Math.floor(Math.random() * eligible.length);
+      setDeepCutLineup(eligible[randomIndex]);
+    } else {
+      setDeepCutLineup(null);
+    }
+  };
+
+  fetchDeepCutLineup();
 }, [dailyPrompt]);
 
 useEffect(() => {
