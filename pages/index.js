@@ -292,9 +292,9 @@ const handleEmailSignup = async () => {
       if (now < tenHoursLater) return;
 
       const { data, error } = await supabase
-        .from("lineups")
-        .select("id, headliner, opener, second_opener, votes")
-        .eq("prompt", dailyPrompt);
+      .from("lineups")
+      .select("id, headliner (name, followers), opener (name, followers), second_opener (name, followers), votes")
+      .eq("prompt", dailyPrompt);    
 
       if (error || !data) return;
 
