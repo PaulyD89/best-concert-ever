@@ -521,7 +521,7 @@ useEffect(() => {
       if (val >= 50) return "/hitmaker-gold.png";
       if (val >= 20) return "/hitmaker-silver.png";
       if (val >= 5) return "/hitmaker-bronze.png";
-      return "/hitmaker-locked.png";
+      return "/streaker-locked.png";
     }
   
     if (type === "charttopper") {
@@ -529,7 +529,7 @@ useEffect(() => {
       if (val >= 50) return "/charttopper-gold.png";
       if (val >= 25) return "/charttopper-silver.png";
       if (val >= 10) return "/charttopper-bronze.png";
-      return "/charttopper-locked.png";
+      return "/streaker-locked.png";
     }
   
     return `/public/${type}-locked.png`;
@@ -1118,29 +1118,28 @@ font.load().then(function(loadedFont) {
   </li>
 )}
 
-
 </ul>
 {/* Awards Row */}
 <div className="flex justify-center gap-4 mt-6 mb-2">
   {["streaker", "hitmaker", "charttopper"].map((type) => {
     const isGold = getBadgeSrc(type).includes("gold");
     return (
-      <div key={type} className="relative group">
-        <img
-          src={getBadgeSrc(type)}
-          alt={`${type} badge`}
-          className={`w-20 h-20 mx-auto rounded-md object-contain ${
-            isGold ? "shadow-[0_0_12px_rgba(255,215,0,0.6)]" : ""
-          }`}
-        />
-        <div className="absolute bottom-[-20px] w-full text-xs text-white text-center opacity-80 group-hover:opacity-100 transition">
-          {type === "streaker"
-            ? "Streaker"
-            : type === "hitmaker"
-            ? "Hit Maker"
-            : "Chart Topper"}
-        </div>
-      </div>
+      <div key={type} className="flex flex-col items-center group">
+  <img
+    src={getBadgeSrc(type)}
+    alt={`${type} badge`}
+    className={`w-20 h-20 mx-auto rounded-md object-contain ${
+      isGold ? "shadow-[0_0_12px_rgba(255,215,0,0.6)]" : ""
+    }`}
+  />
+  <div className="mt-2 text-xs text-white text-center opacity-80 group-hover:opacity-100 transition">
+    {type === "streaker"
+      ? "Streaker"
+      : type === "hitmaker"
+      ? "Hit Maker"
+      : "Chart Topper"}
+  </div>
+</div>
     );
   })}
 </div>
