@@ -506,7 +506,7 @@ useEffect(() => {
   };  
 
   const getBadgeSrc = (type) => {
-    if (!userStats) return `/public/${type}-locked.png`;
+    if (!userStats) return "/streaker-locked.png";
   
     if (type === "streaker") {
       const val = userStats.longest_streak ?? 0;
