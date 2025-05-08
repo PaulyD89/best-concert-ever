@@ -519,16 +519,16 @@ useEffect(() => {
     if (type === "hitmaker") {
       const val = userStats.total_wins ?? 0;
       if (val >= 50) return "/hitmaker-gold.png";
-      if (val >= 20) return "/hitmaker-silver.png";
-      if (val >= 5) return "/hitmaker-bronze.png";
+      if (val >= 25) return "/hitmaker-silver.png";
+      if (val >= 10) return "/hitmaker-bronze.png";
       return "/streaker-locked.png";
     }
   
     if (type === "charttopper") {
       const val = userStats.total_top_10s ?? 0;
       if (val >= 50) return "/charttopper-gold.png";
-      if (val >= 25) return "/charttopper-silver.png";
-      if (val >= 10) return "/charttopper-bronze.png";
+      if (val >= 20) return "/charttopper-silver.png";
+      if (val >= 5) return "/charttopper-bronze.png";
       return "/streaker-locked.png";
     }
   
