@@ -770,7 +770,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
         try {
           await navigator.share({
             title: "Best Concert Ever",
-            text: `Check out my lineup for "${dailyPrompt}" 🎶🔥`,
+            text: `Check out my lineup for "${dailyPrompt}" 🎶🔥 What's yours? Play now: https://bestconcertevergame.com`,
             files: [file],
           });
         } catch (err) {
