@@ -724,69 +724,67 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   <div className="flex flex-col items-center my-4 animate-fade-in">
     <button
       onClick={async () => {
-        if (typeof window !== "undefined" && window.plausible) {
-          window.plausible("Share Ticket");
-        }
-      
-        const today = new Date();
-        const formattedDate = String(today.getMonth() + 1).padStart(2, '0') + String(today.getDate()).padStart(2, '0') + today.getFullYear();
-        const trimmedPrompt = (dailyPrompt || "").replace(/\s+/g, "").substring(0, 7).toUpperCase();
-        const barcodeCodeTextFinal = `${formattedDate}-${trimmedPrompt}`;      
-      
-        const win = window.open("", "_blank");
-        if (!win) return;
-      
-        setTimeout(() => {
-          win.document.write(`
-            <html>
-              <head>
-                <title>Your BCE Ticket</title>
-              </head>
-              <body style="margin:0;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:black;">
-                <canvas id="ticketCanvas" width="1536" height="1024"></canvas>
-                <button id="downloadBtn" style="margin-top:20px;padding:10px 20px;font-size:18px;background:yellow;border:none;border-radius:5px;cursor:pointer;">Download Ticket</button>
-                <script>
-                  const canvas = document.getElementById('ticketCanvas');
-                  const ctx = canvas.getContext('2d');
-                  const font = new FontFace('DataErrorHoriz', 'url("/DataErrorHoriz.woff")');
-font.load().then(function(loadedFont) {
-  document.fonts.add(loadedFont);
+  if (typeof window !== "undefined" && window.plausible) {
+    window.plausible("Share Ticket");
+  }
 
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
   const background = new Image();
-  background.src = '/BCEticketstub.png';
-  background.onload = () => {
-    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'black';
-    ctx.font = '44px "DataErrorHoriz"';
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'top';
+  background.src = "/BCEticketstub.png";
+  background.crossOrigin = "anonymous";
 
-    const promptText = "${(dailyPrompt || "").toUpperCase().replace(/"/g, '\\"')}";
-    const headlinerText = (localStorage.getItem('savedHeadliner') || "").toUpperCase();
-    const secondOpenerText = (localStorage.getItem('savedSecondOpener') || "").toUpperCase();
-    const openerText = (localStorage.getItem('savedOpener') || "").toUpperCase();
-    const barcodeCodeText = "${barcodeCodeTextFinal.replace(/"/g, '\\"')}";
+  background.onload = async () => {
+    canvas.width = background.width;
+    canvas.height = background.height;
+    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+    const font = new FontFace("DataErrorHoriz", "url(/DataErrorHoriz.woff)");
+    await font.load();
+    document.fonts.add(font);
+
+    ctx.fillStyle = "black";
+    ctx.font = '44px "DataErrorHoriz"';
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+
+    const promptText = (dailyPrompt || "").toUpperCase();
+    const headlinerText = (localStorage.getItem("savedHeadliner") || "").toUpperCase();
+    const secondOpenerText = (localStorage.getItem("savedSecondOpener") || "").toUpperCase();
+    const openerText = (localStorage.getItem("savedOpener") || "").toUpperCase();
+    const today = new Date();
+    const formattedDate = String(today.getMonth() + 1).padStart(2, "0") + String(today.getDate()).padStart(2, "0") + today.getFullYear();
+    const trimmedPrompt = promptText.replace(/\s+/g, "").substring(0, 7);
+    const barcodeCodeText = `${formattedDate}-${trimmedPrompt}`;
 
     ctx.fillText(promptText, 245, 268);
     ctx.fillText(headlinerText, 360, 359);
     ctx.fillText(secondOpenerText, 390, 451);
     ctx.fillText(openerText, 252, 542);
     ctx.fillText(barcodeCodeText, 148, 643);
+
+    canvas.toBlob(async (blob) => {
+      const file = new File([blob], "bce-ticket.jpg", { type: "image/jpeg" });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            title: "Best Concert Ever",
+            text: `Check out my lineup for "${dailyPrompt}" 🎶🔥`,
+            files: [file],
+          });
+        } catch (err) {
+          console.error("Share failed:", err);
+          alert("Sharing was cancelled or failed.");
+        }
+      } else {
+        const link = document.createElement("a");
+        link.download = "bce-ticket.jpg";
+        link.href = URL.createObjectURL(blob);
+        link.click();
+      }
+    }, "image/jpeg");
   };
-  });
-      
-                  document.getElementById('downloadBtn').onclick = () => {
-                    const link = document.createElement('a');
-                    link.download = 'BCE-ticket.jpg';
-                    link.href = canvas.toDataURL('image/jpeg', 0.95);
-                    link.click();
-                  };
-                </script>
-              </body>
-            </html>
-          `);
-          win.document.close(); // Very important to trigger proper rendering
-        }, 0);
       }}              
       
       className="flex items-center space-x-2 bg-black text-cyan-400 font-bold px-6 py-3 rounded-full border-2 border-cyan-400 hover:text-white hover:border-white hover:shadow-lg transition-all duration-300 shadow-[0_0_15px_rgba(0,255,255,0.7)] uppercase tracking-widest"
