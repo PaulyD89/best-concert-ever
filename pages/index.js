@@ -145,6 +145,7 @@ useEffect(() => {
   const storedTicketReady = localStorage.getItem('ticketReadyToday') === 'true';
   if (storedTicketReady) {
     setTicketReady(true);
+    setSubmitted(true);
   }
 }, []);
 
