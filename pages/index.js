@@ -510,6 +510,8 @@ useEffect(() => {
   
     if (type === "streaker") {
       const val = userStats.longest_streak ?? 0;
+      if (val >= 150) return "/streaker-150.png";
+      if (val >= 125) return "/streaker-125.png";
       if (val >= 100) return "/streaker-gold.png";
       if (val >= 50) return "/streaker-silver.png";
       if (val >= 25) return "/streaker-bronze.png";
@@ -518,6 +520,8 @@ useEffect(() => {
   
     if (type === "hitmaker") {
       const val = userStats.total_wins ?? 0;
+      if (val >= 100) return "/charttopper-100.png";
+      if (val >= 75) return "/charttopper-75.png";
       if (val >= 50) return "/charttopper-gold.png";
       if (val >= 20) return "/charttopper-silver.png";
       if (val >= 5) return "/charttopper-bronze.png";
@@ -526,6 +530,8 @@ useEffect(() => {
   
     if (type === "charttopper") {
       const val = userStats.total_top_10s ?? 0;
+      if (val >= 100) return "/hitmaker-100.png";
+      if (val >= 75) return "/hitmaker-75.png";
       if (val >= 50) return "/hitmaker-gold.png";
       if (val >= 25) return "/hitmaker-silver.png";
       if (val >= 10) return "/hitmaker-bronze.png";
