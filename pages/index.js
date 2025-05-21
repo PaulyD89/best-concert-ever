@@ -1126,26 +1126,51 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 {/* Awards Row */}
 <div className="flex justify-center gap-4 mt-6 mb-2">
   {["streaker", "hitmaker", "charttopper"].map((type) => {
-    const isGold = getBadgeSrc(type).includes("gold");
-    return (
-      <div key={type} className="flex flex-col items-center group">
-  <img
-    src={getBadgeSrc(type)}
-    alt={`${type} badge`}
-    className={`w-20 h-20 mx-auto rounded-md object-contain ${
-      isGold ? "shadow-[0_0_12px_rgba(255,215,0,0.6)]" : ""
-    }`}
-  />
-  <div className="mt-2 text-xs text-white text-center opacity-80 group-hover:opacity-100 transition">
-    {type === "streaker"
-      ? "Streaker"
+  const val =
+    type === "streaker"
+      ? userStats?.longest_streak ?? 0
       : type === "hitmaker"
-      ? "Hit Maker"
-      : "Chart Topper"}
-  </div>
-</div>
-    );
-  })}
+      ? userStats?.total_wins ?? 0
+      : userStats?.total_top_10s ?? 0;
+
+  const milestones = {
+    streaker: [25, 50, 100, 125, 150],
+    hitmaker: [5, 20, 50, 75, 100],
+    charttopper: [10, 25, 50, 75, 100],
+  };
+
+  const levels = milestones[type];
+  const nextLevel = levels.find((m) => val < m) || levels[levels.length - 1];
+  const progressPercent = Math.min((val / nextLevel) * 100, 100);
+
+  const badgeSrc = getBadgeSrc(type);
+  const isGold = badgeSrc.includes("gold");
+
+  return (
+    <div key={type} className="flex flex-col items-center group w-24">
+      <img
+        src={badgeSrc}
+        alt={`${type} badge`}
+        className={`w-20 h-20 mx-auto rounded-md object-contain ${
+          isGold ? "shadow-[0_0_12px_rgba(255,215,0,0.6)]" : ""
+        }`}
+      />
+      <div className="mt-2 text-xs text-white text-center opacity-80 group-hover:opacity-100 transition">
+        {type === "streaker"
+          ? "Streaker"
+          : type === "hitmaker"
+          ? "Hit Maker"
+          : "Chart Topper"}
+      </div>
+      <div className="w-full h-1 mt-2 bg-gray-800 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-lime-400 transition-all duration-500"
+          style={{ width: `${progressPercent}%` }}
+        ></div>
+      </div>
+    </div>
+  );
+})}
 </div>
 
             <div className="mt-6">
