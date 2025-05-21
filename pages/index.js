@@ -1149,20 +1149,27 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   return (
     <div key={type} className="flex flex-col items-center group w-24">
       <img
-        src={badgeSrc}
-        alt={`${type} badge`}
-        className={`w-20 h-20 mx-auto rounded-md object-contain ${
-          isGold ? "shadow-[0_0_12px_rgba(255,215,0,0.6)]" : ""
-        }`}
-      />
-      <div className="w-full h-1 mt-2 bg-gray-800 rounded-full overflow-hidden">
+  src={badgeSrc}
+  alt={`${type} badge`}
+  className={`w-20 h-20 mx-auto rounded-md object-contain ${
+    isGold ? "shadow-[0_0_12px_rgba(255,215,0,0.6)]" : ""
+  }`}
+/>
+<div className="mt-2 text-xs text-white text-center opacity-80 group-hover:opacity-100 transition">
+  {type === "streaker"
+    ? "Streaker"
+    : type === "hitmaker"
+    ? "Hit Maker"
+    : "Chart Topper"}
+</div>
+<div className="w-full h-1 mt-2 bg-gray-800 rounded-full overflow-hidden">
   <div
     className="h-full transition-all duration-500"
     style={{
       width: `${progressPercent}%`,
       background: `linear-gradient(to right, #ef4444 0%, #facc15 50%, #39FF14 100%)`,
-backgroundSize: `${100 / (progressPercent / 100)}% 100%`,
-backgroundRepeat: "no-repeat"
+      backgroundSize: `${100 / (progressPercent / 100)}% 100%`,
+      backgroundRepeat: "no-repeat"
     }}
   ></div>
 </div>
