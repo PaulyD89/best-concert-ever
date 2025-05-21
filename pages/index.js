@@ -1160,7 +1160,9 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     className="h-full transition-all duration-500"
     style={{
       width: `${progressPercent}%`,
-      background: `linear-gradient(to right, #ef4444, #facc15, #39FF14)`,
+      background: `linear-gradient(to right, #ef4444 0%, #facc15 50%, #39FF14 100%)`,
+backgroundSize: `${100 / (progressPercent / 100)}% 100%`,
+backgroundRepeat: "no-repeat"
     }}
   ></div>
 </div>
