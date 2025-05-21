@@ -1155,19 +1155,15 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
           isGold ? "shadow-[0_0_12px_rgba(255,215,0,0.6)]" : ""
         }`}
       />
-      <div className="mt-2 text-xs text-white text-center opacity-80 group-hover:opacity-100 transition">
-        {type === "streaker"
-          ? "Streaker"
-          : type === "hitmaker"
-          ? "Hit Maker"
-          : "Chart Topper"}
-      </div>
       <div className="w-full h-1 mt-2 bg-gray-800 rounded-full overflow-hidden">
-        <div
-          className="h-full bg-lime-400 transition-all duration-500"
-          style={{ width: `${progressPercent}%` }}
-        ></div>
-      </div>
+  <div
+    className="h-full transition-all duration-500"
+    style={{
+      width: `${progressPercent}%`,
+      background: `linear-gradient(to right, #ef4444, #facc15, #39FF14)`,
+    }}
+  ></div>
+</div>
     </div>
   );
 })}
