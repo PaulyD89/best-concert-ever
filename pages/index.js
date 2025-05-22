@@ -238,9 +238,9 @@ useEffect(() => {
     if (today < cutoff) return;
 
     const endDate = new Date();
-    endDate.setUTCDate(endDate.getUTCDate() - 1); // yesterday
+    endDate.setUTCDate(endDate.getUTCDate() - 1);
     const startDate = new Date(endDate);
-    startDate.setUTCDate(endDate.getUTCDate() - 5); // 6 days back
+    startDate.setUTCDate(endDate.getUTCDate() - 6);
 
     const { data: promptsData, error: promptError } = await supabase
       .from("prompts")
