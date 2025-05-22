@@ -1067,7 +1067,8 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 
 {pastWinners.length > 0 && (
   <div className="mt-6 flex justify-center items-center w-full">
-    <div className="w-full max-w-md text-center">
+  <div className="w-full max-w-md text-center bg-black border-2 border-red-400 rounded-xl p-6 shadow-md">
+    <h2 className="text-xl font-bold text-red-400 mb-4">Past Week of Winning Lineups</h2>
       <button
         onClick={() => setShowPastWinners(!showPastWinners)}
         className="text-sm text-red-300 underline hover:text-white"
@@ -1078,26 +1079,28 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
       <div
   className={`transition-all duration-500 ease-in-out overflow-hidden ${
     showPastWinners ? "max-h-[2000px] opacity-100 mt-4" : "max-h-0 opacity-0"
-  } grid gap-6`}
+  } grid gap-4`}
 >
   {pastWinners.map((winner, idx) => (
     <div
-      key={idx}
-      className="bg-black border border-red-400 rounded-lg p-4 shadow-md text-center"
-    >
+  key={idx}
+  className="flex flex-col items-center justify-center mb-6"
+>
       <div className="text-sm font-bold text-red-300 mb-2">{winner.prompt}</div>
-      <div className="flex justify-center gap-4">
-        {[winner.opener, winner.second_opener, winner.headliner].map((artist, i) => (
-          <div key={i} className="flex flex-col items-center">
-            <img
-              src={artist?.image || "/placeholder.jpg"}
-              alt={artist?.name || "Artist"}
-              className="w-16 h-16 rounded-md object-cover border border-red-400 mb-1"
-            />
-            <span className="text-xs text-white font-bold">{artist?.name || "Artist"}</span>
-          </div>
-        ))}
-      </div>
+      <div className="flex justify-between items-start gap-4 w-full">
+  {[winner.opener, winner.second_opener, winner.headliner].map((artist, i) => (
+    <div key={i} className="flex flex-col items-center w-1/3">
+      <img
+        src={artist?.image || "/placeholder.jpg"}
+        alt={artist?.name || "Artist"}
+        className="w-16 h-16 rounded-md object-cover border border-red-400 mb-1"
+      />
+      <span className="text-xs text-white font-bold text-center break-words leading-tight">
+        {artist?.name || "Artist"}
+      </span>
+    </div>
+  ))}
+</div>
     </div>
   ))}
 </div>
