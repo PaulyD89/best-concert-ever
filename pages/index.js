@@ -285,8 +285,8 @@ useEffect(() => {
 
       results.push(top[Math.floor(Math.random() * top.length)]);
     }
-
-    setPastWinners(results);
+const filteredResults = results.filter(r => r.prompt !== yesterdayPrompt);
+setPastWinners(filteredResults);
   };
 
   if (yesterdayPrompt) {
