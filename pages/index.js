@@ -1064,11 +1064,11 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
               {pastWinners.length > 0 && (
   <div className="mt-6">
     <button
-      onClick={() => setShowPastWinners(!showPastWinners)}
-      className="text-sm text-red-300 underline hover:text-white"
-    >
-      {showPastWinners ? "▲ Hide Past Week of Winning Lineups" : "▼ Past Week of Winning Lineups"}
-    </button>
+  onClick={() => setShowPastWinners(!showPastWinners)}
+  className="text-sm text-red-300 underline hover:text-white mb-3"
+>
+  {showPastWinners ? "▲ Hide Last Week's Winners" : "▼ Last Week's Winners"}
+</button>
 
     <div
       className={`transition-all duration-500 ease-in-out overflow-hidden ${
