@@ -1310,21 +1310,33 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
       </div>
       </div>
     </div>
-    <div className="mt-8 mb-4 text-center text-xs text-gray-400 flex flex-col items-center">
-    <p className="mb-1 tracking-wide text-green-400">Powered by</p>
-    <a
-      href="https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=bc22a0a934e44b2e"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="hover:opacity-80 transition"
-    >
-      <img
-        src="/spotify-logo.svg"
-        alt="Spotify"
-        className="w-24 h-auto filter drop-shadow-[0_0_6px_#1DB954] rounded-full border border-green-400 bg-black p-1"
-      />
-    </a>
-  </div>
+    <div className="w-full max-w-md mx-auto mt-8 mb-6 px-6 py-4 border-t border-gray-700 text-xs text-gray-400 flex items-center justify-between">
+  <a
+    href="https://instagram.com/bestconcertevergame"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Instagram"
+    className="hover:text-white transition"
+  >
+    <svg className="w-5 h-5 text-gray-400 hover:text-white" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M7.75 2h8.5A5.76 5.76 0 0122 7.75v8.5A5.76 5.76 0 0116.25 22h-8.5A5.76 5.76 0 012 16.25v-8.5A5.76 5.76 0 017.75 2zm0 2A3.75 3.75 0 004 7.75v8.5A3.75 3.75 0 007.75 20h8.5A3.75 3.75 0 0020 16.25v-8.5A3.75 3.75 0 0016.25 4h-8.5zM12 7a5 5 0 110 10 5 5 0 010-10zm0 2a3 3 0 100 6 3 3 0 000-6zm4.75-.9a1.1 1.1 0 110 2.2 1.1 1.1 0 010-2.2z"/>
+    </svg>
+  </a>
+
+  <span className="text-center flex-1 mx-4">© 2025 Thirty Bucks, LLC. All rights reserved.</span>
+
+  <a
+    href="https://twitter.com/bestconcertgame"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Twitter"
+    className="hover:text-white transition"
+  >
+    <svg className="w-5 h-5 text-gray-400 hover:text-white" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M22.46 6c-.77.35-1.6.59-2.47.69a4.26 4.26 0 001.86-2.36 8.48 8.48 0 01-2.7 1.03 4.23 4.23 0 00-7.3 3.86A12 12 0 013 4.89a4.22 4.22 0 001.31 5.64 4.21 4.21 0 01-1.91-.53v.05a4.24 4.24 0 003.4 4.14 4.3 4.3 0 01-1.9.07 4.25 4.25 0 003.96 2.95A8.5 8.5 0 012 19.54a12 12 0 006.29 1.84c7.55 0 11.68-6.26 11.68-11.68 0-.18-.01-.35-.02-.53A8.35 8.35 0 0024 5.6a8.4 8.4 0 01-2.54.7z"/>
+    </svg>
+  </a>
+</div>
 </div>
 <style jsx global>{`
   @keyframes fade-in {
