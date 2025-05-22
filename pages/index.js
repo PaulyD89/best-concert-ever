@@ -230,6 +230,70 @@ useEffect(() => {
   }
   updateYesterdayPrompt();
 }, []);
+
+useEffect(() => {
+  const fetchPastWinners = async () => {
+    const today = new Date();
+    const cutoff = new Date("2025-05-01T00:00:00Z");
+    if (today < cutoff) return;
+
+    const endDate = new Date();
+    endDate.setUTCDate(endDate.getUTCDate() - 1); // yesterday
+    const startDate = new Date(endDate);
+    startDate.setUTCDate(endDate.getUTCDate() - 5); // 6 days back
+
+    const { data: promptsData, error: promptError } = await supabase
+      .from("prompts")
+      .select("prompt, prompt_date")
+      .gte("prompt_date", startDate.toISOString().split("T")[0])
+      .lte("prompt_date", endDate.toISOString().split("T")[0])
+      .order("prompt_date", { ascending: false });
+
+    if (promptError || !promptsData) {
+      console.error("Failed to fetch past prompts:", promptError);
+      return;
+    }
+
+    const results = [];
+    for (const p of promptsData) {
+      const { data: lineupsData, error: lineupsError } = await supabase
+        .from("lineups")
+        .select("headliner, opener, second_opener, votes")
+        .eq("prompt", p.prompt);
+
+      if (lineupsError || !lineupsData) continue;
+
+      const countMap = {};
+      lineupsData.forEach((l) => {
+        const key = `${l.headliner?.name}|||${l.opener?.name}|||${l.second_opener?.name}`;
+        const votes = l.votes || 0;
+        countMap[key] = (countMap[key] || 0) + 1 + votes;
+      });
+
+      const maxCount = Math.max(...Object.values(countMap));
+      const top = Object.entries(countMap)
+        .filter(([_, count]) => count === maxCount)
+        .map(([key]) => {
+          const [h, o, s] = key.split("|||");
+          return {
+            prompt: p.prompt,
+            headliner: lineupsData.find(l => l.headliner?.name === h)?.headliner,
+            opener: lineupsData.find(l => l.opener?.name === o)?.opener,
+            second_opener: lineupsData.find(l => l.second_opener?.name === s)?.second_opener,
+          };
+        });
+
+      results.push(top[Math.floor(Math.random() * top.length)]);
+    }
+
+    setPastWinners(results);
+  };
+
+  if (yesterdayPrompt) {
+    fetchPastWinners();
+  }
+}, [yesterdayPrompt]);
+
   const [userStats, setUserStats] = useState(null);
   const [mostVotedLineup, setMostVotedLineup] = useState(null);
   const flyerRef = React.useRef(null);
@@ -285,6 +349,8 @@ const handleEmailSignup = async () => {
   const [deepCutLineup, setDeepCutLineup] = useState(null);
   const [recentLineups, setRecentLineups] = useState([]);
   const [yesterdaysWinner, setYesterdaysWinner] = useState(null);
+  const [pastWinners, setPastWinners] = useState([]);
+  const [showPastWinners, setShowPastWinners] = useState(false);
 
   const fetchUserStats = async () => {
     const userId = localStorage.getItem("bce_user_id");
@@ -998,6 +1064,47 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
           </div>
         </div>
       )}
+
+{pastWinners.length > 0 && (
+  <div className="mt-6 flex justify-center items-center w-full">
+    <div className="w-full max-w-md text-center">
+      <button
+        onClick={() => setShowPastWinners(!showPastWinners)}
+        className="text-sm text-red-300 underline hover:text-white"
+      >
+        {showPastWinners ? "▲ Hide Past Week of Winning Lineups" : "▼ Past Week of Winning Lineups"}
+      </button>
+
+      <div
+  className={`transition-all duration-500 ease-in-out overflow-hidden ${
+    showPastWinners ? "max-h-[2000px] opacity-100 mt-4" : "max-h-0 opacity-0"
+  } grid gap-6`}
+>
+  {pastWinners.map((winner, idx) => (
+    <div
+      key={idx}
+      className="bg-black border border-red-400 rounded-lg p-4 shadow-md text-center"
+    >
+      <div className="text-sm font-bold text-red-300 mb-2">{winner.prompt}</div>
+      <div className="flex justify-center gap-4">
+        {[winner.opener, winner.second_opener, winner.headliner].map((artist, i) => (
+          <div key={i} className="flex flex-col items-center">
+            <img
+              src={artist?.image || "/placeholder.jpg"}
+              alt={artist?.name || "Artist"}
+              className="w-16 h-16 rounded-md object-cover border border-red-400 mb-1"
+            />
+            <span className="text-xs text-white font-bold">{artist?.name || "Artist"}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  ))}
+</div>
+    </div>
+  </div>
+)}
+
 <div ref={downloadRef} className="absolute left-[-9999px]">
   <div className="relative w-[768px] h-[1365px]">
     <img
