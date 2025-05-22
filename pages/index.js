@@ -1071,10 +1071,10 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 </button>
 
     <div
-      className={`transition-all duration-500 ease-in-out overflow-hidden ${
-        showPastWinners ? "max-h-[2000px] opacity-100 mt-4" : "max-h-0 opacity-0"
-      } grid gap-4`}
-    >
+  className={`transition-all duration-500 ease-in-out overflow-hidden ${
+    showPastWinners ? "max-h-[2000px] opacity-100 pt-2 mt-4" : "max-h-0 opacity-0"
+  } grid gap-4`}
+>
       {pastWinners.map((winner, idx) => (
         <div key={idx} className="flex flex-col items-center justify-center mb-6">
           <div className="text-sm font-extrabold uppercase tracking-widest text-red-400 inline-block px-4 py-1 border-2 border-red-400 rotate-[-2deg] bg-black shadow-md font-mono mb-2">
