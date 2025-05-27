@@ -1196,6 +1196,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   <li className="text-sm">🎤 Promoted Lineups (So Far): <span className="font-bold">{userStats?.total_lineups_submitted ?? "--"}</span></li>
   <li className="text-sm">🏆 All-Time Top 10 Hits: <span className="font-bold">{userStats?.total_top_10s ?? "--"}</span></li>
   <li className="text-sm">🥇 Winning Lineups: <span className="font-bold">{userStats?.total_wins ?? "--"}</span></li>
+  <li className="text-sm">🔥 Current Streak: <span className="font-bold">{userStats?.current_streak ?? "--"}</span></li>
   <li className="text-sm">📆 Longest Daily Streak: <span className="font-bold">{userStats?.longest_streak ?? "--"}</span></li>
   <li className="text-sm">🌍 Global Rank: <span className="font-bold">
     {userStats?.global_rank ? `#${userStats.global_rank}` : "Not Ranked Yet"}
