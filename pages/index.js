@@ -187,7 +187,7 @@ useEffect(() => {
       .select("id, headliner, opener, second_opener, votes, created_at")
       .eq("prompt", dailyPrompt)
       .order("created_at", { ascending: false })
-      .limit(5);
+      .limit(6);
 
     if (error || !data) {
       console.error("Error fetching recent lineups:", error);
@@ -969,7 +969,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
         </div>
       </div>
 
-      {lineups.length === 10 && recentLineups.length === 5 && (
+      {lineups.length === 10 && recentLineups.length === 6 && (
   <div className="mt-12 flex justify-center items-center w-full">
     <div className="relative w-full max-w-md text-center">
       <div className="absolute inset-0 rounded-xl border-2 border-blue-400 animate-pulse pointer-events-none"></div>
