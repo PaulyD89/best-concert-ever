@@ -187,7 +187,7 @@ useEffect(() => {
       .select("id, headliner, opener, second_opener, votes, created_at")
       .eq("prompt", dailyPrompt)
       .order("created_at", { ascending: false })
-      .limit(6);
+      .limit(5);
 
     if (error || !data) {
       console.error("Error fetching recent lineups:", error);
