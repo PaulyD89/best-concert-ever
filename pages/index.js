@@ -1296,7 +1296,9 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
               alt={artist?.name || "Artist"}
               className="w-20 h-20 rounded-md object-cover border border-green-400 mb-1"
             />
-            <span className="text-xs font-bold">{artist?.name || "Artist"}</span>
+            <span className="text-xs font-bold text-center max-w-[5.5rem] break-words leading-tight min-h-[2.5rem]">
+  {artist?.name || "Artist"}
+</span>
           </div>
         ))}
       </div>
