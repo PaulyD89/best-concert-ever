@@ -1,3 +1,4 @@
+// full updated version of send-daily-email.js with style and order fixes
 import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
 
@@ -96,12 +97,12 @@ export default async function handler(req, res) {
 
   const maxCount = Math.max(...Object.values(countMap));
   const topLineups = Object.entries(countMap).filter(([_, count]) => count === maxCount);
-  const [headliner, opener, secondOpener] = topLineups[Math.floor(Math.random() * topLineups.length)][0].split("|||");
+  const [rawHeadliner, rawOpener, rawSecondOpener] = topLineups[Math.floor(Math.random() * topLineups.length)][0].split("|||");
 
   const [headlinerImg, openerImg, secondOpenerImg] = await Promise.all([
-    getSpotifyImageUrl(headliner),
-    getSpotifyImageUrl(opener),
-    getSpotifyImageUrl(secondOpener)
+    getSpotifyImageUrl(rawHeadliner),
+    getSpotifyImageUrl(rawOpener),
+    getSpotifyImageUrl(rawSecondOpener)
   ]);
 
   const recipients = testEmail
@@ -128,19 +129,19 @@ export default async function handler(req, res) {
         </a>
 
         <h1 style="font-size: 28px; color: #ffee33; text-transform: uppercase; font-weight: bold; margin-bottom: 12px;">Today's Challenge</h1>
-        <p style="font-size: 16px; color: #ffee33; margin-bottom: 24px; font-weight: bold;">${dailyPrompt}</p>
+        <p style="font-size: 16px; color: #ffee33; margin-bottom: 24px; font-weight: bold; text-transform: uppercase;">${dailyPrompt}</p>
 
         <h2 style="font-size: 22px; color: #ff6b6b; text-transform: uppercase; margin-bottom: 12px;">Yesterday's Winning Lineup</h2>
-        <p style="font-size: 14px; color: #999; font-style: italic; margin-bottom: 20px;">${yesterdayPrompt}</p>
+        <p style="font-size: 14px; color: #ff6b6b; font-style: normal; font-weight: bold; text-transform: uppercase; margin-bottom: 20px;">${yesterdayPrompt}</p>
 
-        <img src="${headlinerImg}" alt="${headliner}" width="200" style="border-radius: 12px; margin-bottom: 8px;" />
-        <div style="font-weight: bold; text-transform: uppercase; margin-bottom: 20px;">${headliner} (Headliner)</div>
+        <img src="${headlinerImg}" alt="${rawHeadliner}" width="200" style="border-radius: 12px; margin-bottom: 8px;" />
+        <div style="font-weight: bold; text-transform: uppercase; margin-bottom: 20px;">${rawHeadliner} (Headliner)</div>
 
-        <img src="${openerImg}" alt="${opener}" width="120" style="border-radius: 12px; margin-bottom: 4px;" />
-        <div style="font-weight: bold; text-transform: uppercase; margin-bottom: 12px;">${opener} (Opener)</div>
+        <img src="${secondOpenerImg}" alt="${rawSecondOpener}" width="120" style="border-radius: 12px; margin-bottom: 4px;" />
+        <div style="font-weight: bold; text-transform: uppercase; margin-bottom: 12px;">${rawSecondOpener} (2nd Opener)</div>
 
-        <img src="${secondOpenerImg}" alt="${secondOpener}" width="120" style="border-radius: 12px; margin-bottom: 4px;" />
-        <div style="font-weight: bold; text-transform: uppercase; margin-bottom: 24px;">${secondOpener} (2nd Opener)</div>
+        <img src="${openerImg}" alt="${rawOpener}" width="120" style="border-radius: 12px; margin-bottom: 4px;" />
+        <div style="font-weight: bold; text-transform: uppercase; margin-bottom: 24px;">${rawOpener} (Opener)</div>
 
         <p style="font-size: 14px; color: #ffee33; margin-bottom: 24px;">
           🎧 <strong>Now Streaming:</strong>
@@ -161,8 +162,7 @@ export default async function handler(req, res) {
       </td></tr>
     </table>
   </td></tr>
-</table>
-`;
+</table>`;
 
   try {
     const messages = recipients.map((email) => ({
