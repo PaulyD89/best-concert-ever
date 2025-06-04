@@ -457,7 +457,7 @@ const playlistUrl = `https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?
           <div style="text-align: center; margin-bottom: 12px;">
   <a href="https://popbitch.substack.com" target="_blank" style="display: inline-block; margin-bottom: 8px;">
     <img 
-      src="https://best-concert-ever.vercel.app/popbitch.png"
+      src="https://best-concert-ever.vercel.app/popbitchwdate.jpg"
       alt="Popbitch Takeover"
       width="340"
       style="max-width: 90%; height: auto;"
