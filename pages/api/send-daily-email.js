@@ -454,19 +454,18 @@ const playlistUrl = `https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?
             />
           </div>
 
-          <div style="text-align: center; margin-bottom: 32px;">
-  <a href="https://popbitch.substack.com" target="_blank" style="display: inline-block; margin-bottom: 20px;">
+          <div style="text-align: center; margin-bottom: 12px;">
+  <a href="https://popbitch.substack.com" target="_blank" style="display: inline-block; margin-bottom: 8px;">
     <img 
       src="https://best-concert-ever.vercel.app/popbitch.png"
       alt="Popbitch Takeover"
-      width="280"
-      style="max-width: 100%; height: auto;"
+      width="340"
+      style="max-width: 90%; height: auto;"
     />
   </a>
-  <h1 style="font-size: 28px; color: #ffee33; text-transform: uppercase; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 12px;">
+  <h1 style="font-size: 28px; color: #ffee33; text-transform: uppercase; font-weight: bold; letter-spacing: 1.5px; margin-bottom: 8px;">
     Today's Challenge
   </h1>
-
   <div style="display: inline-block; border: 2px solid #ffee33; padding: 6px 14px; font-weight: bold; font-size: 14px; letter-spacing: 1px; color: #ffee33; text-transform: uppercase; background-color: #000; text-shadow: 0 0 5px #ffee33; transform: rotate(-2deg);">
     ${dailyPrompt}
   </div>
