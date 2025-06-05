@@ -866,7 +866,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   </div>
 )}
 
-<div className="mb-6" style={{ maxWidth: '600px', margin: '0 auto', padding: '0 16px' }}>
+<div style={{ maxWidth: '600px', margin: '0 auto 8px', padding: '0 16px' }}>
   <a href="https://popbitch.substack.com" target="_blank" rel="noopener noreferrer">
     <img 
       src="/popbitchtransparent.png" 
