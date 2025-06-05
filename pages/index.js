@@ -868,11 +868,11 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 
 <div className="mb-6">
   <a href="https://popbitch.substack.com" target="_blank" rel="noopener noreferrer">
-    <img
-      src="/popbitchtransparent.png"
-      alt="Popbitch Takeover"
-      className="mx-auto w-60 hover:opacity-90 transition-opacity duration-200"
-    />
+    <img 
+  src="/popbitchtransparent.png" 
+  alt="Popbitch Takeover" 
+  style={{ width: '300px', maxWidth: '90%', margin: '0 auto', display: 'block' }}
+/>
   </a>
 </div>
 
