@@ -515,6 +515,58 @@ useEffect(() => {
   const [submitted, setSubmitted] = useState(false);
   const [ticketReady, setTicketReady] = useState(false);
 
+  const refreshRecentLineups = async () => {
+  const { data, error } = await supabase
+    .from("lineups")
+    .select("id, headliner, opener, second_opener, votes, created_at")
+    .eq("prompt", dailyPrompt)
+    .order("created_at", { ascending: false })
+    .limit(6);
+  if (!error && data) setRecentLineups(data);
+};
+
+const refreshTopLineups = async () => {
+  const { data, error } = await supabase
+    .from("lineups")
+    .select("id, headliner, opener, second_opener, votes")
+    .eq("prompt", dailyPrompt);
+
+  if (!error && data) {
+    const countMap = {};
+    data.forEach((lineup) => {
+      const key = `${lineup.headliner?.name}|||${lineup.opener?.name}|||${lineup.second_opener?.name}`;
+      const votes = lineup.votes || 0;
+      countMap[key] = (countMap[key] || 0) + 1 + votes;
+    });
+
+    const allEntries = Object.entries(countMap);
+    const voted = allEntries.filter(([_, score]) => score > 1);
+    const zeroVoted = allEntries.filter(([_, score]) => score === 1);
+    for (let i = zeroVoted.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [zeroVoted[i], zeroVoted[j]] = [zeroVoted[j], zeroVoted[i]];
+    }
+
+    const combined = [...voted.sort((a, b) => b[1] - a[1]), ...zeroVoted].slice(0, 10);
+
+    const sortedLineups = combined.map(([key]) => {
+      const [headlinerName, openerName, secondOpenerName] = key.split("|||");
+      return data.find(
+        (entry) =>
+          entry.headliner?.name === headlinerName &&
+          entry.opener?.name === openerName &&
+          entry.second_opener?.name === secondOpenerName
+      ) ?? {
+        headliner: { name: headlinerName },
+        opener: { name: openerName },
+        second_opener: { name: secondOpenerName }
+      };
+    });
+
+    setLineups(sortedLineups);
+  }
+};
+
   const handleSubmit = async () => {
     if (headliner && opener && secondOpener) {
       if (!localStorage.getItem("bce_user_id")) {
@@ -554,6 +606,9 @@ useEffect(() => {
         alert("There was an error submitting your lineup.");
         return;
       }
+
+      await refreshRecentLineups();
+      await refreshTopLineups();
   
       if (typeof window !== 'undefined' && window.plausible) {
         window.plausible("Submit Lineup");
