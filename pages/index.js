@@ -866,6 +866,16 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   </div>
 )}
 
+<div className="mb-6">
+  <a href="https://popbitch.substack.com" target="_blank" rel="noopener noreferrer">
+    <img
+      src="/popbitchtakeover.png"
+      alt="Popbitch Takeover"
+      className="mx-auto w-60 hover:opacity-90 transition-opacity duration-200"
+    />
+  </a>
+</div>
+
       <div id="top-10-section" className="mt-12 flex justify-center items-center w-full">
         <div className="relative w-full max-w-md text-center">
           <div className="absolute inset-0 rounded-xl border-2 border-yellow-400 animate-pulse pointer-events-none"></div>
