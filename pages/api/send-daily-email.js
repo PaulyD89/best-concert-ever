@@ -128,10 +128,10 @@ export default async function handler(req, res) {
           <img src="https://best-concert-ever.vercel.app/popbitchwdate.jpg" alt="Popbitch Takeover" width="340" style="max-width: 90%; height: auto;" />
         </a>
 
-        <h1 style="font-size: 28px; color: #ffee33; text-transform: uppercase; font-weight: bold; margin-bottom: 12px;">Today's Challenge</h1>
+        <h1 style="font-size: 28px; color: #ffee33; text-transform: uppercase; font-weight: bold; margin-bottom: 12px; text-shadow: 1px 1px 2px #000000;">Today's Challenge</h1>
         <p style="font-size: 16px; color: #ffee33; margin-bottom: 24px; font-weight: bold; text-transform: uppercase;">${dailyPrompt}</p>
 
-        <h2 style="font-size: 22px; color: #ff6b6b; text-transform: uppercase; margin-bottom: 12px;">Yesterday's Winning Lineup</h2>
+        <h2 style="font-size: 22px; color: #ff6b6b; text-transform: uppercase; margin-bottom: 12px; text-shadow: 1px 1px 2px #000000;">Yesterday's Winning Lineup</h2>
         <p style="font-size: 14px; color: #ff6b6b; font-style: normal; font-weight: bold; text-transform: uppercase; margin-bottom: 20px;">${yesterdayPrompt}</p>
 
         <img src="${headlinerImg}" alt="${rawHeadliner}" width="200" style="border-radius: 12px; margin-bottom: 8px;" />
