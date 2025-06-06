@@ -10,7 +10,7 @@ async function fetchDatabasePrompt() {
 
   const { data, error } = await supabase
     .from("prompts")
-    .select("prompt")
+    .select("prompt, locked_headliner_data")
     .eq("prompt_date", formattedDate)
     .single();
 
@@ -19,7 +19,7 @@ async function fetchDatabasePrompt() {
     return null;
   }
 
-  return data.prompt;
+  return data;
 }
 
 const ArtistSearch = ({ label, onSelect, disabled }) => {
@@ -120,19 +120,34 @@ useEffect(() => {
       localStorage.setItem('lastPromptDate', todayDateString);
     }
 
-    let promptToUse = "";
+  let promptToUse = "";
 
 if (today >= cutoff) {
-  const dbPrompt = await fetchDatabasePrompt();
-  if (dbPrompt) {
-    console.log("✅ Prompt pulled from Supabase DB:", dbPrompt);
-    promptToUse = dbPrompt;
+  const dbPromptData = await fetchDatabasePrompt();
+  if (dbPromptData) {
+    console.log("✅ Prompt pulled from Supabase DB:", dbPromptData.prompt);
+    promptToUse = dbPromptData.prompt;
+    setDailyPrompt(dbPromptData.prompt);
+
+    if (dbPromptData.locked_headliner_data) {
+      try {
+        const lockedData = typeof dbPromptData.locked_headliner_data === "string"
+          ? JSON.parse(dbPromptData.locked_headliner_data)
+          : dbPromptData.locked_headliner_data;
+
+        setHeadliner(lockedData);
+        setIsHeadlinerLocked(true);
+      } catch (e) {
+        console.error("⚠️ Failed to parse locked_headliner_data:", e);
+      }
+    }
   } else {
     console.error("⚠️ No prompt found for today in database.");
   }
 } else {
-  // Before May 1 fallback (optional, historical safety)
+  // Fallback for pre-May 1
   promptToUse = getDailyPrompt();
+  setDailyPrompt(promptToUse);
 }
 
 setDailyPrompt(promptToUse);
@@ -510,6 +525,7 @@ useEffect(() => {
 }, [yesterdayPrompt]); // <-- dependency on yesterdayPrompt 
 
   const [headliner, setHeadliner] = useState(null);
+  const [isHeadlinerLocked, setIsHeadlinerLocked] = useState(false);
   const [opener, setOpener] = useState(null);
   const [secondOpener, setSecondOpener] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -739,16 +755,40 @@ const refreshTopLineups = async () => {
           <ArtistSearch label="2nd Opener" onSelect={setSecondOpener} disabled={submitted} />
         </div>
 
-        <ArtistSearch label="Headliner" onSelect={setHeadliner} disabled={submitted} />
+        <ArtistSearch
+  label="Headliner"
+  onSelect={setHeadliner}
+  disabled={submitted || isHeadlinerLocked}
+/>
 
         <div className="mt-8 grid grid-cols-2 gap-4 items-start justify-center">
           <LineupSlot artist={opener} label="Opener" />
           <LineupSlot artist={secondOpener} label="2nd Opener" />
         </div>
 
-        <div className="mt-4">
-          <LineupSlot artist={headliner} label="Headliner" />
-        </div>
+        <div className="mt-4 relative w-full flex justify-center">
+  <div className="relative w-32 h-32">
+    {headliner?.image ? (
+      <>
+        <img
+          src={headliner.image}
+          alt={headliner.name}
+          className="w-full h-full object-cover border-2 border-black rounded-md"
+          crossOrigin="anonymous"
+        />
+        {isHeadlinerLocked && (
+          <div className="absolute top-1 right-1 bg-black bg-opacity-80 text-white text-xs px-2 py-1 rounded shadow">
+            🔒 LOCKED
+          </div>
+        )}
+      </>
+    ) : (
+      <div className="w-full h-full flex items-center justify-center bg-gray-200 border-2 border-black rounded-md">
+        <span className="text-black font-bold text-xs">Headliner</span>
+      </div>
+    )}
+  </div>
+</div>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
           <button
