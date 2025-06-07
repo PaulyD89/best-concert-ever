@@ -8,21 +8,21 @@ async function fetchDatabasePrompt() {
   const dd = String(today.getUTCDate()).padStart(2, "0");
   const formattedDate = `${yyyy}-${mm}-${dd}`;
 
-  const { data, error } = await supabase
-    .from("prompts")
-    .select("prompt, locked_headliner_data")
-    .eq("prompt_date", formattedDate)
-    .single();
+ const { data, error } = await supabase
+  .from("prompts")
+  .select("prompt, locked_headliner_data")
+  .eq("prompt_date", formattedDate)
+  .single();
 
   if (error || !data) {
     console.error("Failed to fetch prompt from database:", error);
     return null;
   }
 
-  return data;
+  return { prompt: data.prompt, lockedHeadliner: data.locked_headliner_data || null };
 }
 
-const ArtistSearch = ({ label, onSelect, disabled }) => {
+const ArtistSearch = ({ label, onSelect, disabled, locked }) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -42,14 +42,19 @@ const ArtistSearch = ({ label, onSelect, disabled }) => {
 
   return (
     <div className="relative w-full">
-      <input
-        type="text"
-        placeholder={label}
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        disabled={disabled}
-        className="w-full px-4 py-3 border-2 border-black rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black font-semibold text-sm"
-      />
+  <input
+    type="text"
+    placeholder={label}
+    value={query}
+    onChange={(e) => setQuery(e.target.value)}
+    disabled={disabled}
+    className="w-full px-4 py-3 border-2 border-black rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black font-semibold text-sm pr-10"
+  />
+  {locked && (
+    <div className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 text-sm pointer-events-none">
+      🔒
+    </div>
+  )}
       {showDropdown && results.length > 0 && (
         <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-y-scroll shadow-xl">
           {results.map((artist) => (
@@ -60,7 +65,7 @@ const ArtistSearch = ({ label, onSelect, disabled }) => {
                   name: artist.name,
                   image: artist.images?.[0]?.url,
                   url: artist.external_urls?.spotify,
-                  followers: artist.followers?.total || 0,
+                  followers: artist.followers?.total || 0
                 });                              
               setQuery("");
               setShowDropdown(false);
@@ -105,6 +110,7 @@ const LineupSlot = ({ artist, label }) => (
 
 export default function BestConcertEver() {
   const [dailyPrompt, setDailyPrompt] = useState(null);
+  const [lockedHeadliner, setLockedHeadliner] = useState(null);
   const [yesterdayPrompt, setYesterdayPrompt] = useState(null);
 
 useEffect(() => {
@@ -120,35 +126,27 @@ useEffect(() => {
       localStorage.setItem('lastPromptDate', todayDateString);
     }
 
-   let promptToUse = "";
+    let promptToUse = "";
 
 if (today >= cutoff) {
   const dbPromptData = await fetchDatabasePrompt();
-  if (dbPromptData) {
-    console.log("✅ Prompt pulled from Supabase DB:", dbPromptData.prompt);
-    promptToUse = dbPromptData.prompt;
-    setDailyPrompt(dbPromptData.prompt);
-
-    if (dbPromptData.locked_headliner_data) {
-      try {
-        const lockedData = typeof dbPromptData.locked_headliner_data === "string"
-          ? JSON.parse(dbPromptData.locked_headliner_data)
-          : dbPromptData.locked_headliner_data;
-
-        setHeadliner(lockedData);
-        setIsHeadlinerLocked(true);
-      } catch (e) {
-        console.error("⚠️ Failed to parse locked_headliner_data:", e);
-      }
-    }
-  } else {
+if (dbPromptData) {
+  console.log("✅ Prompt pulled from Supabase DB:", dbPromptData.prompt);
+  promptToUse = dbPromptData.prompt;
+  if (dbPromptData.lockedHeadliner) {
+    setHeadliner(dbPromptData.lockedHeadliner);
+    setLockedHeadliner(dbPromptData.lockedHeadliner);
+  }
+} else {
     console.error("⚠️ No prompt found for today in database.");
   }
 } else {
-  // Fallback for pre-May 1
+  // Before May 1 fallback (optional, historical safety)
   promptToUse = getDailyPrompt();
-  setDailyPrompt(promptToUse);
 }
+
+setDailyPrompt(promptToUse);
+  }
 
   initializePromptAndLineups();
 }, []);
@@ -522,7 +520,6 @@ useEffect(() => {
 }, [yesterdayPrompt]); // <-- dependency on yesterdayPrompt 
 
   const [headliner, setHeadliner] = useState(null);
-  const [isHeadlinerLocked, setIsHeadlinerLocked] = useState(false);
   const [opener, setOpener] = useState(null);
   const [secondOpener, setSecondOpener] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -581,7 +578,7 @@ const refreshTopLineups = async () => {
 };
 
   const handleSubmit = async () => {
-    if (headliner && opener && secondOpener) {
+    if ((lockedHeadliner || headliner) && opener && secondOpener) {
       if (!localStorage.getItem("bce_user_id")) {
         localStorage.setItem("bce_user_id", crypto.randomUUID());
       }
@@ -607,7 +604,7 @@ const refreshTopLineups = async () => {
       const { error } = await supabase.from("lineups").insert([
         {
           prompt: dailyPrompt,
-          headliner,
+          headliner: lockedHeadliner || headliner,
           opener,
           second_opener: secondOpener,
           user_id: userId,
@@ -755,8 +752,8 @@ const refreshTopLineups = async () => {
         <ArtistSearch
   label="Headliner"
   onSelect={setHeadliner}
-  disabled={submitted || isHeadlinerLocked}
-  className={isHeadlinerLocked ? "opacity-50 cursor-not-allowed" : ""}
+  disabled={submitted || lockedHeadliner !== null}
+  locked={lockedHeadliner !== null}
 />
 
         <div className="mt-8 grid grid-cols-2 gap-4 items-start justify-center">
