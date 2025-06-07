@@ -10,7 +10,7 @@ async function fetchDatabasePrompt() {
 
   const { data, error } = await supabase
     .from("prompts")
-    .select("prompt")
+    .select("prompt, locked_headliner_data")
     .eq("prompt_date", formattedDate)
     .single();
 
@@ -19,7 +19,7 @@ async function fetchDatabasePrompt() {
     return null;
   }
 
-  return data.prompt;
+  return data;
 }
 
 const ArtistSearch = ({ label, onSelect, disabled }) => {
@@ -120,23 +120,35 @@ useEffect(() => {
       localStorage.setItem('lastPromptDate', todayDateString);
     }
 
-    let promptToUse = "";
+   let promptToUse = "";
 
 if (today >= cutoff) {
-  const dbPrompt = await fetchDatabasePrompt();
-  if (dbPrompt) {
-    console.log("✅ Prompt pulled from Supabase DB:", dbPrompt);
-    promptToUse = dbPrompt;
+  const dbPromptData = await fetchDatabasePrompt();
+  if (dbPromptData) {
+    console.log("✅ Prompt pulled from Supabase DB:", dbPromptData.prompt);
+    promptToUse = dbPromptData.prompt;
+    setDailyPrompt(dbPromptData.prompt);
+
+    if (dbPromptData.locked_headliner_data) {
+      try {
+        const lockedData = typeof dbPromptData.locked_headliner_data === "string"
+          ? JSON.parse(dbPromptData.locked_headliner_data)
+          : dbPromptData.locked_headliner_data;
+
+        setHeadliner(lockedData);
+        setIsHeadlinerLocked(true);
+      } catch (e) {
+        console.error("⚠️ Failed to parse locked_headliner_data:", e);
+      }
+    }
   } else {
     console.error("⚠️ No prompt found for today in database.");
   }
 } else {
-  // Before May 1 fallback (optional, historical safety)
+  // Fallback for pre-May 1
   promptToUse = getDailyPrompt();
+  setDailyPrompt(promptToUse);
 }
-
-setDailyPrompt(promptToUse);
-  }
 
   initializePromptAndLineups();
 }, []);
@@ -510,6 +522,7 @@ useEffect(() => {
 }, [yesterdayPrompt]); // <-- dependency on yesterdayPrompt 
 
   const [headliner, setHeadliner] = useState(null);
+  const [isHeadlinerLocked, setIsHeadlinerLocked] = useState(false);
   const [opener, setOpener] = useState(null);
   const [secondOpener, setSecondOpener] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -739,7 +752,12 @@ const refreshTopLineups = async () => {
           <ArtistSearch label="2nd Opener" onSelect={setSecondOpener} disabled={submitted} />
         </div>
 
-        <ArtistSearch label="Headliner" onSelect={setHeadliner} disabled={submitted} />
+        <ArtistSearch
+  label="Headliner"
+  onSelect={setHeadliner}
+  disabled={submitted || isHeadlinerLocked}
+  className={isHeadlinerLocked ? "opacity-50 cursor-not-allowed" : ""}
+/>
 
         <div className="mt-8 grid grid-cols-2 gap-4 items-start justify-center">
           <LineupSlot artist={opener} label="Opener" />
