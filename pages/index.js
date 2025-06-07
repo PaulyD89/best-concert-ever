@@ -54,19 +54,19 @@ const ArtistSearch = ({ label, onSelect, disabled }) => {
         <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-48 overflow-y-scroll shadow-xl">
           {results.map((artist) => (
             <li
-  key={artist.id}
-  onClick={() => {
-    onSelect({
-      name: artist.name,
-      image: artist.images?.[0]?.url,
-      url: artist.external_urls?.spotify,
-      followers: artist.followers?.total || 0,
-    });
-    setQuery("");
-    setShowDropdown(false);
-  }}
-  className="p-2 hover:bg-yellow-100 cursor-pointer flex items-center gap-2 text-sm"
->
+              key={artist.id}
+              onClick={() => {
+                onSelect({
+                  name: artist.name,
+                  image: artist.images?.[0]?.url,
+                  url: artist.external_urls?.spotify,
+                  followers: artist.followers?.total || 0,
+                });                              
+              setQuery("");
+              setShowDropdown(false);
+            }}
+              className="p-2 hover:bg-yellow-100 cursor-pointer flex items-center gap-2 text-sm"
+            >
               {artist.images?.[0]?.url && (
                 <img src={artist.images[0].url} alt={artist.name} className="w-6 h-6 rounded-full" />
               )}
