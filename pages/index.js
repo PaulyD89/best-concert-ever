@@ -313,6 +313,9 @@ setPastWinners(filteredResults);
 const [showEmailSignup, setShowEmailSignup] = useState(false);
 const [email, setEmail] = useState("");
 const [emailSubmitted, setEmailSubmitted] = useState(false);
+const [nickname, setNickname] = useState("");
+const [nicknameSaved, setNicknameSaved] = useState(false);
+const [showNicknameModal, setShowNicknameModal] = useState(false);
 
 const handleBadgeClick = () => {
   const rank = userStats?.global_rank;
@@ -362,23 +365,35 @@ const handleEmailSignup = async () => {
   const [pastWinners, setPastWinners] = useState([]);
   const [showPastWinners, setShowPastWinners] = useState(false);
 
-  const fetchUserStats = async () => {
-    const userId = localStorage.getItem("bce_user_id");
-    if (!userId) return;
-  
-    const { data, error } = await supabase
-      .from("user_stats")
-      .select("*")
-      .eq("user_id", userId)
-      .single();
-  
-    if (error) {
-      console.error("Error fetching user stats:", error);
-      return;
-    }
-  
-    setUserStats(data);
-  };  
+ const fetchUserStats = async () => {
+  const userId = localStorage.getItem("bce_user_id");
+  if (!userId) return;
+
+  const { data, error } = await supabase
+    .from("user_stats")
+    .select("*")
+    .eq("user_id", userId)
+    .single();
+
+  if (error) {
+    console.error("Error fetching user stats:", error);
+    return;
+  }
+
+  setUserStats(data);
+
+  // Now check nickname from users table
+  const { data: userData, error: userError } = await supabase
+    .from("users")
+    .select("nickname")
+    .eq("user_id", userId)
+    .single();
+
+  if (userData?.nickname) {
+    setNickname(userData.nickname);
+    setNicknameSaved(true);
+  }
+};
 
   useEffect(() => {
     const bounceTimeout = setTimeout(() => {
@@ -1264,6 +1279,76 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   </div>
 )}
 
+{showNicknameModal && (
+  <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm">
+    <div className="bg-[#fdf6e3] text-black p-6 rounded-2xl w-[90%] max-w-sm text-left relative shadow-2xl border-[6px] border-black border-double">
+      <button
+        onClick={() => setShowNicknameModal(false)}
+        className="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black"
+      >
+        &times;
+      </button>
+      <h2 className="text-xl font-bold mb-4">Enter Your Promoter Nickname</h2>
+      <input
+        type="text"
+        value={nickname}
+        onChange={(e) => setNickname(e.target.value.toUpperCase())}
+        maxLength={24}
+        className="w-full px-4 py-2 border border-black rounded-md mb-4 uppercase"
+        placeholder="ALL CAPS SCREENNAME"
+      />
+      <button
+        onClick={async () => {
+          const userId = localStorage.getItem("bce_user_id");
+          if (!userId || !nickname.trim()) return;
+
+          // Ensure user row exists
+          await supabase
+            .from("users")
+            .upsert([{ user_id: userId }], { onConflict: "user_id" });
+
+          const trimmedNickname = nickname.trim();
+
+// Check if nickname already exists
+const { data: existing, error: checkError } = await supabase
+  .from("users")
+  .select("user_id")
+  .eq("nickname", trimmedNickname)
+  .neq("user_id", userId); // exclude current user in case they're retrying
+
+if (existing && existing.length > 0) {
+  alert("That nickname is already taken. Please choose another.");
+  return;
+}
+
+// Ensure row exists
+await supabase
+  .from("users")
+  .upsert([{ user_id: userId }], { onConflict: "user_id" });
+
+const { error } = await supabase
+  .from("users")
+  .update({ nickname: trimmedNickname })
+  .eq("user_id", userId);
+
+if (!error) {
+  if (typeof window !== "undefined" && window.plausible) {
+    window.plausible("Nickname Chosen");
+  }
+  setNicknameSaved(true);
+  setShowNicknameModal(false);
+} else {
+  alert("Something went wrong saving your nickname.");
+}
+        }}
+        className="bg-black text-white px-4 py-2 rounded-full font-bold hover:bg-yellow-300 hover:text-black transition"
+      >
+        Save Nickname
+      </button>
+    </div>
+  </div>
+)}
+
       {/* YOUR GREATEST HITS SECTION */}
       <div className="mt-12 flex justify-center items-center w-full">
         <div className="relative w-full max-w-md text-center">
@@ -1272,6 +1357,22 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
             <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-green-400 drop-shadow-[0_0_12px_green]">
               Your Greatest Hits
             </h2>
+            {nicknameSaved && (
+  <div className="text-green-400 italic text-xs uppercase mb-2 tracking-wide">
+    {nickname}
+  </div>
+)}
+
+{userStats?.total_lineups_submitted >= 10 && !nicknameSaved && (
+  <div className="mb-4">
+    <button
+      onClick={() => setShowNicknameModal(true)}
+      className="bg-green-500 text-black font-bold px-4 py-1 rounded-full text-xs tracking-wide border border-green-300 hover:bg-green-300 transition"
+    >
+      Choose Promoter Nickname
+    </button>
+  </div>
+)}
             <ul className="flex flex-col gap-4 items-center text-white">
   <li className="text-sm">🎤 Promoted Lineups (So Far): <span className="font-bold">{userStats?.total_lineups_submitted ?? "--"}</span></li>
   <li className="text-sm">🏆 All-Time Top 10 Hits: <span className="font-bold">{userStats?.total_top_10s ?? "--"}</span></li>
