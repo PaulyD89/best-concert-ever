@@ -268,7 +268,7 @@ useEffect(() => {
     for (const p of promptsData) {
       const { data: lineupsData, error: lineupsError } = await supabase
         .from("lineups")
-        .select("headliner, opener, second_opener, votes")
+        .select("headliner, opener, second_opener, votes, user_id")
         .eq("prompt", p.prompt);
 
       if (lineupsError || !lineupsData) continue;
@@ -308,6 +308,7 @@ setPastWinners(filteredResults);
   const [mostVotedLineup, setMostVotedLineup] = useState(null);
   const flyerRef = React.useRef(null);
   const downloadRef = React.useRef(null);
+  const [winningPromoter, setWinningPromoter] = useState(null);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [showVotePrompt, setShowVotePrompt] = useState(false);
 const [showEmailSignup, setShowEmailSignup] = useState(false);
@@ -502,7 +503,7 @@ useEffect(() => {
   const fetchYesterdaysWinner = async () => {
     const { data, error } = await supabase
       .from("lineups")
-      .select("headliner, opener, second_opener, votes")
+      .select("headliner, opener, second_opener, votes, user_id")
       .eq("prompt", yesterdayPrompt);
 
     if (error || !data) return;
@@ -529,6 +530,17 @@ useEffect(() => {
 
     const winner = topLineups[Math.floor(Math.random() * topLineups.length)];
     setYesterdaysWinner(winner);
+    if (winner) {
+  const { data: userData, error: userError } = await supabase
+    .from("users")
+    .select("nickname")
+    .eq("user_id", winner.user_id)
+    .single();
+
+  if (!userError && userData?.nickname) {
+    setWinningPromoter(userData.nickname);
+  }
+}
   };
 
   fetchYesterdaysWinner();
@@ -1154,6 +1166,13 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
                     <span className={`font-bold ${idx === 0 ? 'text-lg' : ''}`}>{artist?.name}</span>
                   </li>
                 ))}
+{winningPromoter && (
+  <div className="mt-2">
+    <span className="inline-block bg-red-500 text-white px-4 py-1 rounded-full text-xs font-bold tracking-wide shadow-md animate-pulse">
+      WINNING PROMOTER: {winningPromoter}
+    </span>
+  </div>
+)}
               </ul>
               <hr className="mt-6 mb-4 border-t border-red-400 opacity-40" />
               {pastWinners.length > 0 && (
