@@ -124,10 +124,6 @@ export default async function handler(req, res) {
       <tr><td align="center">
         <img src="https://best-concert-ever.vercel.app/bcefinalemaillogo.png" alt="Best Concert Ever" width="400" style="display: block; margin-bottom: 24px;" />
 
-        <a href="https://popbitch.substack.com" target="_blank" style="display: block; margin-bottom: 16px;">
-          <img src="https://best-concert-ever.vercel.app/popbitchwdate.jpg" alt="Popbitch Takeover" width="340" style="max-width: 90%; height: auto;" />
-        </a>
-
         <h1 style="font-size: 28px; color: #ffee33; text-transform: uppercase; font-weight: bold; margin-bottom: 12px; text-shadow: 1px 1px 2px #000000;">Today's Challenge</h1>
         <p style="font-size: 16px; color: #ffee33; margin-bottom: 24px; font-weight: bold; text-transform: uppercase;">${dailyPrompt}</p>
 
