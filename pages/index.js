@@ -310,6 +310,7 @@ setPastWinners(filteredResults);
   const downloadRef = React.useRef(null);
   const [winningPromoter, setWinningPromoter] = useState(null);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
+  const [showHowToPlayInfographic, setShowHowToPlayInfographic] = useState(false);
   const [showVotePrompt, setShowVotePrompt] = useState(false);
 const [showEmailSignup, setShowEmailSignup] = useState(false);
 const [email, setEmail] = useState("");
@@ -402,6 +403,11 @@ const handleEmailSignup = async () => {
         window.plausible("Engaged 10s+");
       }
     }, 10000);
+
+      if (!localStorage.getItem("howToPlayShown")) {
+    setShowHowToPlayInfographic(true);
+    localStorage.setItem("howToPlayShown", "true");
+  }
 
     fetchUserStats();
 
@@ -740,6 +746,24 @@ const refreshTopLineups = async () => {
         </div>
       )}
 
+      {showHowToPlayInfographic && (
+  <div className="fixed inset-0 z-50 flex justify-center items-center transition-opacity duration-500 bg-black/70 backdrop-blur-sm">
+    <div className="relative max-w-[90%] w-[420px] rounded-2xl shadow-2xl border-4 border-white overflow-hidden">
+      <img
+        src="/howtoplayinfographic.png"
+        alt="How to Play"
+        className="w-full h-auto object-contain"
+      />
+      <button
+        onClick={() => setShowHowToPlayInfographic(false)}
+        className="absolute top-2 right-2 bg-black text-white text-xl font-bold rounded-full px-3 py-1 hover:bg-red-600 transition"
+      >
+        &times;
+      </button>
+    </div>
+  </div>
+)}
+
 {showVotePrompt && (
   <div className="fixed inset-0 z-50 flex justify-center items-center transition-opacity duration-300 bg-black/40 backdrop-blur-sm">
     <div className="bg-[#fdf6e3] text-black p-6 rounded-2xl w-[90%] max-w-sm text-center relative shadow-2xl border-[6px] border-black border-double">
@@ -969,17 +993,6 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 </button>
   </div>
 )}
-
-<div style={{ maxWidth: '600px', margin: '0 auto 8px', padding: '0 16px' }}>
-  <a href="https://popbitch.substack.com" target="_blank" rel="noopener noreferrer">
-    <img 
-      src="/popbitchtransparent.png" 
-      alt="Popbitch Takeover" 
-      style={{ width: '100%', height: 'auto', display: 'block' }}
-    />
-  </a>
-</div>
-
       <div id="top-10-section" className="mt-0 flex justify-center items-center w-full">
         <div className="relative w-full max-w-md text-center">
           <div className="absolute inset-0 rounded-xl border-2 border-yellow-400 animate-pulse pointer-events-none"></div>
