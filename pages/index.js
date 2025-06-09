@@ -746,8 +746,8 @@ const refreshTopLineups = async () => {
         </div>
       )}
 
-      {showHowToPlayInfographic && (
-  <div className="fixed inset-0 z-50 flex justify-center items-center transition-opacity duration-500 bg-black/70 backdrop-blur-sm">
+{showHowToPlayInfographic && (
+  <div className="fixed inset-0 z-50 flex justify-center items-center opacity-0 animate-fadeIn bg-black/70 backdrop-blur-sm">
     <div className="relative max-w-[90%] w-[420px] rounded-2xl shadow-2xl border-4 border-white overflow-hidden">
       <img
         src="/howtoplayinfographic.png"
@@ -921,7 +921,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 </div>
 
 {ticketReady && (
-  <div className="flex flex-col items-center my-4 animate-fade-in">
+  <div className="flex flex-col items-center my-10 animate-fade-in">
     <button
       onClick={async () => {
   if (typeof window !== "undefined" && window.plausible) {
