@@ -1175,9 +1175,9 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
                 ))}
 {winningPromoter && (
   <div className="mt-2">
-    <span className="inline-block bg-red-500 text-white px-4 py-1 rounded-full text-xs font-bold tracking-wide shadow-md animate-pulse">
-      WINNING PROMOTER: {winningPromoter}
-    </span>
+    <span className="inline-block bg-red-500 text-white px-4 py-1 rounded-full text-xs font-bold tracking-wide shadow-md">
+  WINNING PROMOTER: {winningPromoter}
+</span>
   </div>
 )}
               </ul>
