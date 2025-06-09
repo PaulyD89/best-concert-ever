@@ -747,7 +747,7 @@ const refreshTopLineups = async () => {
       )}
 
 {showHowToPlayInfographic && (
-  <div className="fixed inset-0 z-50 flex justify-center items-center opacity-0 animate-fadeIn bg-black/70 backdrop-blur-sm">
+  <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/70 backdrop-blur-sm">
     <div className="relative max-w-[90%] w-[420px] rounded-2xl shadow-2xl border-4 border-white overflow-hidden">
       <img
         src="/howtoplayinfographic.png"
