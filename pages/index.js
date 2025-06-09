@@ -518,15 +518,22 @@ useEffect(() => {
 
     const maxCount = Math.max(...Object.values(countMap));
     const topLineups = Object.entries(countMap)
-      .filter(([_, count]) => count === maxCount)
-      .map(([key]) => {
-        const [headliner, opener, second_opener] = key.split("|||");
-        return {
-          headliner: data.find(d => d.headliner?.name === headliner)?.headliner,
-          opener: data.find(d => d.opener?.name === opener)?.opener,
-          second_opener: data.find(d => d.second_opener?.name === second_opener)?.second_opener
-        };
-      });
+  .filter(([_, count]) => count === maxCount)
+  .map(([key]) => {
+    const [headliner, opener, second_opener] = key.split("|||");
+    const matchingLineup = data.find(
+      d =>
+        d.headliner?.name === headliner &&
+        d.opener?.name === opener &&
+        d.second_opener?.name === second_opener
+    );
+    return {
+      headliner: matchingLineup?.headliner,
+      opener: matchingLineup?.opener,
+      second_opener: matchingLineup?.second_opener,
+      user_id: matchingLineup?.user_id
+    };
+  });
 
     const winner = topLineups[Math.floor(Math.random() * topLineups.length)];
     setYesterdaysWinner(winner);
