@@ -20,24 +20,24 @@ export default function Unsubscribe() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white px-6 py-12">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white px-4 py-8">
       {/* Graphic */}
       <div className="mb-8">
         <Image
           src="/unsubgraphic.png"
           alt="Sad promoter with broken guitar"
-          width={360}
-          height={360}
+          width={240}
+          height={240}
           className="rounded-md shadow-xl"
           priority
         />
       </div>
 
       {/* Headline */}
-      <h1 className="text-3xl font-bold mb-2 text-[#ffee33] drop-shadow-sm text-center">
+      <h1 className="text-2xl font-bold mb-2 text-[#ffee33] drop-shadow-sm text-center">
         You want to unsubscribe from
       </h1>
-      <h2 className="text-4xl font-extrabold text-[#ff66cc] mb-6 uppercase text-center tracking-tight">
+      <h2 className="text-3xl font-extrabold text-[#ff66cc] mb-6 uppercase text-center tracking-tight">
         Best. Concert. Ever.?
       </h2>
 
