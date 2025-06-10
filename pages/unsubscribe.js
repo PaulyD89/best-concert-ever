@@ -24,7 +24,7 @@ export default function Unsubscribe() {
       {/* Logo at top */}
       <div className="mb-6">
   <Image
-    src="/fullsquarelogo.jpg"
+    src="/unsubgraphic.png"
     alt="Best Concert Ever Logo"
     width={300}
     height={300}
