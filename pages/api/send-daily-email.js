@@ -146,14 +146,6 @@ export default async function handler(req, res) {
           </a>
         </p>
 
-        <div style="margin-bottom: 30px;">
-  <img 
-    src="https://best-concert-ever.vercel.app/newfeaturesthisweek.png"
-    alt="New Feature Announcements"
-    style="display: block; max-width: 100%; border-radius: 8px; margin: 0 auto;"
-  />
-</div>
-
         <p style="font-size: 16px; margin-bottom: 30px;">
           Think you have what it takes to be the ultimate Music Promoter?<br/>
           <a href="https://bestconcertevergame.com" style="color: #f66; font-weight: bold;">Submit your own lineup</a>
