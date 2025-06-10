@@ -43,7 +43,7 @@ export default function Unsubscribe() {
 
       {/* Subtext */}
       <p className="text-sm text-gray-400 italic mb-8 text-center">
-        We're not crying... you're crying. 💔
+        We&apos;re not crying... you&apos;re crying. 💔
       </p>
 
       {/* Input */}
@@ -66,7 +66,7 @@ export default function Unsubscribe() {
       {/* Feedback */}
      {status === "success" && (
   <p className="mt-6 text-[#ffee33] font-semibold text-center">
-    👻 You've officially ghosted us. No hard feelings.
+    👻 You&apos;ve officially ghosted us. No hard feelings.
   </p>
 )}
       {status === "error" && (
