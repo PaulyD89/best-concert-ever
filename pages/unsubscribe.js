@@ -66,7 +66,7 @@ export default function Unsubscribe() {
       {/* Feedback */}
      {status === "success" && (
   <p className="mt-6 text-[#ffee33] font-semibold text-center">
-    👻 You’ve officially ghosted us. No hard feelings.
+    👻 You've officially ghosted us. No hard feelings.
   </p>
 )}
       {status === "error" && (
