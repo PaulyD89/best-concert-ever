@@ -21,37 +21,59 @@ export default function Unsubscribe() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white px-6 py-12">
-      {/* Logo at top */}
-      <div className="mb-6">
-  <Image
-    src="/unsubgraphic.png"
-    alt="Best Concert Ever Logo"
-    width={300}
-    height={300}
-    className="rounded-md shadow-xl"
-    priority
-  />
-</div>
+      {/* Graphic */}
+      <div className="mb-8">
+        <Image
+          src="/unsubgraphic.png"
+          alt="Sad promoter with broken guitar"
+          width={360}
+          height={360}
+          className="rounded-md shadow-xl"
+          priority
+        />
+      </div>
 
-      <h1 className="text-3xl font-bold mb-6 text-green-400">Unsubscribe from Best. Concert. Ever.</h1>
+      {/* Headline */}
+      <h1 className="text-3xl font-bold mb-2 text-[#ffee33] drop-shadow-sm text-center">
+        You want to unsubscribe from
+      </h1>
+      <h2 className="text-4xl font-extrabold text-[#ff66cc] mb-6 uppercase text-center tracking-tight">
+        Best. Concert. Ever.?
+      </h2>
 
+      {/* Subtext */}
+      <p className="text-sm text-gray-400 italic mb-8 text-center">
+        We're not crying... you're crying. 💔
+      </p>
+
+      {/* Input */}
       <input
         type="email"
         placeholder="Enter your email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="bg-black border border-green-500 text-white placeholder-green-500 rounded-md px-4 py-3 w-full max-w-md mb-4 focus:outline-none focus:ring-2 focus:ring-green-400"
+        className="bg-black border border-[#ffee33] text-white placeholder-[#ffee33] rounded-md px-4 py-3 w-full max-w-md mb-4 focus:outline-none focus:ring-2 focus:ring-[#ff66cc]"
       />
 
+      {/* Button */}
       <button
         onClick={handleUnsubscribe}
-        className="bg-green-600 hover:bg-green-500 text-black font-bold py-2 px-6 rounded-full transition"
+        className="bg-[#ff66cc] hover:bg-[#ff85d1] text-black font-bold py-2 px-6 rounded-full transition-all duration-200 shadow-md"
       >
         Unsubscribe
       </button>
 
-      {status === "success" && <p className="mt-6 text-green-400">✅ You’ve been unsubscribed.</p>}
-      {status === "error" && <p className="mt-6 text-red-500">⚠️ Something went wrong. Try again later.</p>}
+      {/* Feedback */}
+     {status === "success" && (
+  <p className="mt-6 text-[#ffee33] font-semibold text-center">
+    👻 You’ve officially ghosted us. No hard feelings.
+  </p>
+)}
+      {status === "error" && (
+        <p className="mt-6 text-red-500 font-semibold text-center">
+          ⚠️ Something went wrong. Try again later.
+        </p>
+      )}
     </div>
   );
 }
