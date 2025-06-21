@@ -993,6 +993,17 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 </button>
   </div>
 )}
+
+{lockedHeadliner && (
+  <div className="mb-4">
+    <img
+      src="/locked-and-loaded.png"
+      alt="Locked & Loaded"
+      className="mx-auto w-48 h-auto animate-pulse drop-shadow-[0_0_12px_gold]"
+    />
+  </div>
+)}
+
       <div id="top-10-section" className="mt-0 flex justify-center items-center w-full">
         <div className="relative w-full max-w-md text-center">
           <div className="absolute inset-0 rounded-xl border-2 border-yellow-400 animate-pulse pointer-events-none"></div>
