@@ -311,6 +311,7 @@ setPastWinners(filteredResults);
   const [winningPromoter, setWinningPromoter] = useState(null);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [showHowToPlayInfographic, setShowHowToPlayInfographic] = useState(false);
+  const [showDuplicateWarning, setShowDuplicateWarning] = useState(false);
   const [showVotePrompt, setShowVotePrompt] = useState(false);
 const [showEmailSignup, setShowEmailSignup] = useState(false);
 const [email, setEmail] = useState("");
@@ -619,6 +620,21 @@ const refreshTopLineups = async () => {
 
   const handleSubmit = async () => {
     if ((lockedHeadliner || headliner) && opener && secondOpener) {
+      const normalize = (artist) => {
+  if (typeof artist === "object" && artist?.name) return artist.name.trim().toLowerCase();
+  return "";
+};
+
+const name1 = normalize(lockedHeadliner || headliner);
+const name2 = normalize(opener);
+const name3 = normalize(secondOpener);
+const uniqueNames = new Set([name1, name2, name3]);
+
+if (uniqueNames.size < 3) {
+  setShowDuplicateWarning(true);
+  return;
+}
+
       if (!localStorage.getItem("bce_user_id")) {
         localStorage.setItem("bce_user_id", crypto.randomUUID());
       }
@@ -759,6 +775,22 @@ const refreshTopLineups = async () => {
         className="absolute top-2 right-2 bg-black text-white text-xl font-bold rounded-full px-3 py-1 hover:bg-red-600 transition"
       >
         &times;
+      </button>
+    </div>
+  </div>
+)}
+
+{showDuplicateWarning && (
+  <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm">
+    <div className="bg-white text-black p-6 rounded-2xl w-[90%] max-w-sm text-center shadow-2xl border-2 border-black">
+      <p className="text-lg font-semibold mb-4">
+        You can&apos;t use the same artist more than once!
+      </p>
+      <button
+        onClick={() => setShowDuplicateWarning(false)}
+        className="mt-2 text-blue-600 font-bold"
+      >
+        Close
       </button>
     </div>
   </div>
