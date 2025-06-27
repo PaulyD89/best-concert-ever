@@ -311,7 +311,6 @@ setPastWinners(filteredResults);
   const [winningPromoter, setWinningPromoter] = useState(null);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [showHowToPlayInfographic, setShowHowToPlayInfographic] = useState(false);
-  const [showDuplicateWarning, setShowDuplicateWarning] = useState(false);
   const [showVotePrompt, setShowVotePrompt] = useState(false);
 const [showEmailSignup, setShowEmailSignup] = useState(false);
 const [email, setEmail] = useState("");
@@ -631,7 +630,7 @@ const name3 = normalize(secondOpener);
 const uniqueNames = new Set([name1, name2, name3]);
 
 if (uniqueNames.size < 3) {
-  setShowDuplicateWarning(true);
+  alert("You can&apos;t use the same artist more than once!");
   return;
 }
 
@@ -776,24 +775,6 @@ if (uniqueNames.size < 3) {
       >
         &times;
       </button>
-    </div>
-  </div>
-)}
-
-{showDuplicateWarning && (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-    <div className="bg-white text-black w-[90%] max-w-md text-center rounded-xl shadow-lg">
-      <div className="p-6 text-base font-normal">
-        You can&#39;t use the same artist more than once!
-      </div>
-      <div className="border-t border-gray-300 px-6 py-4">
-        <button
-          onClick={() => setShowDuplicateWarning(false)}
-          className="text-blue-600 font-semibold"
-        >
-          Close
-        </button>
-      </div>
     </div>
   </div>
 )}
