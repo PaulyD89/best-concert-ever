@@ -781,17 +781,19 @@ if (uniqueNames.size < 3) {
 )}
 
 {showDuplicateWarning && (
-  <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm">
-    <div className="bg-white text-black p-6 rounded-2xl w-[90%] max-w-sm text-center shadow-2xl border-2 border-black">
-      <p className="text-lg font-semibold mb-4">
-        You can&apos;t use the same artist more than once!
-      </p>
-      <button
-        onClick={() => setShowDuplicateWarning(false)}
-        className="mt-2 text-blue-600 font-bold"
-      >
-        Close
-      </button>
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+    <div className="bg-white text-black w-[90%] max-w-md text-center rounded-xl shadow-lg">
+      <div className="p-6 text-base font-normal">
+        You can&#39;t use the same artist more than once!
+      </div>
+      <div className="border-t border-gray-300 px-6 py-4">
+        <button
+          onClick={() => setShowDuplicateWarning(false)}
+          className="text-blue-600 font-semibold"
+        >
+          Close
+        </button>
+      </div>
     </div>
   </div>
 )}
