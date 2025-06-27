@@ -782,9 +782,9 @@ if (uniqueNames.size < 3) {
 
 {showDuplicateWarning && (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-    <div className="bg-white rounded-xl w-[90%] max-w-md text-center shadow-md">
-      <div className="px-6 py-4 text-base font-normal">
-        {"You can&apos;t use the same artist more than once!"}
+    <div className="bg-white text-black w-[90%] max-w-md text-center rounded-xl shadow-lg">
+      <div className="p-6 text-base font-normal">
+        You can&#39;t use the same artist more than once!
       </div>
       <div className="border-t border-gray-300 px-6 py-4">
         <button
