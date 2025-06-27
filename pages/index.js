@@ -630,7 +630,7 @@ const name3 = normalize(secondOpener);
 const uniqueNames = new Set([name1, name2, name3]);
 
 if (uniqueNames.size < 3) {
-  alert("You can&apos;t use the same artist more than once!");
+  alert("You can't use the same artist more than once!");
   return;
 }
 
