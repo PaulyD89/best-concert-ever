@@ -436,8 +436,6 @@ const handleEmailSignup = async () => {
 
     fetchMostVotedLineup();
 
-    fetchMostVotedLineup();  
-
 const normalize = (artist) => {
   if (typeof artist === "string") return artist.trim().toLowerCase();
   if (artist && typeof artist === "object" && artist.name) return artist.name.trim().toLowerCase();
