@@ -1014,7 +1014,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     <img
       src="/locked-and-loaded.png"
       alt="Locked & Loaded"
-      className="mx-auto w-48 h-auto animate-glow drop-shadow-[0_0_12px_gold]"
+      className="mx-auto w-48 h-auto sparkle-effect"
     />
   </div>
 )}
