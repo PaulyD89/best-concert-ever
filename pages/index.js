@@ -557,11 +557,39 @@ useEffect(() => {
   fetchYesterdaysWinner();
 }, [yesterdayPrompt]); // <-- dependency on yesterdayPrompt 
 
+useEffect(() => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const voteId = urlParams.get("vote");
+  const votedKey = `bce-voted-${dailyPrompt}`;
+
+  if (voteId && !localStorage.getItem(votedKey)) {
+    const vote = async () => {
+      const { error } = await supabase
+        .from("lineups")
+        .update({ votes: supabase.raw("votes + 1") })
+        .eq("id", voteId);
+
+      if (error) {
+        console.error("Vote via URL param failed:", error);
+      } else {
+        localStorage.setItem(votedKey, voteId);
+        alert("🔥 Thanks for voting! Now submit your own lineup!");
+        const flyer = document.querySelector("#top");
+        if (flyer) flyer.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+    vote();
+  } else if (voteId && localStorage.getItem(votedKey)) {
+    alert("You've already voted today!");
+  }
+}, [dailyPrompt]);
+
   const [headliner, setHeadliner] = useState(null);
   const [opener, setOpener] = useState(null);
   const [secondOpener, setSecondOpener] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [ticketReady, setTicketReady] = useState(false);
+  const [myLineupId, setMyLineupId] = useState(null);
 
   const refreshRecentLineups = async () => {
   const { data, error } = await supabase
@@ -654,15 +682,27 @@ if (uniqueNames.size < 3) {
         return;
       }
   
-      const { error } = await supabase.from("lineups").insert([
-        {
-          prompt: dailyPrompt,
-          headliner: lockedHeadliner || headliner,
-          opener,
-          second_opener: secondOpener,
-          user_id: userId,
-        },
-      ]);
+      const { data: inserted, error } = await supabase
+  .from("lineups")
+  .insert([
+    {
+      prompt: dailyPrompt,
+      headliner: lockedHeadliner || headliner,
+      opener,
+      second_opener: secondOpener,
+      user_id: userId,
+    },
+  ])
+  .select()
+  .single();
+
+if (error) {
+  console.error("Submission error:", error);
+  alert("There was an error submitting your lineup.");
+  return;
+}
+
+setMyLineupId(inserted.id);
   
       if (error) {
         console.error("Submission error:", error);
@@ -983,7 +1023,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
         try {
           await navigator.share({
             title: "Best Concert Ever",
-            text: `Check out my lineup for "${dailyPrompt}" 🎶🔥 What's yours? Play now: https://bestconcertevergame.com`,
+            text: `Here's my lineup for "${dailyPrompt}" 🎶🔥 Vote for mine: https://bestconcertevergame.com?vote=${myLineupId} & play now!`,
             files: [file],
           });
         } catch (err) {
