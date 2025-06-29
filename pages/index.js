@@ -703,6 +703,7 @@ if (error) {
 }
 
 setMyLineupId(inserted.id);
+localStorage.setItem("bce_my_lineup_id", inserted.id);
   
       if (error) {
         console.error("Submission error:", error);
@@ -1023,7 +1024,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
         try {
           await navigator.share({
             title: "Best Concert Ever",
-            text: `Here's my lineup for "${dailyPrompt}" 🎶🔥 Vote for mine: https://bestconcertevergame.com?vote=${myLineupId} & play now!`,
+            text: `Here's my lineup for "${dailyPrompt}" 🎶🔥 Vote for mine: https://bestconcertevergame.com?vote=${myLineupId || localStorage.getItem("bce_my_lineup_id")} & play now!`,
             files: [file],
           });
         } catch (err) {
