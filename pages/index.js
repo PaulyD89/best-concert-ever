@@ -367,56 +367,6 @@ const handleEmailSignup = async () => {
   const [pastWinners, setPastWinners] = useState([]);
   const [showPastWinners, setShowPastWinners] = useState(false);
 
-  useEffect(() => {
-  const params = new URLSearchParams(window.location.search);
-  const voteId = params.get("vote");
-
-  if (voteId) {
-    localStorage.setItem("fromSocialVote", "true");
-    localStorage.setItem("socialVoteLineupId", voteId);
-  }
-
-  const hasSeenInfographic = localStorage.getItem("howToPlayShown");
-  const cameFromSocialVote = localStorage.getItem("fromSocialVote");
-
-  if (!hasSeenInfographic && !cameFromSocialVote) {
-    setShowHowToPlayInfographic(true);
-    localStorage.setItem("howToPlayShown", "true");
-  }
-}, []);
-
-useEffect(() => {
-  const fromSocialVote = localStorage.getItem("fromSocialVote") === "true";
-  const socialVoteLineupId = localStorage.getItem("socialVoteLineupId");
-  const hasVotedKey = `bce-voted-${dailyPrompt}`;
-
-  if (fromSocialVote && socialVoteLineupId && !localStorage.getItem(hasVotedKey)) {
-    const castSocialVote = async () => {
-      const { data, error } = await supabase
-        .from("lineups")
-        .update({ votes: supabase.raw("votes + 1") })
-        .eq("id", socialVoteLineupId);
-
-      if (!error) {
-        localStorage.setItem(hasVotedKey, `social-${socialVoteLineupId}`);
-        alert("🔥 Your vote has been counted! Now submit your own lineup!");
-        const submitSection = document.getElementById("submit");
-        if (submitSection) {
-          submitSection.scrollIntoView({ behavior: "smooth" });
-        }
-      } else {
-        console.error("Social vote error:", error);
-      }
-    };
-
-    castSocialVote();
-
-    // Clean up so it doesn't repeat
-    localStorage.removeItem("fromSocialVote");
-    localStorage.removeItem("socialVoteLineupId");
-  }
-}, [dailyPrompt]);
-
  const fetchUserStats = async () => {
   const userId = localStorage.getItem("bce_user_id");
   if (!userId) return;
@@ -611,7 +561,6 @@ useEffect(() => {
   const [opener, setOpener] = useState(null);
   const [secondOpener, setSecondOpener] = useState(null);
   const [submitted, setSubmitted] = useState(false);
-  const [lineupIdReady, setLineupIdReady] = useState(false);
   const [ticketReady, setTicketReady] = useState(false);
 
   const refreshRecentLineups = async () => {
@@ -705,24 +654,15 @@ if (uniqueNames.size < 3) {
         return;
       }
   
-      const { data: insertData, error } = await supabase
-  .from("lineups")
-  .insert([
-    {
-      prompt: dailyPrompt,
-      headliner: lockedHeadliner || headliner,
-      opener,
-      second_opener: secondOpener,
-      user_id: userId,
-    },
-  ])
-  .select();
-
-  const newLineupId = insertData?.[0]?.id;
-if (newLineupId) {
-  localStorage.setItem("submittedLineupId", newLineupId);
-  setLineupIdReady(true);
-}
+      const { error } = await supabase.from("lineups").insert([
+        {
+          prompt: dailyPrompt,
+          headliner: lockedHeadliner || headliner,
+          opener,
+          second_opener: secondOpener,
+          user_id: userId,
+        },
+      ]);
   
       if (error) {
         console.error("Submission error:", error);
@@ -1041,16 +981,11 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
-          const id = localStorage.getItem("submittedLineupId");
-const votingLink = id
-  ? `https://bestconcertevergame.com?vote=${id}`
-  : "https://bestconcertevergame.com";
-
-await navigator.share({
-  title: "Best Concert Ever",
-  text: `Check out my lineup for "${dailyPrompt}" 🎶🔥 Vote for mine: ${votingLink} or submit your own!`,
-  files: [file],
-});
+          await navigator.share({
+            title: "Best Concert Ever",
+            text: `Check out my lineup for "${dailyPrompt}" 🎶🔥 What's yours? Play now: https://bestconcertevergame.com`,
+            files: [file],
+          });
         } catch (err) {
           console.error("Share failed:", err);
           alert("Sharing was cancelled or failed.");
