@@ -114,65 +114,6 @@ export default function BestConcertEver() {
   const [yesterdayPrompt, setYesterdayPrompt] = useState(null);
 
 useEffect(() => {
-  const params = new URLSearchParams(window.location.search);
-  const voteId = params.get("vote");
-
-  if (voteId) {
-    localStorage.setItem("fromSocialVote", "true");
-    localStorage.setItem("socialVoteLineupId", voteId);
-  }
-}, []);
-
-useEffect(() => {
-  const voteId = localStorage.getItem("socialVoteLineupId");
-  const fromSocialVote = localStorage.getItem("fromSocialVote");
-
-  if (voteId && fromSocialVote === "true") {
-    const alreadyVoted = localStorage.getItem(`bce-voted-${dailyPrompt}`);
-
-    if (alreadyVoted) {
-      alert("Thanks for checking out this lineup. You've already voted today!");
-      localStorage.removeItem("fromSocialVote");
-      localStorage.removeItem("socialVoteLineupId");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      return;
-    }
-
-    const castVote = async () => {
-      const { data, error } = await supabase
-        .from("lineups")
-        .select("votes")
-        .eq("id", voteId)
-        .single();
-
-      if (error || !data) {
-        console.error("Failed to fetch lineup to vote:", error);
-        return;
-      }
-
-      const updatedVotes = (data.votes || 0) + 1;
-
-      const { error: voteError } = await supabase
-        .from("lineups")
-        .update({ votes: updatedVotes })
-        .eq("id", voteId);
-
-      if (voteError) {
-        console.error("Vote error:", voteError);
-      } else {
-        localStorage.setItem(`bce-voted-${dailyPrompt}`, voteId);
-        localStorage.removeItem("fromSocialVote");
-        localStorage.removeItem("socialVoteLineupId");
-        alert("Thanks for voting! Now submit your own lineup!");
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
-    };
-
-    castVote();
-  }
-}, [dailyPrompt]);
-
-useEffect(() => {
   async function initializePromptAndLineups() {
     const today = new Date();
     const cutoff = new Date("2025-05-01T00:00:00Z");
@@ -463,7 +404,7 @@ const handleEmailSignup = async () => {
       }
     }, 10000);
 
-      if (!localStorage.getItem("howToPlayShown") && localStorage.getItem("fromSocialVote") !== "true") {
+      if (!localStorage.getItem("howToPlayShown")) {
     setShowHowToPlayInfographic(true);
     localStorage.setItem("howToPlayShown", "true");
   }
@@ -561,13 +502,6 @@ useEffect(() => {
 }, [dailyPrompt]);
 
 useEffect(() => {
-  if (submitted && submittedLineupId) {
-    setTicketReady(true);
-    localStorage.setItem('ticketReadyToday', 'true');
-  }
-}, [submitted, submittedLineupId]);
-
-useEffect(() => {
   if (!yesterdayPrompt) return; // don't run until it's ready
 
   const fetchYesterdaysWinner = async () => {
@@ -627,7 +561,6 @@ useEffect(() => {
   const [opener, setOpener] = useState(null);
   const [secondOpener, setSecondOpener] = useState(null);
   const [submitted, setSubmitted] = useState(false);
-  const [submittedLineupId, setSubmittedLineupId] = useState(null);
   const [ticketReady, setTicketReady] = useState(false);
 
   const refreshRecentLineups = async () => {
@@ -721,27 +654,15 @@ if (uniqueNames.size < 3) {
         return;
       }
   
-      const { data: inserted, error } = await supabase
-  .from("lineups")
-  .insert([
-    {
-      prompt: dailyPrompt,
-      headliner: lockedHeadliner || headliner,
-      opener,
-      second_opener: secondOpener,
-      user_id: userId,
-    },
-  ])
-  .select("id")
-  .single();
-
-if (error) {
-  console.error("Submission error:", error);
-  alert("There was an error submitting your lineup.");
-  return;
-}
-
-setSubmittedLineupId(inserted.id);
+      const { error } = await supabase.from("lineups").insert([
+        {
+          prompt: dailyPrompt,
+          headliner: lockedHeadliner || headliner,
+          opener,
+          second_opener: secondOpener,
+          user_id: userId,
+        },
+      ]);
   
       if (error) {
         console.error("Submission error:", error);
@@ -757,6 +678,10 @@ setSubmittedLineupId(inserted.id);
       }
       setSubmitted(true);
       setShowVotePrompt(true);
+      setTicketReady(true);
+      localStorage.setItem('ticketReadyToday', 'true');
+      setTicketReady(true);
+      localStorage.setItem('ticketReadyToday', 'true');
       localStorage.setItem('savedHeadliner', headliner?.name || "");
       localStorage.setItem('savedSecondOpener', secondOpener?.name || "");
       localStorage.setItem('savedOpener', opener?.name || "");
@@ -1012,20 +937,15 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   <div className="flex flex-col items-center my-10 animate-fade-in">
     <button
       onClick={async () => {
-        if (!submittedLineupId) {
-          alert("Lineup ID not ready yet. Try again in a moment.");
-          return;
-        }
+  if (typeof window !== "undefined" && window.plausible) {
+    window.plausible("Share Ticket");
+  }
 
-        if (typeof window !== "undefined" && window.plausible) {
-          window.plausible("Share Ticket");
-        }
-
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
-        const background = new Image();
-        background.src = "/BCEticketstub.png";
-        background.crossOrigin = "anonymous";
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  const background = new Image();
+  background.src = "/BCEticketstub.png";
+  background.crossOrigin = "anonymous";
 
   background.onload = async () => {
     canvas.width = background.width;
@@ -1063,7 +983,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
         try {
           await navigator.share({
             title: "Best Concert Ever",
-            text: `Check out my lineup for "${dailyPrompt}" 🎶🔥 Vote for mine: https://bestconcertevergame.com?vote=${submittedLineupId} or submit your own!`,
+            text: `Check out my lineup for "${dailyPrompt}" 🎶🔥 What's yours? Play now: https://bestconcertevergame.com`,
             files: [file],
           });
         } catch (err) {
