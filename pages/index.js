@@ -113,9 +113,15 @@ export default function BestConcertEver() {
   const [lockedHeadliner, setLockedHeadliner] = useState(null);
   const [yesterdayPrompt, setYesterdayPrompt] = useState(null);
 
-  useEffect(() => {
+useEffect(() => {
   const params = new URLSearchParams(window.location.search);
   const voteId = params.get("vote");
+
+  if (voteId) {
+    localStorage.setItem("fromSocialVote", "true");
+    localStorage.setItem("socialVoteLineupId", voteId);
+  }
+}, []);
 
 useEffect(() => {
   const voteId = localStorage.getItem("socialVoteLineupId");
