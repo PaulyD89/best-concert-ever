@@ -172,12 +172,6 @@ useEffect(() => {
   }
 }, [dailyPrompt]);
 
-  if (voteId) {
-    localStorage.setItem("fromSocialVote", "true");
-    localStorage.setItem("socialVoteLineupId", voteId);
-  }
-}, []);
-
 useEffect(() => {
   async function initializePromptAndLineups() {
     const today = new Date();
