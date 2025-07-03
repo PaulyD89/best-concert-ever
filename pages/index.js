@@ -1074,7 +1074,7 @@ try {
   console.error("TinyURL error:", err);
 }
 
-const shareText = `Here’s my lineup for “${dailyPrompt}” 🎶🔥 Vote for it: ${tinyUrl} or submit your own!`;
+const shareText = `Here’s my lineup for “${dailyPrompt}” 🎶🔥 Vote for it: ${tinyUrl} or submit your own! #bestconcertever`;
 
 await navigator.share({
   title: "Best Concert Ever",
