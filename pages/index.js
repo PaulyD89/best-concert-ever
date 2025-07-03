@@ -1046,16 +1046,10 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     canvas.toBlob(async (blob) => {
       const file = new File([blob], "bce-ticket.jpg", { type: "image/jpeg" });
 
-      if (!lineupId) {
-  console.warn("🚫 Cannot share lineup — lineupId not ready.");
-  return;
-}
-
-const voteUrl = `https://bestconcertevergame.com?vote=${lineupId}`;
-console.log("✅ Generated vote URL with lineupId:", voteUrl);
-
-if (navigator.canShare && navigator.canShare({ files: [file] })) {
-  try {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          const voteUrl = `https://bestconcertevergame.com?vote=${lineupId}`;
+          console.log("Generated vote URL:", voteUrl);
 
 // Fetch the TinyURL
 let tinyUrl = voteUrl;
