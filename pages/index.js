@@ -200,70 +200,67 @@ const fetchDeepCutLineup = async () => {
   }
 };
 
-useEffect(() => {
-  if (!dailyPrompt) return;
-
+const performVote = async (prompt) => {
   const urlParams = new URLSearchParams(window.location.search);
   const voteId = urlParams.get("vote");
-  const alreadyVoted = localStorage.getItem(`bce-voted-${dailyPrompt}`);
+  const alreadyVoted = localStorage.getItem(`bce-voted-${prompt}`);
+  if (!voteId || alreadyVoted) return;
 
-  const performVote = async () => {
-    if (!voteId || alreadyVoted) return;
-
-    try {
-      const { data, error } = await supabase
-        .from("lineups")
-        .select("votes")
-        .eq("id", voteId)
-        .single();
-
-      if (error || !data) {
-        console.error("Failed to fetch lineup for voting:", error);
-        return;
-      }
-
-      const updatedVotes = (data.votes || 0) + 1;
-      const { error: voteError } = await supabase
-        .from("lineups")
-        .update({ votes: updatedVotes })
-        .eq("id", voteId);
-
-      if (voteError) {
-        console.error("Vote failed:", voteError);
-      } else {
-        localStorage.setItem(`bce-voted-${dailyPrompt}`, "social");
-        localStorage.setItem("fromSocialVote", "true");
-        localStorage.setItem("socialVoteLineupId", voteId);
-        alert("🔥 Your vote has been counted! Now submit your own.");
-      }
-    } catch (err) {
-      console.error("Vote execution error:", err);
-    }
-  };
-
-  // Always call this, even if voteId is null — doesn't hurt
-  performVote();
-
-  // Fetch recent lineups (don't skip this!)
-  const fetchRecentLineups = async () => {
+  try {
     const { data, error } = await supabase
       .from("lineups")
-      .select("id, headliner, opener, second_opener, votes, created_at")
-      .eq("prompt", dailyPrompt)
-      .order("created_at", { ascending: false })
-      .limit(6);
+      .select("votes")
+      .eq("id", voteId)
+      .single();
 
     if (error || !data) {
-      console.error("Error fetching recent lineups:", error);
-      setRecentLineups([]);
+      console.error("Failed to fetch lineup for voting:", error);
       return;
     }
 
-    setRecentLineups(data);
-  };
+    const updatedVotes = (data.votes || 0) + 1;
+    const { error: voteError } = await supabase
+      .from("lineups")
+      .update({ votes: updatedVotes })
+      .eq("id", voteId);
 
-  fetchRecentLineups();
-  fetchDeepCutLineup();
+    if (voteError) {
+      console.error("Vote failed:", voteError);
+    } else {
+      localStorage.setItem(`bce-voted-${prompt}`, "social");
+      localStorage.setItem("fromSocialVote", "true");
+      localStorage.setItem("socialVoteLineupId", voteId);
+      alert("🔥 Your vote has been counted! Now submit your own.");
+    }
+  } catch (err) {
+    console.error("Vote execution error:", err);
+  }
+};
+
+useEffect(() => {
+  if (dailyPrompt) {
+    performVote(dailyPrompt);
+
+    const fetchRecentLineups = async () => {
+      const { data, error } = await supabase
+        .from("lineups")
+        .select("id, headliner, opener, second_opener, votes, created_at")
+        .eq("prompt", dailyPrompt)
+        .order("created_at", { ascending: false })
+        .limit(6);
+
+      if (error || !data) {
+        console.error("Error fetching recent lineups:", error);
+        setRecentLineups([]);
+        return;
+      }
+
+      setRecentLineups(data);
+    };
+
+    fetchRecentLineups();
+    fetchDeepCutLineup();
+  }
 }, [dailyPrompt]);
 
 useEffect(() => {
