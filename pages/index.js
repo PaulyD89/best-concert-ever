@@ -151,11 +151,11 @@ setDailyPrompt(promptToUse);
   initializePromptAndLineups();
 }, []);
 
-useEffect(() => {
-  const storedTicketReady = localStorage.getItem('ticketReadyToday') === 'true';
-  if (storedTicketReady) {
-    setTicketReady(true);
-  }
+const storedTicketReady = localStorage.getItem('ticketReadyToday') === 'true';
+if (storedTicketReady) {
+  setTicketReady(true);
+  setLineupReady(true);
+}
 }, []);
 
 const fetchDeepCutLineup = async () => {
