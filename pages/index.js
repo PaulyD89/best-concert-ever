@@ -159,11 +159,15 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-  const storedLineupReady = localStorage.getItem('lineupReadyToday') === 'true';
-  if (storedLineupReady) {
-    setTicketReady(true);
-    setLineupReady(true);
-  }
+  const timeout = setTimeout(() => {
+    const storedLineupReady = localStorage.getItem('lineupReadyToday') === 'true';
+    if (storedLineupReady) {
+      setTicketReady(true);
+      setLineupReady(true);
+    }
+  }, 200);
+
+  return () => clearTimeout(timeout);
 }, []);
 
 const fetchDeepCutLineup = async () => {
