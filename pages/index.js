@@ -152,6 +152,8 @@ setDailyPrompt(promptToUse);
 }, []);
 
 const [pendingVoteId, setPendingVoteId] = useState(null);
+const hasAttemptedRef = useRef(false);
+
 
 useEffect(() => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -166,7 +168,8 @@ useEffect(() => {
 
 useEffect(() => {
   const attemptAutoVote = async () => {
-    if (!pendingVoteId || !dailyPrompt) return;
+  if (!pendingVoteId || !dailyPrompt || hasAttemptedRef.current) return;
+  hasAttemptedRef.current = true;
 
     const votedKey = `bce-voted-${dailyPrompt}`;
     const alreadyVoted = localStorage.getItem(votedKey);
@@ -207,11 +210,12 @@ useEffect(() => {
     }
   };
 
-  const delay = setTimeout(() => {
-    attemptAutoVote();
-  }, 300); // slight delay ensures everything is hydrated
-
-  return () => clearTimeout(delay);
+  if (pendingVoteId && dailyPrompt) {
+    const delay = setTimeout(() => {
+      attemptAutoVote();
+    }, 300);
+    return () => clearTimeout(delay);
+  }
 }, [pendingVoteId, dailyPrompt]);
 
 useEffect(() => {
