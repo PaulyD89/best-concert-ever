@@ -201,14 +201,20 @@ const fetchDeepCutLineup = async () => {
 };
 
 const performVote = async (prompt) => {
-    console.log("🔍 Running performVote for prompt:", prompt);
+  console.log("🔍 Running performVote for prompt:", prompt);
   const urlParams = new URLSearchParams(window.location.search);
   const voteId = urlParams.get("vote");
 
-if (!voteId || voteId === "null") {
-  console.warn("⚠️ No voteId present in URL, skipping vote.");
-  return;
-}
+  const alreadyVoted = localStorage.getItem(`bce-voted-${prompt}`);
+  if (!voteId || voteId === "null") {
+    console.warn("⚠️ No voteId present in URL, skipping vote.");
+    return;
+  }
+
+  if (alreadyVoted) {
+    alert("You've already voted today — but feel free to submit your own lineup!");
+    return;
+  }
 
 const alreadyVoted = localStorage.getItem(`bce-voted-${prompt}`);
 if (alreadyVoted) return;
