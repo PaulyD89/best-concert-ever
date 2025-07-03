@@ -152,6 +152,37 @@ setDailyPrompt(promptToUse);
 }, []);
 
 useEffect(() => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const voteId = urlParams.get("vote");
+  const votedKey = `bce-voted-${new Date().toISOString().slice(0, 10)}`;
+
+  if (voteId && !localStorage.getItem(votedKey)) {
+    // Disable How To Play popup
+    localStorage.setItem("howToPlayShown", "true");
+
+    const voteForLineup = async () => {
+      const { error } = await supabase
+        .from("lineups")
+        .update({ votes: supabase.raw("votes + 1") })
+        .eq("id", voteId);
+
+      if (!error) {
+        localStorage.setItem(votedKey, voteId);
+        alert("🔥 Your vote has been counted! Now try submitting your own lineup.");
+        const scrollTarget = document.querySelector("#flyerRef") || document.querySelector("input");
+        if (scrollTarget) {
+          scrollTarget.scrollIntoView({ behavior: "smooth" });
+        }
+      } else {
+        console.error("Auto-vote failed:", error);
+      }
+    };
+
+    voteForLineup();
+  }
+}, []);
+
+useEffect(() => {
   const storedTicketReady = localStorage.getItem('ticketReadyToday') === 'true';
   if (storedTicketReady) {
     setTicketReady(true);
@@ -654,15 +685,19 @@ if (uniqueNames.size < 3) {
         return;
       }
   
-      const { error } = await supabase.from("lineups").insert([
-        {
-          prompt: dailyPrompt,
-          headliner: lockedHeadliner || headliner,
-          opener,
-          second_opener: secondOpener,
-          user_id: userId,
-        },
-      ]);
+      const { data: inserted, error } = await supabase.from("lineups").insert([
+  {
+    prompt: dailyPrompt,
+    headliner: lockedHeadliner || headliner,
+    opener,
+    second_opener: secondOpener,
+    user_id: userId,
+  },
+]).select("id").single();
+
+if (inserted?.id) {
+  localStorage.setItem("socialVoteLineupId", inserted.id);
+}
   
       if (error) {
         console.error("Submission error:", error);
@@ -981,11 +1016,30 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
-          await navigator.share({
-            title: "Best Concert Ever",
-            text: `Check out my lineup for "${dailyPrompt}" 🎶🔥 What's yours? Play now: https://bestconcertevergame.com`,
-            files: [file],
-          });
+          const voteId = localStorage.getItem("socialVoteLineupId");
+const longUrl = voteId
+  ? `https://bestconcertevergame.com?vote=${voteId}`
+  : "https://bestconcertevergame.com";
+
+let voteUrl = longUrl; // fallback
+
+try {
+  const response = await fetch(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(longUrl)}`);
+  if (response.ok) {
+    voteUrl = await response.text();
+  }
+} catch (err) {
+  console.error("URL shortening failed:", err);
+}
+
+const shareText = `Check out my lineup for "${dailyPrompt}" 🎶🔥\nVote for mine: ${voteUrl}\nOr submit your own!`;
+
+await navigator.share({
+  title: "Best Concert Ever",
+  text: shareText,
+  files: [file],
+});
+
         } catch (err) {
           console.error("Share failed:", err);
           alert("Sharing was cancelled or failed.");
