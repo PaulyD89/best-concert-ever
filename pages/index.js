@@ -201,6 +201,7 @@ const fetchDeepCutLineup = async () => {
 };
 
 const performVote = async (prompt) => {
+    console.log("🔍 Running performVote for prompt:", prompt);
   const urlParams = new URLSearchParams(window.location.search);
   const voteId = urlParams.get("vote");
   const alreadyVoted = localStorage.getItem(`bce-voted-${prompt}`);
