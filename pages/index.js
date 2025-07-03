@@ -1033,7 +1033,7 @@ try {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "IGLBAFT7kkWMTcX8jwMAq4X9rbo0aMC8eLmVO38gtssNXSTuNFTTSu3UB3nO" // Replace with your real key
+      Authorization: "Bearer IGLBAFT7kkWMTcX8jwMAq4X9rbo0aMC8eLmVO38gtssNXSTuNFTTSu3UB3nO"
     },
     body: JSON.stringify({
       url: voteUrl,
