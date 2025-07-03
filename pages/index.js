@@ -156,49 +156,62 @@ const [pendingVoteId, setPendingVoteId] = useState(null);
 useEffect(() => {
   const urlParams = new URLSearchParams(window.location.search);
   const voteParam = urlParams.get("vote");
-  if (voteParam) setPendingVoteId(voteParam);
+
+  if (voteParam) {
+    setPendingVoteId(voteParam);
+    localStorage.setItem("fromSocialVote", "true");
+    localStorage.setItem("socialVoteLineupId", voteParam);
+  }
 }, []);
 
 useEffect(() => {
-  if (!pendingVoteId || !dailyPrompt) return;
+  const attemptAutoVote = async () => {
+    if (!pendingVoteId || !dailyPrompt) return;
 
-  const votedKey = `bce-voted-${dailyPrompt}`;
-  if (localStorage.getItem(votedKey)) return;
+    const votedKey = `bce-voted-${dailyPrompt}`;
+    const alreadyVoted = localStorage.getItem(votedKey);
+    if (alreadyVoted) return;
 
-  localStorage.setItem("howToPlayShown", "true");
+    try {
+      const { data: currentData, error: fetchError } = await supabase
+        .from("lineups")
+        .select("votes")
+        .eq("id", pendingVoteId)
+        .single();
 
-  const voteForLineup = async () => {
-    const { data: currentData, error: fetchError } = await supabase
-      .from("lineups")
-      .select("votes")
-      .eq("id", pendingVoteId)
-      .single();
-
-    if (fetchError || !currentData) {
-      console.error("Could not fetch current votes:", fetchError);
-      return;
-    }
-
-    const currentVotes = currentData.votes || 0;
-
-    const { error } = await supabase
-      .from("lineups")
-      .update({ votes: currentVotes + 1 })
-      .eq("id", pendingVoteId);
-
-    if (!error) {
-      localStorage.setItem(votedKey, pendingVoteId);
-      setShowVotePrompt(true);
-      const scrollTarget = document.querySelector("#flyerRef") || document.querySelector("input");
-      if (scrollTarget) {
-        scrollTarget.scrollIntoView({ behavior: "smooth" });
+      if (fetchError || !currentData) {
+        console.error("Could not fetch current votes:", fetchError);
+        return;
       }
-    } else {
-      console.error("Auto-vote failed:", error);
+
+      const currentVotes = currentData.votes || 0;
+      const { error } = await supabase
+        .from("lineups")
+        .update({ votes: currentVotes + 1 })
+        .eq("id", pendingVoteId);
+
+      if (!error) {
+        localStorage.setItem(votedKey, pendingVoteId);
+        localStorage.setItem("howToPlayShown", "true");
+        setShowVotePrompt(true);
+
+        const scrollTarget = document.querySelector("#flyerRef") || document.querySelector("input");
+        if (scrollTarget) {
+          scrollTarget.scrollIntoView({ behavior: "smooth" });
+        }
+      } else {
+        console.error("Auto-vote failed:", error);
+      }
+    } catch (err) {
+      console.error("Unexpected error during auto-vote:", err);
     }
   };
 
-  voteForLineup();
+  const delay = setTimeout(() => {
+    attemptAutoVote();
+  }, 300); // slight delay ensures everything is hydrated
+
+  return () => clearTimeout(delay);
 }, [pendingVoteId, dailyPrompt]);
 
 useEffect(() => {
@@ -454,10 +467,13 @@ const handleEmailSignup = async () => {
       }
     }, 10000);
 
-      if (!localStorage.getItem("howToPlayShown")) {
-    setShowHowToPlayInfographic(true);
-    localStorage.setItem("howToPlayShown", "true");
-  }
+    if (
+  !localStorage.getItem("howToPlayShown") &&
+  localStorage.getItem("fromSocialVote") !== "true"
+) {
+  setShowHowToPlayInfographic(true);
+  localStorage.setItem("howToPlayShown", "true");
+}
 
     fetchUserStats();
 
