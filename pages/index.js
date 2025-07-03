@@ -158,18 +158,6 @@ useEffect(() => {
   }
 }, []);
 
-useEffect(() => {
-  const timeout = setTimeout(() => {
-    const storedLineupReady = localStorage.getItem('lineupReadyToday') === 'true';
-    if (storedLineupReady) {
-      setTicketReady(true);
-      setLineupReady(true);
-    }
-  }, 200); // short delay
-
-  return () => clearTimeout(timeout);
-}, []);
-
 const fetchDeepCutLineup = async () => {
   const now = new Date();
   const utcMidnight = new Date();
@@ -200,74 +188,28 @@ const fetchDeepCutLineup = async () => {
   }
 };
 
-const performVote = async (prompt) => {
-    console.log("🔍 Running performVote for prompt:", prompt);
-  const urlParams = new URLSearchParams(window.location.search);
-  const voteId = urlParams.get("vote");
+useEffect(() => {
+  if (!dailyPrompt) return; // Don't run until dailyPrompt is ready
 
-if (!voteId || voteId === "null") {
-  console.warn("⚠️ No voteId present in URL, skipping vote.");
-  return;
-}
-
-const alreadyVoted = localStorage.getItem(`bce-voted-${prompt}`);
-if (alreadyVoted) return;
-
-  try {
+  const fetchRecentLineups = async () => {
     const { data, error } = await supabase
       .from("lineups")
-      .select("votes")
-      .eq("id", voteId)
-      .single();
+      .select("id, headliner, opener, second_opener, votes, created_at")
+      .eq("prompt", dailyPrompt)
+      .order("created_at", { ascending: false })
+      .limit(6);
 
     if (error || !data) {
-      console.error("Failed to fetch lineup for voting:", error);
+      console.error("Error fetching recent lineups:", error);
+      setRecentLineups([]);
       return;
     }
 
-    const updatedVotes = (data.votes || 0) + 1;
-    const { error: voteError } = await supabase
-      .from("lineups")
-      .update({ votes: updatedVotes })
-      .eq("id", voteId);
+    setRecentLineups(data);
+  };
 
-    if (voteError) {
-      console.error("Vote failed:", voteError);
-    } else {
-      localStorage.setItem(`bce-voted-${prompt}`, "social");
-      localStorage.setItem("fromSocialVote", "true");
-      localStorage.setItem("socialVoteLineupId", voteId);
-      alert("🔥 Your vote has been counted! Now submit your own.");
-    }
-  } catch (err) {
-    console.error("Vote execution error:", err);
-  }
-};
-
-useEffect(() => {
-  if (dailyPrompt) {
-    performVote(dailyPrompt);
-
-    const fetchRecentLineups = async () => {
-      const { data, error } = await supabase
-        .from("lineups")
-        .select("id, headliner, opener, second_opener, votes, created_at")
-        .eq("prompt", dailyPrompt)
-        .order("created_at", { ascending: false })
-        .limit(6);
-
-      if (error || !data) {
-        console.error("Error fetching recent lineups:", error);
-        setRecentLineups([]);
-        return;
-      }
-
-      setRecentLineups(data);
-    };
-
-    fetchRecentLineups();
-    fetchDeepCutLineup();
-  }
+  fetchRecentLineups();
+  fetchDeepCutLineup();
 }, [dailyPrompt]);
 
 useEffect(() => {
@@ -462,7 +404,7 @@ const handleEmailSignup = async () => {
       }
     }, 10000);
 
-      if (!localStorage.getItem("howToPlayShown") && !localStorage.getItem("fromSocialVote")) {
+      if (!localStorage.getItem("howToPlayShown")) {
     setShowHowToPlayInfographic(true);
     localStorage.setItem("howToPlayShown", "true");
   }
@@ -620,8 +562,6 @@ useEffect(() => {
   const [secondOpener, setSecondOpener] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [ticketReady, setTicketReady] = useState(false);
-  const [lineupId, setLineupId] = useState(null);
-  const [lineupReady, setLineupReady] = useState(false);
 
   const refreshRecentLineups = async () => {
   const { data, error } = await supabase
@@ -714,45 +654,38 @@ if (uniqueNames.size < 3) {
         return;
       }
   
-      const { data: inserted, error } = await supabase
-  .from("lineups")
-  .insert([
-    {
-      prompt: dailyPrompt,
-      headliner: lockedHeadliner || headliner,
-      opener,
-      second_opener: secondOpener,
-      user_id: userId,
-    },
-  ])
-  .select("id")
-  .single();
-
-if (error) {
-  console.error("Submission error:", error);
-  alert("There was an error submitting your lineup.");
-  return;
-}
-
-setLineupId(inserted.id);
-setLineupReady(true);
+      const { error } = await supabase.from("lineups").insert([
+        {
+          prompt: dailyPrompt,
+          headliner: lockedHeadliner || headliner,
+          opener,
+          second_opener: secondOpener,
+          user_id: userId,
+        },
+      ]);
+  
+      if (error) {
+        console.error("Submission error:", error);
+        alert("There was an error submitting your lineup.");
+        return;
+      }
 
       await refreshRecentLineups();
       await refreshTopLineups();
   
       if (typeof window !== 'undefined' && window.plausible) {
-  window.plausible("Submit Lineup");
-}
-setSubmitted(true);
-setShowVotePrompt(true);
-setTicketReady(true);
-localStorage.setItem('ticketReadyToday', 'true');
-localStorage.setItem('lineupReadyToday', 'true');
-localStorage.setItem('lineupIdToday', inserted.id);
-localStorage.setItem('savedHeadliner', headliner?.name || "");
-localStorage.setItem('savedSecondOpener', secondOpener?.name || "");
-localStorage.setItem('savedOpener', opener?.name || "");
-console.log("Lineup submitted:", { headliner, opener, secondOpener });  
+        window.plausible("Submit Lineup");
+      }
+      setSubmitted(true);
+      setShowVotePrompt(true);
+      setTicketReady(true);
+      localStorage.setItem('ticketReadyToday', 'true');
+      setTicketReady(true);
+      localStorage.setItem('ticketReadyToday', 'true');
+      localStorage.setItem('savedHeadliner', headliner?.name || "");
+      localStorage.setItem('savedSecondOpener', secondOpener?.name || "");
+      localStorage.setItem('savedOpener', opener?.name || "");
+      console.log("Lineup submitted:", { headliner, opener, secondOpener });    
     }
   };  
 
@@ -1000,7 +933,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   Sign Up for Daily Puzzles & Winners
 </div>
 
-{ticketReady && lineupReady && (
+{ticketReady && (
   <div className="flex flex-col items-center my-10 animate-fade-in">
     <button
       onClick={async () => {
@@ -1048,39 +981,11 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
-          const voteUrl = `https://bestconcertevergame.com?vote=${lineupId}`;
-          console.log("Generated vote URL:", voteUrl);
-
-// Fetch the TinyURL
-let tinyUrl = voteUrl;
-try {
-  const res = await fetch(`https://api.tinyurl.com/create`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer IGLBAFT7kkWMTcX8jwMAq4X9rbo0aMC8eLmVO38gtssNXSTuNFTTSu3UB3nO"
-    },
-    body: JSON.stringify({
-      url: voteUrl,
-      domain: "tinyurl.com"
-    }),
-  });
-
-  const data = await res.json();
-  if (data?.data?.tiny_url) {
-    tinyUrl = data.data.tiny_url;
-  }
-} catch (err) {
-  console.error("TinyURL error:", err);
-}
-
-const shareText = `Here’s my lineup for “${dailyPrompt}” 🎶🔥 Vote for it: ${tinyUrl} or submit your own!`;
-
-await navigator.share({
-  title: "Best Concert Ever",
-  text: shareText,
-  files: [file],
-});
+          await navigator.share({
+            title: "Best Concert Ever",
+            text: `Check out my lineup for "${dailyPrompt}" 🎶🔥 What's yours? Play now: https://bestconcertevergame.com`,
+            files: [file],
+          });
         } catch (err) {
           console.error("Share failed:", err);
           alert("Sharing was cancelled or failed.");
