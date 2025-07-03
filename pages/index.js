@@ -189,7 +189,41 @@ const fetchDeepCutLineup = async () => {
 };
 
 useEffect(() => {
-  if (!dailyPrompt) return; // Don't run until dailyPrompt is ready
+  if (!dailyPrompt) return;
+
+    const params = new URLSearchParams(window.location.search);
+  const voteId = params.get("vote");
+
+  if (voteId && !localStorage.getItem(`bce-voted-${dailyPrompt}`)) {
+    const registerSocialVote = async () => {
+      const { data, error } = await supabase
+        .from("lineups")
+        .select("votes")
+        .eq("id", voteId)
+        .single();
+
+      if (!error && data) {
+        const updatedVotes = (data.votes || 0) + 1;
+        const { error: voteError } = await supabase
+          .from("lineups")
+          .update({ votes: updatedVotes })
+          .eq("id", voteId);
+
+        if (!voteError) {
+          localStorage.setItem(`bce-voted-${dailyPrompt}`, "social");
+          localStorage.setItem("fromSocialVote", "true");
+          localStorage.setItem("socialVoteLineupId", voteId);
+          alert("🔥 Your vote has been counted! Now submit your own.");
+        } else {
+          console.error("Vote error:", voteError);
+        }
+      } else {
+        console.error("Failed to retrieve lineup to vote on.");
+      }
+    };
+
+    registerSocialVote();
+  }
 
   const fetchRecentLineups = async () => {
     const { data, error } = await supabase
@@ -404,7 +438,7 @@ const handleEmailSignup = async () => {
       }
     }, 10000);
 
-      if (!localStorage.getItem("howToPlayShown")) {
+      if (!localStorage.getItem("howToPlayShown") && !localStorage.getItem("fromSocialVote")) {
     setShowHowToPlayInfographic(true);
     localStorage.setItem("howToPlayShown", "true");
   }
@@ -562,6 +596,8 @@ useEffect(() => {
   const [secondOpener, setSecondOpener] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [ticketReady, setTicketReady] = useState(false);
+  const [lineupId, setLineupId] = useState(null);
+  const [lineupReady, setLineupReady] = useState(false);
 
   const refreshRecentLineups = async () => {
   const { data, error } = await supabase
@@ -654,21 +690,28 @@ if (uniqueNames.size < 3) {
         return;
       }
   
-      const { error } = await supabase.from("lineups").insert([
-        {
-          prompt: dailyPrompt,
-          headliner: lockedHeadliner || headliner,
-          opener,
-          second_opener: secondOpener,
-          user_id: userId,
-        },
-      ]);
-  
-      if (error) {
-        console.error("Submission error:", error);
-        alert("There was an error submitting your lineup.");
-        return;
-      }
+      const { data: inserted, error } = await supabase
+  .from("lineups")
+  .insert([
+    {
+      prompt: dailyPrompt,
+      headliner: lockedHeadliner || headliner,
+      opener,
+      second_opener: secondOpener,
+      user_id: userId,
+    },
+  ])
+  .select("id")
+  .single();
+
+if (error) {
+  console.error("Submission error:", error);
+  alert("There was an error submitting your lineup.");
+  return;
+}
+
+setLineupId(inserted.id);
+setLineupReady(true);
 
       await refreshRecentLineups();
       await refreshTopLineups();
@@ -933,7 +976,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   Sign Up for Daily Puzzles & Winners
 </div>
 
-{ticketReady && (
+{ticketReady && lineupReady && (
   <div className="flex flex-col items-center my-10 animate-fade-in">
     <button
       onClick={async () => {
@@ -981,11 +1024,38 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
-          await navigator.share({
-            title: "Best Concert Ever",
-            text: `Check out my lineup for "${dailyPrompt}" 🎶🔥 What's yours? Play now: https://bestconcertevergame.com`,
-            files: [file],
-          });
+          const voteUrl = `https://bestconcertevergame.com?vote=${lineupId}`;
+
+// Fetch the TinyURL
+let tinyUrl = voteUrl;
+try {
+  const res = await fetch(`https://api.tinyurl.com/create`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "IGLBAFT7kkWMTcX8jwMAq4X9rbo0aMC8eLmVO38gtssNXSTuNFTTSu3UB3nO" // Replace with your real key
+    },
+    body: JSON.stringify({
+      url: voteUrl,
+      domain: "tinyurl.com"
+    }),
+  });
+
+  const data = await res.json();
+  if (data?.data?.tiny_url) {
+    tinyUrl = data.data.tiny_url;
+  }
+} catch (err) {
+  console.error("TinyURL error:", err);
+}
+
+const shareText = `Here’s my lineup for “${dailyPrompt}” 🎶🔥 Vote for it: ${tinyUrl} or submit your own!`;
+
+await navigator.share({
+  title: "Best Concert Ever",
+  text: shareText,
+  files: [file],
+});
         } catch (err) {
           console.error("Share failed:", err);
           alert("Sharing was cancelled or failed.");
