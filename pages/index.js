@@ -1051,7 +1051,28 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
           const voteUrl = `https://bestconcertevergame.com?vote=${lineupId}`;
           console.log("Generated vote URL:", voteUrl);
 
-const tinyUrl = voteUrl;
+// Fetch the TinyURL
+let tinyUrl = voteUrl;
+try {
+  const res = await fetch(`https://api.tinyurl.com/create`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer IGLBAFT7kkWMTcX8jwMAq4X9rbo0aMC8eLmVO38gtssNXSTuNFTTSu3UB3nO"
+    },
+    body: JSON.stringify({
+      url: voteUrl,
+      domain: "tinyurl.com"
+    }),
+  });
+
+  const data = await res.json();
+  if (data?.data?.tiny_url) {
+    tinyUrl = data.data.tiny_url;
+  }
+} catch (err) {
+  console.error("TinyURL error:", err);
+}
 
 const shareText = `Here’s my lineup for “${dailyPrompt}” 🎶🔥 Vote for it: ${tinyUrl} or submit your own!`;
 
