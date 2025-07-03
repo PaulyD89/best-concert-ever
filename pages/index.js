@@ -450,10 +450,13 @@ const handleEmailSignup = async () => {
       }
     }, 10000);
 
-      if (!localStorage.getItem("howToPlayShown")) {
-    setShowHowToPlayInfographic(true);
-    localStorage.setItem("howToPlayShown", "true");
-  }
+     const urlParams = new URLSearchParams(window.location.search);
+const voteId = urlParams.get("vote");
+
+if (!voteId && !localStorage.getItem("howToPlayShown")) {
+  setShowHowToPlayInfographic(true);
+  localStorage.setItem("howToPlayShown", "true");
+}
 
     fetchUserStats();
 
