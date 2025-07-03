@@ -204,8 +204,14 @@ const performVote = async (prompt) => {
     console.log("🔍 Running performVote for prompt:", prompt);
   const urlParams = new URLSearchParams(window.location.search);
   const voteId = urlParams.get("vote");
-  const alreadyVoted = localStorage.getItem(`bce-voted-${prompt}`);
-  if (!voteId || alreadyVoted) return;
+
+if (!voteId || voteId === "null") {
+  console.warn("⚠️ No voteId present in URL, skipping vote.");
+  return;
+}
+
+const alreadyVoted = localStorage.getItem(`bce-voted-${prompt}`);
+if (alreadyVoted) return;
 
   try {
     const { data, error } = await supabase
