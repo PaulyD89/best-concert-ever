@@ -152,35 +152,50 @@ setDailyPrompt(promptToUse);
 }, []);
 
 useEffect(() => {
+  if (!dailyPrompt) return; // wait until prompt is loaded
+
   const urlParams = new URLSearchParams(window.location.search);
   const voteId = urlParams.get("vote");
   const votedKey = `bce-voted-${dailyPrompt}`;
 
   if (voteId && !localStorage.getItem(votedKey)) {
-    // Disable How To Play popup
     localStorage.setItem("howToPlayShown", "true");
 
     const voteForLineup = async () => {
+      const { data: currentData, error: fetchError } = await supabase
+        .from("lineups")
+        .select("votes")
+        .eq("id", voteId)
+        .single();
+
+      if (fetchError || !currentData) {
+        console.error("Could not fetch current votes:", fetchError);
+        return;
+      }
+
+      const currentVotes = currentData.votes || 0;
+
       const { error } = await supabase
         .from("lineups")
-        .update({ votes: supabase.raw("votes + 1") })
+        .update({ votes: currentVotes + 1 })
         .eq("id", voteId);
 
       if (!error) {
-        localStorage.setItem(votedKey, voteId);
-        alert("🔥 Your vote has been counted! Now try submitting your own lineup.");
-        const scrollTarget = document.querySelector("#flyerRef") || document.querySelector("input");
-        if (scrollTarget) {
-          scrollTarget.scrollIntoView({ behavior: "smooth" });
-        }
-      } else {
-        console.error("Auto-vote failed:", error);
-      }
+  localStorage.setItem(votedKey, voteId);
+  alert("🔥 Your vote has been counted! Now try submitting your own lineup.");
+  const scrollTarget = document.querySelector("#flyerRef") || document.querySelector("input");
+  if (scrollTarget) {
+    scrollTarget.scrollIntoView({ behavior: "smooth" });
+  }
+  window.location.reload(); // 🔁 This ensures the emoji buttons disappear and UI updates
+} else {
+  console.error("Auto-vote failed:", error);
+}
     };
 
     voteForLineup();
   }
-}, []);
+}, [dailyPrompt]);
 
 useEffect(() => {
   const storedTicketReady = localStorage.getItem('ticketReadyToday') === 'true';
