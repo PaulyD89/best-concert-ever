@@ -158,15 +158,6 @@ useEffect(() => {
   }
 }, []);
 
-useEffect(() => {
-  const isSubmitted = localStorage.getItem('lineupSubmittedToday') === 'true';
-  if (isSubmitted) {
-    setSubmitted(true);
-    setTicketReady(true);
-    setLineupReady(true);
-  }
-}, []);
-
 const fetchDeepCutLineup = async () => {
   const now = new Date();
   const utcMidnight = new Date();
@@ -726,17 +717,18 @@ setLineupReady(true);
       await refreshTopLineups();
   
       if (typeof window !== 'undefined' && window.plausible) {
-  window.plausible("Submit Lineup");
-}
-setSubmitted(true);
-setShowVotePrompt(true);
-setTicketReady(true);
-localStorage.setItem('ticketReadyToday', 'true');
-localStorage.setItem('lineupSubmittedToday', 'true'); // ✅ INSERT THIS LINE HERE
-localStorage.setItem('savedHeadliner', headliner?.name || "");
-localStorage.setItem('savedSecondOpener', secondOpener?.name || "");
-localStorage.setItem('savedOpener', opener?.name || "");
-console.log("Lineup submitted:", { headliner, opener, secondOpener });    
+        window.plausible("Submit Lineup");
+      }
+      setSubmitted(true);
+      setShowVotePrompt(true);
+      setTicketReady(true);
+      localStorage.setItem('ticketReadyToday', 'true');
+      setTicketReady(true);
+      localStorage.setItem('ticketReadyToday', 'true');
+      localStorage.setItem('savedHeadliner', headliner?.name || "");
+      localStorage.setItem('savedSecondOpener', secondOpener?.name || "");
+      localStorage.setItem('savedOpener', opener?.name || "");
+      console.log("Lineup submitted:", { headliner, opener, secondOpener });    
     }
   };  
 
