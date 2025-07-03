@@ -203,40 +203,48 @@ const fetchDeepCutLineup = async () => {
 useEffect(() => {
   if (!dailyPrompt) return;
 
-    const params = new URLSearchParams(window.location.search);
-  const voteId = params.get("vote");
+  const urlParams = new URLSearchParams(window.location.search);
+  const voteId = urlParams.get("vote");
+  const alreadyVoted = localStorage.getItem(`bce-voted-${dailyPrompt}`);
 
-  if (voteId && !localStorage.getItem(`bce-voted-${dailyPrompt}`)) {
-    const registerSocialVote = async () => {
+  const performVote = async () => {
+    if (!voteId || alreadyVoted) return;
+
+    try {
       const { data, error } = await supabase
         .from("lineups")
         .select("votes")
         .eq("id", voteId)
         .single();
 
-      if (!error && data) {
-        const updatedVotes = (data.votes || 0) + 1;
-        const { error: voteError } = await supabase
-          .from("lineups")
-          .update({ votes: updatedVotes })
-          .eq("id", voteId);
-
-        if (!voteError) {
-          localStorage.setItem(`bce-voted-${dailyPrompt}`, "social");
-          localStorage.setItem("fromSocialVote", "true");
-          localStorage.setItem("socialVoteLineupId", voteId);
-          alert("🔥 Your vote has been counted! Now submit your own.");
-        } else {
-          console.error("Vote error:", voteError);
-        }
-      } else {
-        console.error("Failed to retrieve lineup to vote on.");
+      if (error || !data) {
+        console.error("Failed to fetch lineup for voting:", error);
+        return;
       }
-    };
 
-    registerSocialVote();
-  }
+      const updatedVotes = (data.votes || 0) + 1;
+      const { error: voteError } = await supabase
+        .from("lineups")
+        .update({ votes: updatedVotes })
+        .eq("id", voteId);
 
+      if (voteError) {
+        console.error("Vote failed:", voteError);
+      } else {
+        localStorage.setItem(`bce-voted-${dailyPrompt}`, "social");
+        localStorage.setItem("fromSocialVote", "true");
+        localStorage.setItem("socialVoteLineupId", voteId);
+        alert("🔥 Your vote has been counted! Now submit your own.");
+      }
+    } catch (err) {
+      console.error("Vote execution error:", err);
+    }
+  };
+
+  // Always call this, even if voteId is null — doesn't hurt
+  performVote();
+
+  // Fetch recent lineups (don't skip this!)
   const fetchRecentLineups = async () => {
     const { data, error } = await supabase
       .from("lineups")
