@@ -181,16 +181,15 @@ useEffect(() => {
         .eq("id", voteId);
 
       if (!error) {
-  localStorage.setItem(votedKey, voteId);
-  alert("🔥 Your vote has been counted! Now try submitting your own lineup.");
-  const scrollTarget = document.querySelector("#flyerRef") || document.querySelector("input");
-  if (scrollTarget) {
-    scrollTarget.scrollIntoView({ behavior: "smooth" });
-  }
-  window.location.reload(); // 🔁 This ensures the emoji buttons disappear and UI updates
-} else {
-  console.error("Auto-vote failed:", error);
-}
+        localStorage.setItem(votedKey, voteId);
+        alert("🔥 Your vote has been counted! Now try submitting your own lineup.");
+        const scrollTarget = document.querySelector("#flyerRef") || document.querySelector("input");
+        if (scrollTarget) {
+          scrollTarget.scrollIntoView({ behavior: "smooth" });
+        }
+      } else {
+        console.error("Auto-vote failed:", error);
+      }
     };
 
     voteForLineup();
@@ -450,13 +449,10 @@ const handleEmailSignup = async () => {
       }
     }, 10000);
 
-     const urlParams = new URLSearchParams(window.location.search);
-const voteId = urlParams.get("vote");
-
-if (!voteId && !localStorage.getItem("howToPlayShown")) {
-  setShowHowToPlayInfographic(true);
-  localStorage.setItem("howToPlayShown", "true");
-}
+      if (!localStorage.getItem("howToPlayShown")) {
+    setShowHowToPlayInfographic(true);
+    localStorage.setItem("howToPlayShown", "true");
+  }
 
     fetchUserStats();
 
