@@ -154,7 +154,7 @@ setDailyPrompt(promptToUse);
 useEffect(() => {
   const urlParams = new URLSearchParams(window.location.search);
   const voteId = urlParams.get("vote");
-  const votedKey = `bce-voted-${new Date().toISOString().slice(0, 10)}`;
+  const votedKey = `bce-voted-${dailyPrompt}`;
 
   if (voteId && !localStorage.getItem(votedKey)) {
     // Disable How To Play popup
