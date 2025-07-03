@@ -203,39 +203,50 @@ const fetchDeepCutLineup = async () => {
 useEffect(() => {
   if (!dailyPrompt) return;
 
-    const params = new URLSearchParams(window.location.search);
+    const handleSocialVote = async () => {
+  const params = new URLSearchParams(window.location.search);
   const voteId = params.get("vote");
+  const alreadyVoted = localStorage.getItem(`bce-voted-${dailyPrompt}`);
 
-  if (voteId && !localStorage.getItem(`bce-voted-${dailyPrompt}`)) {
-    const registerSocialVote = async () => {
+  if (voteId && !alreadyVoted) {
+    try {
       const { data, error } = await supabase
         .from("lineups")
         .select("votes")
         .eq("id", voteId)
         .single();
 
-      if (!error && data) {
-        const updatedVotes = (data.votes || 0) + 1;
-        const { error: voteError } = await supabase
-          .from("lineups")
-          .update({ votes: updatedVotes })
-          .eq("id", voteId);
-
-        if (!voteError) {
-          localStorage.setItem(`bce-voted-${dailyPrompt}`, "social");
-          localStorage.setItem("fromSocialVote", "true");
-          localStorage.setItem("socialVoteLineupId", voteId);
-          alert("🔥 Your vote has been counted! Now submit your own.");
-        } else {
-          console.error("Vote error:", voteError);
-        }
-      } else {
-        console.error("Failed to retrieve lineup to vote on.");
+      if (error || !data) {
+        console.error("Error fetching lineup:", error);
+        return;
       }
-    };
 
-    registerSocialVote();
+      const updatedVotes = (data.votes || 0) + 1;
+
+      const { error: voteError } = await supabase
+        .from("lineups")
+        .update({ votes: updatedVotes })
+        .eq("id", voteId);
+
+      if (!voteError) {
+        localStorage.setItem(`bce-voted-${dailyPrompt}`, "social");
+        localStorage.setItem("fromSocialVote", "true");
+        localStorage.setItem("socialVoteLineupId", voteId);
+        alert("🔥 Your vote has been counted! Now submit your own.");
+      } else {
+        console.error("Vote error:", voteError);
+      }
+    } catch (err) {
+      console.error("Unexpected error during vote:", err);
+    }
   }
+};
+
+const timeout = setTimeout(() => {
+  handleSocialVote();
+}, 150);
+
+return () => clearTimeout(timeout);
 
   const fetchRecentLineups = async () => {
     const { data, error } = await supabase
