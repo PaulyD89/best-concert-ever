@@ -122,9 +122,11 @@ useEffect(() => {
     const storedPromptDate = localStorage.getItem('lastPromptDate');
 
     if (storedPromptDate !== todayDateString) {
-      localStorage.removeItem('ticketReadyToday');
-      localStorage.setItem('lastPromptDate', todayDateString);
-    }
+  localStorage.removeItem('ticketReadyToday');
+  localStorage.removeItem('fromSocialVote');
+  localStorage.removeItem('socialVoteLineupId');
+  localStorage.setItem('lastPromptDate', todayDateString);
+}
 
     let promptToUse = "";
 
