@@ -233,6 +233,12 @@ if (alreadyVoted) return;
       .update({ votes: updatedVotes })
       .eq("id", voteId);
 
+      if (!voteError && localStorage.getItem("fromSocialVote") === "true") {
+  if (typeof window.plausible === "function") {
+    window.plausible("Social Vote");
+  }
+}
+
     if (voteError) {
       console.error("Vote failed:", voteError);
     } else {
