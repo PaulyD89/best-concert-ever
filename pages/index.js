@@ -1056,8 +1056,8 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         try {
-          const voteUrl = `https://bestconcertevergame.com?vote=${lineupId}`;
-          console.log("Generated vote URL:", voteUrl);
+          const storedLineupId = lineupId || localStorage.getItem('lineupIdToday');
+          const voteUrl = `https://bestconcertevergame.com?vote=${storedLineupId}`;
 
 const tinyUrl = voteUrl;
 
