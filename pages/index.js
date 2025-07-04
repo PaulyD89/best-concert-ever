@@ -1323,17 +1323,19 @@ await navigator.share({
           </div>
           <div className="flex justify-between items-start gap-4 w-full">
             {[winner.opener, winner.second_opener, winner.headliner].map((artist, i) => (
-              <div key={i} className="flex flex-col items-center w-1/3">
-                <img
-                  src={artist?.image || "/placeholder.jpg"}
-                  alt={artist?.name || "Artist"}
-                  className="w-16 h-16 rounded-md object-cover border border-red-400 mb-1"
-                />
-                <span className="text-xs text-white font-bold text-center break-words leading-tight">
-                  {artist?.name || "Artist"}
-                </span>
-              </div>
-            ))}
+  <div key={i} className="flex flex-col items-center w-1/3">
+    <a href={artist?.url} target="_blank" rel="noopener noreferrer">
+      <img
+        src={artist?.image || "/placeholder.jpg"}
+        alt={artist?.name || "Artist"}
+        className="w-16 h-16 rounded-md object-cover border border-red-400 mb-1 hover:scale-105 transition-transform"
+      />
+    </a>
+    <span className="text-xs text-white font-bold text-center break-words leading-tight">
+      {artist?.name || "Artist"}
+    </span>
+  </div>
+))}
           </div>
         </div>
       ))}
