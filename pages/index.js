@@ -233,20 +233,21 @@ if (alreadyVoted) return;
       .update({ votes: updatedVotes })
       .eq("id", voteId);
 
-      if (!voteError && localStorage.getItem("fromSocialVote") === "true") {
-  if (typeof window.plausible === "function") {
-    window.plausible("Social Vote");
-  }
-}
+      if (voteError) {
+  console.error("Vote failed:", voteError);
+} else {
+  localStorage.setItem(`bce-voted-${prompt}`, "social");
+  localStorage.setItem("fromSocialVote", "true");
+  localStorage.setItem("socialVoteLineupId", voteId);
 
-    if (voteError) {
-      console.error("Vote failed:", voteError);
-    } else {
-      localStorage.setItem(`bce-voted-${prompt}`, "social");
-      localStorage.setItem("fromSocialVote", "true");
-      localStorage.setItem("socialVoteLineupId", voteId);
-      alert("🔥 Your vote has been counted! Now submit your own.");
-    }
+  if (typeof window.plausible === "function") {
+    window.plausible("Social Vote", {
+      props: { lineupId: voteId }
+    });
+  }
+
+  alert("🔥 Your vote has been counted! Now submit your own.");
+}
   } catch (err) {
     console.error("Vote execution error:", err);
   }
