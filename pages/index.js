@@ -385,6 +385,8 @@ const [emailSubmitted, setEmailSubmitted] = useState(false);
 const [nickname, setNickname] = useState("");
 const [nicknameSaved, setNicknameSaved] = useState(false);
 const [showNicknameModal, setShowNicknameModal] = useState(false);
+const [showPopupType, setShowPopupType] = useState(null);
+const [popupMessage, setPopupMessage] = useState({ title: "", body: "" });
 
 const handleBadgeClick = () => {
   const rank = userStats?.global_rank;
@@ -433,6 +435,27 @@ const handleEmailSignup = async () => {
   const [yesterdaysWinner, setYesterdaysWinner] = useState(null);
   const [pastWinners, setPastWinners] = useState([]);
   const [showPastWinners, setShowPastWinners] = useState(false);
+
+  const getStreakPopupMessage = (count) => {
+  switch (count) {
+    case 3:
+      return { title: "You're on a 3-Day Streak!", body: "Keep it going — you're building real momentum." };
+    case 5:
+      return { title: "You've Hit 5 Days in a Row!", body: "You can now set your custom Promoter Nickname — scroll to Your Greatest Hits to personalize your profile." };
+    case 10:
+      return { title: "Double Digits!", body: "That's a 10-day streak. Your dedication is chart-worthy." };
+    case 20:
+      return { title: "20 Days In!", body: "Five more and you'll earn your first official Streak Badge. Don’t let up now." };
+    case 40:
+      return { title: "40 Days Submitted!", body: "Just 10 more until your second Streak Badge unlocks in Your Greatest Hits." };
+    case 50:
+      return { title: "50-Day Streak!", body: "Check Your Greatest Hits — you’ve earned a new badge of honor." };
+    case 100:
+      return { title: "100-Day Legend!", body: "You’re killing it. This is elite promoter territory. Keep going and build your legacy." };
+    default:
+      return null;
+  }
+};
 
  const fetchUserStats = async () => {
   const userId = localStorage.getItem("bce_user_id");
@@ -1394,6 +1417,22 @@ await navigator.share({
     </div>
   </div>
 </div>
+
+{showPopupType && popupMessage && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+    <div className="bg-white rounded-lg p-6 shadow-lg max-w-md text-center relative">
+      <h2 className="text-xl font-bold mb-4">{popupMessage.title}</h2>
+      <p className="mb-6">{popupMessage.body}</p>
+      <button
+        onClick={() => setShowPopupType(null)}
+        className="mt-4 bg-black text-yellow-300 px-4 py-2 rounded-full hover:bg-yellow-400 hover:text-black"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+)}
+
 {showEmailSignup && (
   <div className="fixed inset-0 z-50 flex justify-center items-center transition-opacity duration-300 bg-black/40 backdrop-blur-sm">
     <div className="bg-[#fdf6e3] text-black p-6 rounded-2xl w-[90%] max-w-sm text-left relative shadow-2xl border-[6px] border-black border-double">
