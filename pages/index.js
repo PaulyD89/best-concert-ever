@@ -172,6 +172,97 @@ useEffect(() => {
   return () => clearTimeout(timeout);
 }, []);
 
+useEffect(() => {
+  if (!userStats || !yesterdaysWinner) return;
+
+  const todayKey = new Date().toISOString().split("T")[0];
+  const popupShownKey = `milestonePopupShown-${todayKey}`;
+  if (localStorage.getItem(popupShownKey)) return;
+
+  const userId = localStorage.getItem("bce_user_id");
+  if (!userId) return;
+
+  // Check #1: You won yesterday
+  if (yesterdaysWinner.user_id === userId) {
+    setMilestonePopup("you-won");
+    localStorage.setItem(popupShownKey, "true");
+    return;
+  }
+
+  // Check #2: You charted in Top 10
+  const top10Lineups = lineups.slice(0, 10);
+  const userInTop10 = top10Lineups.some((lineup) => lineup.user_id === userId);
+  if (userInTop10) {
+    setMilestonePopup("top10");
+    localStorage.setItem(popupShownKey, "true");
+    return;
+  }
+
+  // Check #3: One away from badge
+  const streakMilestones = [25, 50, 100, 125, 150];
+  const winMilestones = [5, 20, 50, 75, 100];
+  const top10Milestones = [10, 25, 50, 75, 100];
+
+  const oneAway =
+    streakMilestones.includes((userStats.longest_streak ?? 0) + 1) ||
+    winMilestones.includes((userStats.total_wins ?? 0) + 1) ||
+    top10Milestones.includes((userStats.total_top_10s ?? 0) + 1);
+
+  if (oneAway) {
+    setMilestonePopup("one-away");
+    localStorage.setItem(popupShownKey, "true");
+    return;
+  }
+
+  // Check #4: Just unlocked a badge (only for current day)
+  const yesterdayStats = JSON.parse(localStorage.getItem("bce_stats_yesterday") || "{}");
+
+const newStreakBadge =
+  getBadgeTier("streaker", userStats.longest_streak ?? 0) >
+  getBadgeTier("streaker", yesterdayStats.longest_streak ?? 0);
+
+const newWinBadge =
+  getBadgeTier("hitmaker", userStats.total_wins ?? 0) >
+  getBadgeTier("hitmaker", yesterdayStats.total_wins ?? 0);
+
+const newTop10Badge =
+  getBadgeTier("charttopper", userStats.total_top_10s ?? 0) >
+  getBadgeTier("charttopper", yesterdayStats.total_top_10s ?? 0);
+
+if (newStreakBadge || newWinBadge || newTop10Badge) {
+  setMilestonePopup("badge-unlocked");
+  localStorage.setItem(popupShownKey, "true");
+  return;
+}
+
+// Save current stats for tomorrow's comparison
+localStorage.setItem(
+  "bce_stats_yesterday",
+  JSON.stringify({
+    longest_streak: userStats.longest_streak,
+    total_wins: userStats.total_wins,
+    total_top_10s: userStats.total_top_10s,
+  })
+);
+
+  // Check #5: Eligible to choose nickname
+  if ((userStats.total_lineups_submitted ?? 0) >= 5 && !nicknameSaved) {
+  setMilestonePopup("nickname-eligible");
+  localStorage.setItem(popupShownKey, "true");
+  return;
+}
+
+  // Save current stats for tomorrow's comparison
+  localStorage.setItem(
+    "bce_stats_yesterday",
+    JSON.stringify({
+      longest_streak: userStats.longest_streak,
+      total_wins: userStats.total_wins,
+      total_top_10s: userStats.total_top_10s,
+    })
+  );
+}, [userStats, yesterdaysWinner, lineups, nicknameSaved]);
+
 const fetchDeepCutLineup = async () => {
   const now = new Date();
   const utcMidnight = new Date();
@@ -379,12 +470,28 @@ setPastWinners(filteredResults);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [showHowToPlayInfographic, setShowHowToPlayInfographic] = useState(false);
   const [showVotePrompt, setShowVotePrompt] = useState(false);
+  const [milestonePopup, setMilestonePopup] = useState(null);
 const [showEmailSignup, setShowEmailSignup] = useState(false);
 const [email, setEmail] = useState("");
 const [emailSubmitted, setEmailSubmitted] = useState(false);
 const [nickname, setNickname] = useState("");
 const [nicknameSaved, setNicknameSaved] = useState(false);
 const [showNicknameModal, setShowNicknameModal] = useState(false);
+
+function getBadgeTier(type, val) {
+  const tiers = {
+    streaker: [0, 25, 50, 100, 125, 150],
+    hitmaker: [0, 5, 20, 50, 75, 100],
+    charttopper: [0, 10, 25, 50, 75, 100],
+  };
+
+  const levels = tiers[type] || [0];
+  for (let i = levels.length - 1; i >= 0; i--) {
+    if (val >= levels[i]) return i;
+  }
+
+  return 0;
+}
 
 const handleBadgeClick = () => {
   const rank = userStats?.global_rank;
@@ -849,6 +956,54 @@ console.log("Lineup submitted:", { headliner, opener, secondOpener });
       >
         &times;
       </button>
+    </div>
+  </div>
+)}
+
+{milestonePopup && (
+  <div className="fixed inset-0 z-50 flex justify-center items-center transition-opacity duration-300 bg-black/40 backdrop-blur-sm">
+    <div className="bg-[#fdf6e3] text-black p-6 rounded-2xl w-[90%] max-w-sm text-center relative shadow-2xl border-[6px] border-black border-double">
+      <button
+        onClick={() => setMilestonePopup(null)}
+        className="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black"
+      >
+        &times;
+      </button>
+
+      {milestonePopup === "you-won" && (
+        <>
+          <h2 className="text-2xl font-bold mb-4">🏆 You Won Yesterday!</h2>
+          <p className="text-sm">Your lineup took the top spot — major promoter vibes!</p>
+        </>
+      )}
+
+      {milestonePopup === "top10" && (
+        <>
+          <h2 className="text-2xl font-bold mb-4">🔟 You Charted in the Top 10!</h2>
+          <p className="text-sm">Your lineup made the leaderboard. Keep the hits coming!</p>
+        </>
+      )}
+
+      {milestonePopup === "one-away" && (
+        <>
+          <h2 className="text-2xl font-bold mb-4">🎯 You&apos;re One Away!</h2>
+          <p className="text-sm">One more win, streak, or top 10 and you&apos;ll unlock a new badge 🔓</p>
+        </>
+      )}
+
+      {milestonePopup === "badge-unlocked" && (
+        <>
+          <h2 className="text-2xl font-bold mb-4">🥇 Badge Unlocked!</h2>
+          <p className="text-sm">You just earned a new badge — go check Your Greatest Hits section!</p>
+        </>
+      )}
+
+      {milestonePopup === "nickname-eligible" && (
+        <>
+          <h2 className="text-2xl font-bold mb-4">✍️ Choose Your Promoter Nickname!</h2>
+          <p className="text-sm">You&apos;ve submitted 5 lineups — scroll to Your Greatest Hits to set yours.</p>
+        </>
+      )}
     </div>
   </div>
 )}
