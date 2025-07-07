@@ -631,7 +631,6 @@ useEffect(() => {
   const [ticketReady, setTicketReady] = useState(false);
   const [lineupId, setLineupId] = useState(null);
   const [lineupReady, setLineupReady] = useState(false);
-  const [showWinnerPopup, setShowWinnerPopup] = useState(false);
 
   const refreshRecentLineups = async () => {
   const { data, error } = await supabase
@@ -642,17 +641,6 @@ useEffect(() => {
     .limit(6);
   if (!error && data) setRecentLineups(data);
 };
-
-if (typeof window !== "undefined") {
-  const currentUserId = localStorage.getItem("bce_user_id");
-  if (currentUserId && winner?.user_id === currentUserId) {
-    const alreadyShown = localStorage.getItem("winnerPopupShown");
-    if (!alreadyShown) {
-      setShowWinnerPopup(true);
-      localStorage.setItem("winnerPopupShown", "true");
-    }
-  }
-}
 
 const refreshTopLineups = async () => {
   const { data, error } = await supabase
@@ -887,29 +875,6 @@ console.log("Lineup submitted:", { headliner, opener, secondOpener });
         className="bg-black text-yellow-300 font-bold py-2 px-6 rounded-full hover:bg-yellow-300 hover:text-black transition uppercase text-sm"
       >
         Browse Top 10 & Vote 🔥
-      </button>
-    </div>
-  </div>
-)}
-
-{showWinnerPopup && (
-  <div className="fixed inset-0 z-50 flex justify-center items-center transition-opacity duration-300 bg-black/40 backdrop-blur-sm">
-    <div className="bg-[#fdf6e3] text-black p-6 rounded-2xl w-[90%] max-w-sm text-center relative shadow-2xl border-[6px] border-black border-double">
-      <button
-        onClick={() => setShowWinnerPopup(false)}
-        className="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black"
-      >
-        &times;
-      </button>
-      <h2 className="text-2xl font-bold mb-4">🎉 You Won Yesterday!</h2>
-      <p className="text-sm mb-6">
-        Your lineup for <b>{yesterdayPrompt}</b> took the top spot. Killer show!
-      </p>
-      <button
-        onClick={() => setShowWinnerPopup(false)}
-        className="bg-black text-yellow-300 font-bold py-2 px-6 rounded-full hover:bg-yellow-300 hover:text-black transition uppercase text-sm"
-      >
-        OK, Got It!
       </button>
     </div>
   </div>
