@@ -970,7 +970,7 @@ console.log("Lineup submitted:", { headliner, opener, secondOpener });
       >
         &times;
       </button>
-      <h2 className="text-2xl font-bold mb-4">You're Almost There!</h2>
+      <h2 className="text-2xl font-bold mb-4">You&apos;re Almost There!</h2>
       <p className="text-sm mb-6">{milestoneMessage}</p>
       <button
         onClick={() => setShowMilestonePopup(false)}
