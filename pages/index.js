@@ -488,7 +488,7 @@ const handleEmailSignup = async () => {
     !shownFlags.hitmaker &&
     !userStats.total_wins_acknowledged
   ) {
-    setMilestoneMessage("You're just one more win away from the Hit Maker badge!");
+    setMilestoneMessage("You&apos;re just one more win away from the Hit Maker badge!");
     setShowMilestonePopup(true);
     shownFlags.hitmaker = true;
   }
@@ -498,7 +498,7 @@ const handleEmailSignup = async () => {
     !shownFlags.charttopper &&
     !userStats.total_top_10s_acknowledged
   ) {
-    setMilestoneMessage("You're just one more Top 10 lineup away from the Chart Topper badge!");
+    setMilestoneMessage("You&apos;re just one more Top 10 lineup away from the Chart Topper badge!");
     setShowMilestonePopup(true);
     shownFlags.charttopper = true;
   }
@@ -508,7 +508,7 @@ const handleEmailSignup = async () => {
     !shownFlags.streaker &&
     !userStats.longest_streak_acknowledged
   ) {
-    setMilestoneMessage("You're just one more day away from the Streaker badge!");
+    setMilestoneMessage("You&apos;re just one more day away from the Streaker badge!");
     setShowMilestonePopup(true);
     shownFlags.streaker = true;
   }
