@@ -643,12 +643,14 @@ useEffect(() => {
   if (!error && data) setRecentLineups(data);
 };
 
-const currentUserId = localStorage.getItem("bce_user_id");
-if (currentUserId && winner?.user_id === currentUserId) {
-  const alreadyShown = localStorage.getItem("winnerPopupShown");
-  if (!alreadyShown) {
-    setShowWinnerPopup(true);
-    localStorage.setItem("winnerPopupShown", "true");
+if (typeof window !== "undefined") {
+  const currentUserId = localStorage.getItem("bce_user_id");
+  if (currentUserId && winner?.user_id === currentUserId) {
+    const alreadyShown = localStorage.getItem("winnerPopupShown");
+    if (!alreadyShown) {
+      setShowWinnerPopup(true);
+      localStorage.setItem("winnerPopupShown", "true");
+    }
   }
 }
 
