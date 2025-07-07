@@ -371,22 +371,20 @@ setPastWinners(filteredResults);
   }
 }, [yesterdayPrompt]);
 
-const [userStats, setUserStats] = useState(null);
-const [mostVotedLineup, setMostVotedLineup] = useState(null);
-const flyerRef = React.useRef(null);
-const downloadRef = React.useRef(null);
-const [winningPromoter, setWinningPromoter] = useState(null);
-const [showHowToPlay, setShowHowToPlay] = useState(false);
-const [showHowToPlayInfographic, setShowHowToPlayInfographic] = useState(false);
-const [showVotePrompt, setShowVotePrompt] = useState(false);
+  const [userStats, setUserStats] = useState(null);
+  const [mostVotedLineup, setMostVotedLineup] = useState(null);
+  const flyerRef = React.useRef(null);
+  const downloadRef = React.useRef(null);
+  const [winningPromoter, setWinningPromoter] = useState(null);
+  const [showHowToPlay, setShowHowToPlay] = useState(false);
+  const [showHowToPlayInfographic, setShowHowToPlayInfographic] = useState(false);
+  const [showVotePrompt, setShowVotePrompt] = useState(false);
 const [showEmailSignup, setShowEmailSignup] = useState(false);
 const [email, setEmail] = useState("");
 const [emailSubmitted, setEmailSubmitted] = useState(false);
 const [nickname, setNickname] = useState("");
 const [nicknameSaved, setNicknameSaved] = useState(false);
 const [showNicknameModal, setShowNicknameModal] = useState(false);
-const [milestoneMessage, setMilestoneMessage] = useState(null);
-const [showMilestonePopup, setShowMilestonePopup] = useState(false);
 
 const handleBadgeClick = () => {
   const rank = userStats?.global_rank;
@@ -479,84 +477,6 @@ const handleEmailSignup = async () => {
   }
 
     fetchUserStats();
-
-    if (userStats) {
-  const shownFlags = JSON.parse(localStorage.getItem("bce_milestone_flags") || "{}");
-
-  if (
-    userStats.total_wins === 4 &&
-    !shownFlags.hitmaker &&
-    !userStats.total_wins_acknowledged
-  ) {
-    setMilestoneMessage("You&apos;re just one more win away from the Hit Maker badge!");
-    setShowMilestonePopup(true);
-    shownFlags.hitmaker = true;
-  }
-
-  if (
-    userStats.total_top_10s === 9 &&
-    !shownFlags.charttopper &&
-    !userStats.total_top_10s_acknowledged
-  ) {
-    setMilestoneMessage("You&apos;re just one more Top 10 lineup away from the Chart Topper badge!");
-    setShowMilestonePopup(true);
-    shownFlags.charttopper = true;
-  }
-
-  if (
-    userStats.longest_streak === 24 &&
-    !shownFlags.streaker &&
-    !userStats.longest_streak_acknowledged
-  ) {
-    setMilestoneMessage("You&apos;re just one more day away from the Streaker badge!");
-    setShowMilestonePopup(true);
-    shownFlags.streaker = true;
-  }
-
-  // 🏆 Yesterday's Winner Pop-Up
-if (
-  userStats.won_yesterday &&
-  !localStorage.getItem(`bce_winner_popup_${currentDate}`)
-) {
-  setMilestoneMessage("🎉 You won yesterday&apos;s challenge with your lineup! Claim those bragging rights.");
-  setShowMilestonePopup(true);
-  localStorage.setItem(`bce_winner_popup_${currentDate}`, "shown");
-}
-  localStorage.setItem("bce_milestone_flags", JSON.stringify(shownFlags));
-}
-
-// 🎉 Just Unlocked Badge Popups
-if (
-  !shownFlags.unlocked_hitmaker &&
-  userStats.total_wins_acknowledged === true &&
-  userStats.total_wins >= 5
-) {
-  setMilestoneMessage("You just unlocked the Hit Maker badge! 🔥");
-  setShowMilestonePopup(true);
-  shownFlags.unlocked_hitmaker = true;
-}
-
-if (
-  !shownFlags.unlocked_charttopper &&
-  userStats.total_top_10s_acknowledged === true &&
-  userStats.total_top_10s >= 10
-) {
-  setMilestoneMessage("You just unlocked the Chart Topper badge! 🎶");
-  setShowMilestonePopup(true);
-  shownFlags.unlocked_charttopper = true;
-}
-
-if (
-  !shownFlags.unlocked_streaker &&
-  userStats.longest_streak_acknowledged === true &&
-  userStats.longest_streak >= 25
-) {
-  setMilestoneMessage("You just unlocked the Streaker badge! 🏃‍♂️💨");
-  setShowMilestonePopup(true);
-  shownFlags.unlocked_streaker = true;
-}
-
-localStorage.setItem("bce_milestone_flags", JSON.stringify(shownFlags));
 
     const fetchMostVotedLineup = async () => {
       const userId = localStorage.getItem("bce_user_id");
@@ -955,27 +875,6 @@ console.log("Lineup submitted:", { headliner, opener, secondOpener });
         className="bg-black text-yellow-300 font-bold py-2 px-6 rounded-full hover:bg-yellow-300 hover:text-black transition uppercase text-sm"
       >
         Browse Top 10 & Vote 🔥
-      </button>
-    </div>
-  </div>
-)}
-
-{showMilestonePopup && milestoneMessage && (
-  <div className="fixed inset-0 z-50 flex justify-center items-center transition-opacity duration-300 bg-black/40 backdrop-blur-sm">
-    <div className="bg-[#fdf6e3] text-black p-6 rounded-2xl w-[90%] max-w-sm text-center relative shadow-2xl border-[6px] border-black border-double">
-      <button
-        onClick={() => setShowMilestonePopup(false)}
-        className="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black"
-      >
-        &times;
-      </button>
-      <h2 className="text-2xl font-bold mb-4">You&apos;re Almost There!</h2>
-      <p className="text-sm mb-6">{milestoneMessage}</p>
-      <button
-        onClick={() => setShowMilestonePopup(false)}
-        className="bg-black text-yellow-300 font-bold py-2 px-6 rounded-full hover:bg-yellow-300 hover:text-black transition uppercase text-sm"
-      >
-        Keep Playing
       </button>
     </div>
   </div>
