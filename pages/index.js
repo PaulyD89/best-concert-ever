@@ -554,7 +554,7 @@ if (
   userStats.won_yesterday &&
   !localStorage.getItem(`bce_winner_popup_${currentDate}`)
 ) {
-  setMilestoneMessage("🎉 You won yesterday's challenge with your lineup! Claim those bragging rights.");
+  setMilestoneMessage("🎉 You won yesterday&apos;s challenge with your lineup! Claim those bragging rights.");
   setShowMilestonePopup(true);
   localStorage.setItem(`bce_winner_popup_${currentDate}`, "shown");
 }
