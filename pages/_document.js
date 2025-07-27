@@ -6,10 +6,24 @@ export default function Document() {
       <Head>
         <meta property="og:title" content="Best. Concert. Ever." />
         <meta property="og:description" content="Assemble the ultimate concert lineup!" />
+        <meta name="description" content="Create your dream concert lineup and compete with music fans daily in Best Concert Ever – the ultimate music game." />
         <meta property="og:image" content="https://bestconcertevergame.com/social-preview.jpg" />
         <meta property="og:url" content="https://bestconcertevergame.com" />
-        <meta property="og:type" content="website" />
+        <link rel="canonical" href="https://www.bestconcertevergame.com" />
 
+        <script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "Best Concert Ever",
+      url: "https://www.bestconcertevergame.com"
+    })
+  }}
+/>
+        
+        <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Best. Concert. Ever." />
         <meta name="twitter:description" content="Play the daily concert lineup game!" />
