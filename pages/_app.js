@@ -20,7 +20,7 @@ export default function App({ Component, pageProps }) {
       </svg>
     </a>
 
-    <span>© {new Date().getFullYear()} Thirty Bucks, LLC. All rights reserved.</span>
+    <span>© {new Date().getFullYear()} Thirty Bucks, Inc. All rights reserved.</span>
 
     <a
       href="https://twitter.com/bestconcertgame"
