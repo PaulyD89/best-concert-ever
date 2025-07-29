@@ -1085,7 +1085,7 @@ await navigator.share({
       
       className="flex items-center space-x-2 bg-black text-cyan-400 font-bold px-6 py-3 rounded-full border-2 border-cyan-400 hover:text-white hover:border-white hover:shadow-lg transition-all duration-300 shadow-[0_0_15px_rgba(0,255,255,0.7)] uppercase tracking-widest"
 >
-  <span>🎟️ Share Lineup to Get Votes</span>
+  <span>🎟️ Share Lineup / Get Votes</span>
 </button>
   </div>
 )}
