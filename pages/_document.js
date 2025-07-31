@@ -4,6 +4,8 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
+        <title>Best Concert Ever – Daily Music Game</title> {/* ✅ Added title tag */}
+
         <meta property="og:title" content="Best. Concert. Ever." />
         <meta property="og:description" content="Assemble the ultimate concert lineup!" />
         <meta name="description" content="Create your dream concert lineup and compete with music fans daily in Best Concert Ever – the ultimate music game." />
@@ -12,17 +14,17 @@ export default function Document() {
         <link rel="canonical" href="https://www.bestconcertevergame.com" />
 
         <script
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{
-    __html: JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      name: "Best Concert Ever",
-      url: "https://www.bestconcertevergame.com"
-    })
-  }}
-/>
-        
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              name: "Best Concert Ever",
+              url: "https://www.bestconcertevergame.com"
+            })
+          }}
+        />
+
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Best. Concert. Ever." />
