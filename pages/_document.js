@@ -4,7 +4,7 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <title>Best Concert Ever – Daily Music Game</title> {/* ✅ Added title tag */}
+        <title>Best Concert Ever – Your Dream Festival, Every Day</title> {/* ✅ Added title tag */}
 
         <meta property="og:title" content="Best. Concert. Ever." />
         <meta property="og:description" content="Assemble the ultimate concert lineup!" />
