@@ -47,7 +47,7 @@ export default function Document() {
               t.src=v;s=b.getElementsByTagName(e)[0];
               s.parentNode.insertBefore(t,s)}(window, document,'script',
               'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '1067195892216515');
+              fbq('init', '730735346260340');
               fbq('track', 'PageView');
             `,
           }}
