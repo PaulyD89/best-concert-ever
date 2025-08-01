@@ -160,18 +160,27 @@ export default async function handler(req, res) {
   </td></tr>
 </table>`;
 
-  try {
-    const messages = recipients.map((email) => ({
-      from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
-      to: [email],
-      subject: `🎸 What's Your Best Concert Ever for "${dailyPrompt}"?`,
-      html,
-    }));
+const messages = recipients.map((email) => ({
+  from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
+  to: [email],
+  subject: `🎸 What's Your Best Concert Ever for "${dailyPrompt}"?`,
+  html,
+}));
 
-    await resend.batch.send(messages);
-    return res.status(200).json({ message: "Emails sent" });
-  } catch (err) {
-    console.error("❌ Failed to send batch emails:", err);
-    return res.status(500).json({ message: "Email send failed" });
+const chunkArray = (arr, size) =>
+  arr.length > size
+    ? [arr.slice(0, size), ...chunkArray(arr.slice(size), size)]
+    : [arr];
+
+const messageChunks = chunkArray(messages, 99);
+
+try {
+  for (const chunk of messageChunks) {
+    await resend.batch.send(chunk);
+    console.log(`✅ Sent batch of ${chunk.length} emails`);
   }
+  return res.status(200).json({ message: "Emails sent" });
+} catch (err) {
+  console.error("❌ Failed to send one or more batches:", err);
+  return res.status(500).json({ message: "Email send failed" });
 }
