@@ -184,3 +184,4 @@ try {
   console.error("❌ Failed to send one or more batches:", err);
   return res.status(500).json({ message: "Email send failed" });
 }
+}
