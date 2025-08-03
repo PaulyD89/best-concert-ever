@@ -121,17 +121,17 @@ export default async function handler(req, res) {
   <tr><td align="center">
     <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #FFD600; color: #000; border-radius: 12px; overflow: hidden;">
       <tr><td align="center">
-        <img src="https://best-concert-ever.vercel.app/email-assets/01_header-logo-todays-challenge.png" alt="Best Concert Ever + Today's Challenge" width="600" style="display: block;" />
+        <img src="https://best-concert-ever.vercel.app/email-assets/01_header-logo-todays-challenge.png" alt="Best Concert Ever + Today's Challenge" width="600" style="display: block; margin-bottom: 8px;" />
 
-        <div style="padding: 20px 24px; font-size: 20px; font-weight: bold; text-transform: uppercase; text-align: center;">
+        <p style="margin: 0; padding: 12px 24px 16px; font-size: 18px; font-weight: bold; text-transform: uppercase; text-align: center;">
           ${dailyPrompt}
-        </div>
+        </p>
 
-        <img src="https://best-concert-ever.vercel.app/email-assets/03_yesterdays-lineup-header.png" alt="Yesterday's Winning Lineup" width="600" style="display: block;" />
+        <img src="https://best-concert-ever.vercel.app/email-assets/03_yesterdays-lineup-header.png" alt="Yesterday's Winning Lineup" width="600" style="display: block; margin-bottom: 8px;" />
 
-        <div style="padding: 16px 24px 8px 24px; font-size: 14px; font-weight: bold; text-transform: uppercase; text-align: center;">
+        <p style="margin: 0; padding: 12px 24px 16px; font-size: 14px; font-weight: bold; text-transform: uppercase; text-align: center;">
           ${yesterdayPrompt}
-        </div>
+        </p>
 
         <img src="${headlinerImg}" alt="${rawHeadliner}" width="200" style="border-radius: 12px; margin-bottom: 8px;" />
         <div style="font-weight: bold; text-transform: uppercase; margin-bottom: 20px;">${rawHeadliner} (Headliner)</div>
