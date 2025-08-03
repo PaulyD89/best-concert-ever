@@ -157,6 +157,21 @@ export default async function handler(req, res) {
           <a href="https://bestconcertevergame.com" style="color: black; font-weight: bold; text-decoration: underline;">Submit your own lineup</a>
         </div>
 
+        <tr>
+  <td align="center" style="padding: 20px 0;">
+    <p style="font-family: Arial, sans-serif; font-size: 16px; color: #000; font-weight: bold; margin: 0 0 10px;">
+      Follow us on social:
+    </p>
+    <a href="https://instagram.com/bestconcertevergame" target="_blank" style="margin: 0 10px;">
+      <img src="https://bestconcertevergame.com/icons/instagram.png" width="32" height="32" alt="Instagram" style="display:inline-block; border:0;">
+    </a>
+    <a href="https://x.com/bestconcertgame" target="_blank" style="margin: 0 10px;">
+      <img src="https://bestconcertevergame.com/icons/twitter.png" width="32" height="32" alt="Twitter" style="display:inline-block; border:0;">
+    </a>
+  </td>
+</tr>
+
+
         <img src="https://best-concert-ever.vercel.app/email-assets/06_footer-crowd.png?v=20250803" alt="Crowd" width="600" style="display: block;" />
       </td></tr>
         </table>
