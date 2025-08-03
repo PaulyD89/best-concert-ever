@@ -119,7 +119,9 @@ export default async function handler(req, res) {
   const html = `
 <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#000000" style="background-color: #000000; font-family: sans-serif; padding: 24px 0;">
   <tr><td align="center">
-    <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #FFDE59; color: #000; border-radius: 12px; overflow: hidden; border-left: 8px solid #000; border-right: 8px solid #000;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #000000;">
+      <tr><td align="center">
+        <table width="584" cellpadding="0" cellspacing="0" border="0" style="background-color: #FFDE59; color: #000; border-radius: 12px; overflow: hidden;">
       <tr><td align="center">
         <img src="https://best-concert-ever.vercel.app/email-assets/01_header-logo-todays-challenge.png" alt="Best Concert Ever + Today's Challenge" width="600" style="display: block; margin-bottom: 8px;" />
 
@@ -157,8 +159,9 @@ export default async function handler(req, res) {
 
         <img src="https://best-concert-ever.vercel.app/email-assets/06_footer-crowd.png" alt="Crowd" width="600" style="display: block;" />
       </td></tr>
+        </table>
+      </td></tr>
     </table>
-
     <div style="font-size: 12px; color: gray; text-align: center; margin-top: 12px;">
       Don’t want to receive these emails?
       <a href="https://bestconcertevergame.com/unsubscribe" style="color: gray; text-decoration: underline;">
