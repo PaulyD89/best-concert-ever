@@ -119,7 +119,7 @@ export default async function handler(req, res) {
   const html = `
 <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#000000" style="background-color: #000000; font-family: sans-serif; padding: 24px 0;">
   <tr><td align="center">
-    <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #FFD600; color: #000; border-radius: 12px; overflow: hidden;">
+    <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #FFDE59; color: #000; border-radius: 12px; overflow: hidden;">
       <tr><td align="center">
         <img src="https://best-concert-ever.vercel.app/email-assets/01_header-logo-todays-challenge.png" alt="Best Concert Ever + Today's Challenge" width="600" style="display: block; margin-bottom: 8px;" />
 
