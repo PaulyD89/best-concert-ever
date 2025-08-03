@@ -123,13 +123,13 @@ export default async function handler(req, res) {
       <tr><td align="center">
         <table width="584" cellpadding="0" cellspacing="0" border="0" style="background-color: #FFDE59; color: #000; border-radius: 12px; overflow: hidden;">
       <tr><td align="center">
-        <img src="https://best-concert-ever.vercel.app/email-assets/01_header-logo-todays-challenge.png" alt="Best Concert Ever + Today's Challenge" width="600" style="display: block; margin-bottom: 8px;" />
+        <img src="https://best-concert-ever.vercel.app/email-assets/01_header-logo-todays-challenge.png?v=20250803" alt="Best Concert Ever + Today's Challenge" width="600" style="display: block; margin-bottom: 8px;" />
 
         <p style="margin: 0; padding: 12px 24px 16px; font-size: 18px; font-weight: bold; text-transform: uppercase; text-align: center;">
           ${dailyPrompt}
         </p>
 
-        <img src="https://best-concert-ever.vercel.app/email-assets/03_yesterdays-lineup-header.png" alt="Yesterday's Winning Lineup" width="600" style="display: block; margin-bottom: 8px;" />
+        <img src="https://best-concert-ever.vercel.app/email-assets/03_yesterdays-lineup-header.png?v=20250803" alt="Yesterday's Winning Lineup" width="600" style="display: block; margin-bottom: 8px;" />
 
         <p style="margin: 0; padding: 12px 24px 16px; font-size: 14px; font-weight: bold; text-transform: uppercase; text-align: center;">
           ${yesterdayPrompt}
@@ -144,7 +144,7 @@ export default async function handler(req, res) {
         <img src="${openerImg}" alt="${rawOpener}" width="120" style="border-radius: 12px; margin-bottom: 4px;" />
         <div style="font-weight: bold; text-transform: uppercase; margin-bottom: 24px;">${rawOpener} (Opener)</div>
 
-        <img src="https://best-concert-ever.vercel.app/email-assets/05_spotify-now-streaming.png" alt="Stream the Winning Lineups" width="600" style="display: block; margin-top: 20px;" />
+        <img src="https://best-concert-ever.vercel.app/email-assets/05_spotify-now-streaming.png?v=20250803" alt="Stream the Winning Lineups" width="600" style="display: block; margin-top: 20px;" />
 
         <div style="font-size: 14px; color: #000; margin: 12px 24px 24px; text-align: center;">
           <a href="${playlistUrl}" style="color: #000; text-decoration: underline; font-weight: bold;">
@@ -157,7 +157,7 @@ export default async function handler(req, res) {
           <a href="https://bestconcertevergame.com" style="color: black; font-weight: bold; text-decoration: underline;">Submit your own lineup</a>
         </div>
 
-        <img src="https://best-concert-ever.vercel.app/email-assets/06_footer-crowd.png" alt="Crowd" width="600" style="display: block;" />
+        <img src="https://best-concert-ever.vercel.app/email-assets/06_footer-crowd.png?v=20250803" alt="Crowd" width="600" style="display: block;" />
       </td></tr>
         </table>
       </td></tr>
