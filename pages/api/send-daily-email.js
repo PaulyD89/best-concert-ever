@@ -125,15 +125,15 @@ export default async function handler(req, res) {
       <tr><td align="center">
         <img src="https://best-concert-ever.vercel.app/email-assets/01_header-logo-todays-challenge.png?v=20250803" alt="Best Concert Ever + Today's Challenge" width="600" style="display: block; margin-bottom: 8px;" />
 
-        <p style="margin: 0; padding: 12px 24px 16px; font-size: 30px; font-weight: 900; text-transform: uppercase; text-align: center; color: #000; letter-spacing: 1px; line-height: 1.4;">
-          ${dailyPrompt}
-        </p>
+        <p style="margin: 0; padding: 12px 24px 16px; font-size: 22px; font-weight: 900; text-transform: uppercase; text-align: center; color: #00B140; letter-spacing: 1px; line-height: 1.2;">
+  ${dailyPrompt}
+</p>
 
         <img src="https://best-concert-ever.vercel.app/email-assets/03_yesterdays-lineup-header.png?v=20250803" alt="Yesterday's Winning Lineup" width="600" style="display: block; margin-bottom: 8px;" />
 
-        <p style="margin: 0; padding: 12px 24px 16px; font-size: 30px; font-weight: 900; text-transform: uppercase; text-align: center; color: #000; letter-spacing: 1px; line-height: 1.4;">
-          ${yesterdayPrompt}
-        </p>
+        <p style="margin: 0; padding: 12px 24px 16px; font-size: 22px; font-weight: 900; text-transform: uppercase; text-align: center; color: #ED1C24; letter-spacing: 1px; line-height: 1.2;">
+  ${yesterdayPrompt}
+</p>
 
         <img src="${headlinerImg}" alt="${rawHeadliner}" width="200" style="border-radius: 12px; margin-bottom: 8px;" />
         <div style="font-weight: bold; text-transform: uppercase; margin-bottom: 20px;">${rawHeadliner} (Headliner)</div>
