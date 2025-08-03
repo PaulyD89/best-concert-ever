@@ -172,7 +172,11 @@ export default async function handler(req, res) {
 </tr>
 
 
-        <img src="https://best-concert-ever.vercel.app/email-assets/06_footer-crowd.png?v=20250803" alt="Crowd" width="600" style="display: block;" />
+        <tr>
+  <td align="center">
+    <img src="https://best-concert-ever.vercel.app/email-assets/06_footer-crowd.png?v=20250803" alt="Crowd" width="600" style="display: block;" />
+  </td>
+</tr>
       </td></tr>
         </table>
       </td></tr>
