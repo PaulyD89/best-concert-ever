@@ -121,7 +121,7 @@ export default async function handler(req, res) {
   <tr><td align="center">
     <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #000000;">
       <tr><td align="center">
-        <table width="584" cellpadding="0" cellspacing="0" border="0" style="background-color: #FADF6B; color: #000; border-radius: 12px; overflow: hidden;">
+        <table width="584" cellpadding="0" cellspacing="0" border="0" bgcolor="#FADF6B" style="background-color: #FADF6B; color: #000; border-radius: 12px; overflow: hidden;">
       <tr><td align="center">
         <img src="https://best-concert-ever.vercel.app/email-assets/01_header-logo-todays-challenge.png?v=20250803" alt="Best Concert Ever + Today's Challenge" width="600" style="display: block; margin-bottom: 8px;" />
 
