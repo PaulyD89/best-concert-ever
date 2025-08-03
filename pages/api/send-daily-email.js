@@ -125,13 +125,13 @@ export default async function handler(req, res) {
       <tr><td align="center">
         <img src="https://best-concert-ever.vercel.app/email-assets/01_header-logo-todays-challenge.png?v=20250803" alt="Best Concert Ever + Today's Challenge" width="600" style="display: block; margin-bottom: 8px;" />
 
-        <p style="margin: 0; padding: 12px 24px 16px; font-size: 18px; font-weight: bold; text-transform: uppercase; text-align: center;">
+        <p style="margin: 0; padding: 12px 24px 16px; font-size: 30px; font-weight: 900; text-transform: uppercase; text-align: center; color: #000; letter-spacing: 1px; line-height: 1.4;">
           ${dailyPrompt}
         </p>
 
         <img src="https://best-concert-ever.vercel.app/email-assets/03_yesterdays-lineup-header.png?v=20250803" alt="Yesterday's Winning Lineup" width="600" style="display: block; margin-bottom: 8px;" />
 
-        <p style="margin: 0; padding: 12px 24px 16px; font-size: 14px; font-weight: bold; text-transform: uppercase; text-align: center;">
+        <p style="margin: 0; padding: 12px 24px 16px; font-size: 30px; font-weight: 900; text-transform: uppercase; text-align: center; color: #000; letter-spacing: 1px; line-height: 1.4;">
           ${yesterdayPrompt}
         </p>
 
