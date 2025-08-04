@@ -123,7 +123,7 @@ export default async function handler(req, res) {
       <tr><td align="center">
         <table width="584" cellpadding="0" cellspacing="0" border="0" bgcolor="#FADF6B" style="background-color: #FADF6B; color: #000; border-radius: 12px; overflow: hidden;">
       <tr><td align="center">
-        <img src="https://best-concert-ever.vercel.app/email-assets/01_header-logo-todays-challenge.png?v=20250803" alt="Best Concert Ever + Today's Challenge" width="600" style="display: block; margin-bottom: 8px;" />
+        <img src="https://best-concert-ever.vercel.app/email-assets/01_header-logo-todays-challenge.png?v=20250804" alt="Best Concert Ever + Today's Challenge" width="600" style="display: block; margin-bottom: 8px;" />
 
         <p style="margin: 0; padding: 12px 24px 16px; font-size: 22px; font-weight: 900; text-transform: uppercase; text-align: center; color: #00B140; letter-spacing: 1px; line-height: 1.2;">
   ${dailyPrompt}
