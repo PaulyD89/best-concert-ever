@@ -154,20 +154,26 @@ setDailyPrompt(promptToUse);
 }, []);
 
 useEffect(() => {
+  const todayDate = new Date().toISOString().split('T')[0];
+  const storedPromptDate = localStorage.getItem('lastPromptDate');
   const storedTicketReady = localStorage.getItem('ticketReadyToday') === 'true';
-  if (storedTicketReady) {
+
+  if (storedPromptDate === todayDate && storedTicketReady) {
     setTicketReady(true);
   }
 }, []);
 
 useEffect(() => {
   const timeout = setTimeout(() => {
+    const todayDate = new Date().toISOString().split('T')[0];
+    const storedPromptDate = localStorage.getItem('lastPromptDate');
     const storedLineupReady = localStorage.getItem('lineupReadyToday') === 'true';
-    if (storedLineupReady) {
+
+    if (storedPromptDate === todayDate && storedLineupReady) {
       setTicketReady(true);
       setLineupReady(true);
     }
-  }, 200); // short delay
+  }, 200);
 
   return () => clearTimeout(timeout);
 }, []);
