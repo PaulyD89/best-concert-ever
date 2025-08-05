@@ -123,6 +123,7 @@ useEffect(() => {
 
     if (storedPromptDate !== todayDateString) {
   localStorage.removeItem('ticketReadyToday');
+  localStorage.removeItem('lineupReadyToday');
   localStorage.removeItem('fromSocialVote');
   localStorage.removeItem('socialVoteLineupId');
   localStorage.setItem('lastPromptDate', todayDateString);
