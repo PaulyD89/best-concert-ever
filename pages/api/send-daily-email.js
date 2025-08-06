@@ -178,16 +178,15 @@ export default async function handler(req, res) {
 
         <tr>
   <td align="center" style="padding: 12px 24px 0;">
-    <table cellpadding="0" cellspacing="0" border="0" style="max-width: 520px; width: 100%; background-color: #fff; border-radius: 12px; padding: 12px;">
+    <table cellpadding="0" cellspacing="0" border="0" style="max-width: 520px; width: 100%; background-color: #FADF6B; border-radius: 12px; padding: 12px;">
       <tr>
         <td width="90" valign="top" style="padding-right: 12px;">
           <img src="https://best-concert-ever.vercel.app/email-assets/didyouknow.png" alt="Did You Know?" width="90" style="display:block;" />
         </td>
         <td valign="top">
-          <p style="font-size: 14px; line-height: 1.4; color: #333; margin: 0;">
-            <strong>Did You Know?</strong><br/>
-            ${dailyTip}
-          </p>
+          <p style="font-size: 14px; line-height: 1.4; color: #000; margin: 0;">
+  <strong><em>${dailyTip}</em></strong>
+</p>
         </td>
       </tr>
     </table>
