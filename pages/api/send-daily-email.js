@@ -181,7 +181,7 @@ export default async function handler(req, res) {
     <table cellpadding="0" cellspacing="0" border="0" style="max-width: 520px; width: 100%; background-color: #FADF6B; border-radius: 12px; border: 3px solid black; padding: 16px;">
       <tr>
         <td align="center" valign="middle" style="padding-right: 20px;">
-          <img src="https://best-concert-ever.vercel.app/email-assets/didyouknow.png" alt="Did You Know?" width="160" style="display:block;" />
+          <img src="https://best-concert-ever.vercel.app/email-assets/didyouknow.png?v=20250806" alt="Did You Know?" width="160" style="display:block;" />
         </td>
         <td valign="middle" style="text-align: center;">
           <p style="font-size: 16px; line-height: 1.5; color: #000; margin: 0;">
