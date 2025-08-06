@@ -27,6 +27,24 @@ function getYesterdayPrompt() {
   return prompts[Math.abs(hash) % prompts.length];
 }
 
+const didYouKnowTips = [
+  "You can win even if you're not the first to submit a lineup — votes count too!",
+  "You get credit for a 'Winning Assist' if someone else wins with your lineup.",
+  "You only get one vote per day — choose wisely!",
+  "Submit your lineup early to maximize your chances of winning.",
+  "Most badges unlock after 3 wins, 5 streaks, or 10 votes!",
+  // ... add up to 100
+];
+
+function getDailyDidYouKnowTip() {
+  const today = new Date().toISOString().split("T")[0];
+  let hash = 0;
+  for (let i = 0; i < today.length; i++) {
+    hash = today.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return didYouKnowTips[Math.abs(hash) % didYouKnowTips.length];
+}
+
 async function getSpotifyImageUrl(artistName) {
   try {
     const tokenRes = await fetch('https://accounts.spotify.com/api/token', {
@@ -115,6 +133,7 @@ export default async function handler(req, res) {
 
   const playlistSlug = `${yesterdayPrompt.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, '-')}-playlist-ever`;
   const playlistUrl = `https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=11fb7c92a53744e0/${playlistSlug}`;
+  const dailyTip = getDailyDidYouKnowTip();
 
   const html = `
 <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#000000" style="background-color: #000000; font-family: sans-serif; padding: 24px 0;">
@@ -156,6 +175,24 @@ export default async function handler(req, res) {
           Think you have what it takes to be the ultimate Music Promoter?<br/>
           <a href="https://bestconcertevergame.com" style="color: black; font-weight: bold; text-decoration: underline;">Submit your own lineup</a>
         </div>
+
+        <tr>
+  <td align="center" style="padding: 12px 24px 0;">
+    <table cellpadding="0" cellspacing="0" border="0" style="max-width: 520px; width: 100%; background-color: #fff; border-radius: 12px; padding: 12px;">
+      <tr>
+        <td width="90" valign="top" style="padding-right: 12px;">
+          <img src="https://best-concert-ever.vercel.app/email-assets/didyouknow.png" alt="Did You Know?" width="90" style="display:block;" />
+        </td>
+        <td valign="top">
+          <p style="font-size: 14px; line-height: 1.4; color: #333; margin: 0;">
+            <strong>Did You Know?</strong><br/>
+            ${dailyTip}
+          </p>
+        </td>
+      </tr>
+    </table>
+  </td>
+</tr>
 
       <tr>
   <td align="center" style="padding: 20px 0;">
