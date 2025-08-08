@@ -389,6 +389,7 @@ setPastWinners(filteredResults);
 const [showEmailSignup, setShowEmailSignup] = useState(false);
 const [email, setEmail] = useState("");
 const [emailSubmitted, setEmailSubmitted] = useState(false);
+const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
 const [nickname, setNickname] = useState("");
 const [nicknameSaved, setNicknameSaved] = useState(false);
 const [showNicknameModal, setShowNicknameModal] = useState(false);
@@ -1428,8 +1429,54 @@ await navigator.share({
           >
             Subscribe
           </button>
+          <p className="mt-3 text-[12px] leading-snug text-gray-600 text-center">
+  By signing up, you agree to our{" "}
+  <button
+    type="button"
+    onClick={() => setShowPrivacyPolicy(true)}
+    className="underline hover:text-black"
+  >
+    Privacy Policy
+  </button>.
+</p>
         </>
       )}
+    </div>
+  </div>
+)}
+
+{showPrivacyPolicy && (
+  <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm">
+    <div className="bg-[#fdf6e3] text-black p-6 rounded-2xl w-[90%] max-w-md text-left relative shadow-2xl border-[6px] border-black border-double overflow-y-auto max-h-[90vh]">
+      <button
+        onClick={() => setShowPrivacyPolicy(false)}
+        className="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black"
+        aria-label="Close privacy policy"
+      >
+        &times;
+      </button>
+
+      <h2 className="text-2xl font-bold mb-3">Privacy Policy</h2>
+
+      <p className="text-sm mb-3">
+        We only collect your email to send you the daily prompt and winners. We don’t sell or rent your data.
+      </p>
+      <p className="text-sm mb-3">
+        You can unsubscribe anytime via the link in our emails.
+      </p>
+      <p className="text-sm">
+        Questions? <a href="mailto:support@bestconcertevergame.com" className="underline">support@bestconcertevergame.com</a>
+      </p>
+
+      <div className="mt-5 text-center">
+        <button
+          type="button"
+          onClick={() => setShowPrivacyPolicy(false)}
+          className="inline-block bg-black text-yellow-300 px-5 py-2 rounded-full font-bold hover:bg-yellow-300 hover:text-black transition"
+        >
+          Back to Sign Up
+        </button>
+      </div>
     </div>
   </div>
 )}
