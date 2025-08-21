@@ -944,7 +944,7 @@ console.log("Lineup submitted:", { headliner, opener, secondOpener });
         &times;
       </button>
 
-      <h2 className="text-2xl font-bold mb-2">Open in Safari for Saved Stats</h2>
+      <h2 className="text-2xl font-bold mb-2">Open in Safari/Chrome for Saved Stats</h2>
       <p className="text-sm mb-3">
         You’re viewing Best Concert Ever inside <b>{inAppBrowserName()}</b>. In-app browsers can’t
         keep your streaks, wins, or badges. Open this page in Safari/Chrome so your progress is saved.
