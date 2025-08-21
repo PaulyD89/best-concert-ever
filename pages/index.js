@@ -1,6 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 
+// Detect common in‑app browsers (Instagram, Facebook/Messenger, TikTok)
+const isInAppBrowser = () => {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent || "";
+  const isInstagram = ua.includes("Instagram");
+  const isFacebook =
+    ua.includes("FBAN") || ua.includes("FBAV") || ua.includes("FB_IAB") || ua.includes("Messenger");
+  const isTikTok = ua.includes("TikTok");
+  return isInstagram || isFacebook || isTikTok;
+};
+
+const inAppBrowserName = () => {
+  const ua = navigator.userAgent || "";
+  if (ua.includes("Instagram")) return "Instagram";
+  if (ua.includes("FBAN") || ua.includes("FBAV") || ua.includes("FB_IAB") || ua.includes("Messenger"))
+    return "Facebook";
+  if (ua.includes("TikTok")) return "TikTok";
+  return "this app";
+};
+
 async function fetchDatabasePrompt() {
   const today = new Date();
   const yyyy = today.getUTCFullYear();
@@ -152,6 +172,16 @@ setDailyPrompt(promptToUse);
   }
 
   initializePromptAndLineups();
+}, []);
+
+useEffect(() => {
+  try {
+    if (isInAppBrowser() && !localStorage.getItem("iabDismissed")) {
+      setShowIABWarning(true);
+    }
+  } catch {
+    // no-op
+  }
 }, []);
 
 useEffect(() => {
@@ -394,6 +424,10 @@ const [nickname, setNickname] = useState("");
 const [nicknameSaved, setNicknameSaved] = useState(false);
 const [showNicknameModal, setShowNicknameModal] = useState(false);
 
+// In‑app browser warning state
+const [showIABWarning, setShowIABWarning] = useState(false);
+const [copiedLink, setCopiedLink] = useState(false);
+
 const handleBadgeClick = () => {
   const rank = userStats?.global_rank;
   if (!rank) return;
@@ -432,6 +466,44 @@ const handleEmailSignup = async () => {
     }
   } catch (err) {
     console.error("Email signup error:", err);
+  }
+};
+
+const handleCopyLink = async () => {
+  try {
+    await navigator.clipboard.writeText(window.location.href.split("#")[0]);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 1500);
+    if (typeof window !== "undefined" && window.plausible) {
+      window.plausible("IAB Copy Link");
+    }
+  } catch {
+    alert("Copy failed. Press and hold the URL to copy.");
+  }
+};
+
+const handleShareLink = async () => {
+  const url = window.location.href.split("#")[0];
+  const text = "Open this in Safari/Chrome so your Best Concert Ever stats are saved.";
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: "Best Concert Ever", text, url });
+      if (typeof window !== "undefined" && window.plausible) {
+        window.plausible("IAB Share");
+      }
+    } else {
+      await handleCopyLink();
+    }
+  } catch {
+    // user cancelled share
+  }
+};
+
+const dismissIABWarning = () => {
+  try { localStorage.setItem("iabDismissed", "true"); } catch {}
+  setShowIABWarning(false);
+  if (typeof window !== "undefined" && window.plausible) {
+    window.plausible("IAB Dismiss");
   }
 };
 
@@ -857,6 +929,55 @@ console.log("Lineup submitted:", { headliner, opener, secondOpener });
       >
         &times;
       </button>
+    </div>
+  </div>
+)}
+
+{showIABWarning && (
+  <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/60 backdrop-blur-sm">
+    <div className="bg-[#fdf6e3] text-black p-6 rounded-2xl w-[90%] max-w-sm text-left relative shadow-2xl border-[6px] border-black border-double">
+      <button
+        onClick={dismissIABWarning}
+        className="absolute top-2 right-2 text-xl font-bold text-gray-600 hover:text-black"
+        aria-label="Close"
+      >
+        &times;
+      </button>
+
+      <h2 className="text-2xl font-bold mb-2">Open in Safari for Saved Stats</h2>
+      <p className="text-sm mb-3">
+        You’re viewing Best Concert Ever inside <b>{inAppBrowserName()}</b>. In-app browsers can’t
+        keep your streaks, wins, or badges. Open this page in Safari/Chrome so your progress is saved.
+      </p>
+
+      <div className="bg-yellow-100 border-2 border-black rounded-md p-3 mb-4 text-[13px]">
+        <div className="font-bold mb-1">How to open in your browser:</div>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>Tap the <b>⋯</b> or <b>⋮</b> menu in the top corner.</li>
+          <li>Choose <b>“Open in Browser”</b> or <b>“Open in Safari/Chrome”</b>.</li>
+        </ul>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <button
+          onClick={handleShareLink}
+          className="w-full bg-black text-yellow-300 py-2 rounded-full font-bold hover:bg-yellow-300 hover:text-black transition"
+        >
+          Share / Open in Browser
+        </button>
+        <button
+          onClick={handleCopyLink}
+          className="w-full border-2 border-black text-black py-2 rounded-full font-bold hover:bg-yellow-200 transition"
+        >
+          {copiedLink ? "✅ Link Copied" : "Copy Link"}
+        </button>
+        <button
+          onClick={dismissIABWarning}
+          className="w-full text-xs text-gray-600 underline mt-1"
+        >
+          Continue here (stats may not be saved)
+        </button>
+      </div>
     </div>
   </div>
 )}
