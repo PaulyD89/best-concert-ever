@@ -1777,13 +1777,14 @@ if (!error) {
       </div>
     </div>
     {/* Restore link helper: under Greatest Hits, above Spotify */}
-<div className="mt-3 text-center">
+{/* Restore link helper: under Greatest Hits, above Spotify */}
+<div className="mt-4 text-center">
   <button
     onClick={copyRestoreLink}
-    className="text-[12px] font-semibold text-green-300 underline underline-offset-2 hover:text-white transition"
+    className="px-5 py-2 rounded-full font-bold text-sm bg-green-500 text-black shadow-md hover:bg-green-400 hover:scale-105 transition-transform"
     title="Copy a special link you can open on another device to restore your account"
   >
-    Copy and use this account on another device
+    Copy Account Link For Other Devices
   </button>
 </div>
 
