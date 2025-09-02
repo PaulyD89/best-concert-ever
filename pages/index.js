@@ -114,6 +114,29 @@ export default function BestConcertEver() {
   const [yesterdayPrompt, setYesterdayPrompt] = useState(null);
 
 useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  const restoreId = params.get("restore");
+
+  if (restoreId && /^[0-9a-f-]{8}-[0-9a-f-]{4}-[0-9a-f-]{4}-[0-9a-f-]{4}-[0-9a-f-]{12}$/i.test(restoreId)) {
+    try {
+      // Save the old user_id into localStorage
+      localStorage.setItem("bce_user_id", restoreId);
+
+      // Clean up the URL so the restore code disappears
+      window.history.replaceState({}, "", window.location.pathname);
+
+      // Optional: give quick feedback before reload
+      alert("✅ Your progress has been restored! The page will reload.");
+
+      // Reload to re-fetch stats with the restored ID
+      window.location.reload();
+    } catch (err) {
+      console.error("Restore failed:", err);
+    }
+  }
+}, []);
+
+useEffect(() => {
   async function initializePromptAndLineups() {
     const today = new Date();
     const cutoff = new Date("2025-05-01T00:00:00Z");
