@@ -417,6 +417,63 @@ const [nickname, setNickname] = useState("");
 const [nicknameSaved, setNicknameSaved] = useState(false);
 const [showNicknameModal, setShowNicknameModal] = useState(false);
 
+// --- Restore Link Helper ---
+const copyRestoreLink = () => {
+  try {
+    // Ensure user has an ID; if not, create one so they can save it
+    if (!localStorage.getItem("bce_user_id")) {
+      if (crypto?.randomUUID) {
+        localStorage.setItem("bce_user_id", crypto.randomUUID());
+      } else {
+        // simple fallback UUID
+        const f = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).slice(1);
+        localStorage.setItem(
+          "bce_user_id",
+          `${f()}${f()}-${f()}-${f()}-${f()}-${f()}${f()}${f()}`
+        );
+      }
+    }
+    const id = localStorage.getItem("bce_user_id");
+    const link = `${window.location.origin}/?restore=${id}`;
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(link).then(() => {
+        alert("✅ Restore link copied! Open it on your other device to restore your account.");
+        if (typeof window !== "undefined" && window.plausible) {
+          window.plausible("Restore Link Copied");
+        }
+      }).catch(() => {
+        const ta = document.createElement("textarea");
+        ta.value = link;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        alert("✅ Restore link copied! Open it on your other device to restore your account.");
+      });
+    } else {
+      const ta = document.createElement("textarea");
+      ta.value = link;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      if (ok) {
+        alert("✅ Restore link copied! Open it on your other device to restore your account.");
+      } else {
+        alert(`Your restore link:\n${link}\n(Please copy it manually)`);
+      }
+    }
+  } catch (e) {
+    console.error("Copy failed:", e);
+    alert("Couldn’t copy automatically. We’ll show the link next time.");
+  }
+};
+
 const handleBadgeClick = () => {
   const rank = userStats?.global_rank;
   if (!rank) return;
@@ -1719,7 +1776,19 @@ if (!error) {
       </div>
       </div>
     </div>
-    <div className="mt-8 mb-4 text-center text-xs text-gray-400 flex flex-col items-center">
+    {/* Restore link helper: under Greatest Hits, above Spotify */}
+<div className="mt-3 text-center">
+  <button
+    onClick={copyRestoreLink}
+    className="text-[12px] font-semibold text-green-300 underline underline-offset-2 hover:text-white transition"
+    title="Copy a special link you can open on another device to restore your account"
+  >
+    Copy and use this account on another device
+  </button>
+</div>
+
+<div className="mt-8 mb-4 text-center text-xs text-gray-400 flex flex-col items-center">
+
     <p className="mb-1 tracking-wide text-green-400">Powered by</p>
     <a
       href="https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=bc22a0a934e44b2e"
