@@ -438,7 +438,7 @@ const copyRestoreLink = () => {
 
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(link).then(() => {
-        alert("✅ Restore link copied! Open it on your other device to restore your account.");
+        alert("✅ Account link copied! Open it on your other device to restore your account.");
         if (typeof window !== "undefined" && window.plausible) {
           window.plausible("Restore Link Copied");
         }
