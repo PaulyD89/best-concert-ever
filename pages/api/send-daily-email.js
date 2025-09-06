@@ -1087,7 +1087,7 @@ function buildNewsletterHtml({
                     >
                       Don&#x27;t want to receive these emails?<!-- -->
                       <a
-                        href="https://bestconcertevergame.com"
+                        href="https://bestconcertevergame.com/unsubscribe"
                         style="color: #067df7; text-decoration-line: none"
                         target="_blank"
                          href="https://bestconcertevergame.com/unsubscribe">Unsubscribe</a
