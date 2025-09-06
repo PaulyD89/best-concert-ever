@@ -923,7 +923,7 @@ function buildNewsletterHtml({
                             <img
                               src="https://best-concert-ever.vercel.app/email-assets/didyouknow.png?v=20250806"
                               style="
-                                height: 9rem;
+                                height: 11.25rem;
                                 margin-left: auto;
                                 margin-right: auto;
                                 display: block;
