@@ -140,6 +140,974 @@ async function getSpotifyImageUrl(artistName) {
   }
 }
 
+
+function buildNewsletterHtml({
+  dailyPrompt,
+  yesterdayPrompt,
+  headlinerImg,
+  secondOpenerImg,
+  openerImg,
+  rawHeadliner,
+  rawSecondOpener,
+  rawOpener,
+  playlistUrl,
+  dailyTip
+}) {
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="ltr" lang="en">
+  <head>
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757150384/img-3_j1stcs.jpg"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757151925/Group_14_fzk6o6.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757151713/Group_13_udwivy.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757163833/Yesterday_s_winning_lineup_n0jhza.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757162970/down-zigzag_ivdxyt.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757150411/band-3_h3gklz.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757163828/Headliner_ppkp4r.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757150411/band-2_hlrsps.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757163827/2nd_Opener_bzgaxi.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757150411/band-1_vf3lj5.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757163829/Opener_e2xbpw.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757162969/up-zigzag_yncjjs.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757164433/spotify_safuoq.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757172212/stream-the-winning-lineups_kytpbr.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757170445/button_bzg5o2.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757166457/IMG_1869_r6sg4i.jpg"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757167604/crowd_jf7bcu.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757167034/best-concert-ever_i4wbjt.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757167032/ig_sirgwm.png"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757167033/x_d0d6oy.png"
+    />
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <!--$-->
+  </head>
+  <body
+    class="darkmode"
+    style="
+      font-family: ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+      background-color: rgb(28, 28, 28) !important;
+      padding-top: 0.5rem;
+    "
+  >
+    <table
+      align="center"
+      width="100%"
+      class="darkmode"
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      role="presentation"
+      style="
+        background-color: rgb(0, 0, 0) !important;
+        max-width: 600px !important;
+      "
+    >
+      <tbody>
+        <tr style="width: 100%">
+          <td>
+            <table
+              align="center"
+              width="100%"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              role="presentation"
+              style="margin: 0px !important"
+            >
+              <tbody>
+                <tr>
+                  <td>
+                    <img
+                      src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757150384/img-3_j1stcs.jpg"
+                      style="
+                        width: 600px;
+                        display: inline-block;
+                        outline: none;
+                        border: none;
+                        text-decoration: none;
+                      "
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table
+              align="center"
+              width="100%"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              role="presentation"
+              style="
+                margin-top: 0px !important;
+                background-image: url(&#x27;https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757151328/Rectangle_48_j4qmze.png&#x27;);
+                background-size: auto;
+                background-position: center;
+                background-repeat: no-repeat;
+                width: 600px;
+                height: 300px;
+              "
+            >
+              <tbody>
+                <tr>
+                  <td>
+                    <table
+                      align="center"
+                      width="100%"
+                      border="0"
+                      cellpadding="0"
+                      cellspacing="0"
+                      role="presentation"
+                      style="
+                        margin-top: 3rem !important;
+                        background-image: url(&#x27;https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757156915/concert-ticket_utkrgk.png&#x27;);
+                        background-repeat: no-repeat;
+                        background-position: center top;
+                        background-size: 550px auto;
+                        width: 550px;
+                        height: 230px;
+                        position: relative;
+                      "
+                    >
+                      <tbody>
+                        <tr>
+                          <td>
+                            <p
+                              style="
+                                margin-left: 1.25rem !important;
+                                margin-bottom: 5rem !important;
+                                font-size: 1.25rem;
+                                line-height: 1.75rem;
+                                font-weight: 600;
+                                color: rgb(255, 255, 255);
+                                margin: 16px 0;
+                              "
+                            >
+                              ${dailyPrompt}
+                            </p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table
+              align="center"
+              width="100%"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              role="presentation"
+              style="
+                background-color: rgb(255, 255, 255);
+                padding-top: 1rem;
+                padding-bottom: 1rem;
+                padding-left: 1rem;
+                padding-right: 1rem;
+              "
+            >
+              <tbody>
+                <tr>
+                  <td>
+                    <img
+                      src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757151925/Group_14_fzk6o6.png"
+                      style="
+                        height: 0.5rem;
+                        margin-left: auto;
+                        margin-right: auto;
+                        margin-top: 2rem !important;
+                        margin-bottom: 2rem !important;
+                        display: block;
+                        outline: none;
+                        border: none;
+                        text-decoration: none;
+                      "
+                    /><img
+                      src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757151713/Group_13_udwivy.png"
+                      style="
+                        height: 7rem;
+                        margin-left: auto;
+                        margin-right: auto;
+                        margin-bottom: 1.5rem;
+                        display: block;
+                        outline: none;
+                        border: none;
+                        text-decoration: none;
+                      "
+                    /><img
+                      src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757163833/Yesterday_s_winning_lineup_n0jhza.png"
+                      style="
+                        height: 1.75rem;
+                        margin-left: auto;
+                        margin-right: auto;
+                        display: block;
+                        outline: none;
+                        border: none;
+                        text-decoration: none;
+                      "
+                    />
+                    <p
+                      style="
+                        margin-bottom: 2.5rem !important;
+                        font-size: 1.875rem;
+                        line-height: 2.25rem;
+                        font-weight: 600;
+                        text-align: center;
+                        margin: 16px 0;
+                      "
+                    >
+                      ${yesterdayPrompt}
+                    </p>
+                    <img
+                      src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757151925/Group_14_fzk6o6.png"
+                      style="
+                        height: 0.5rem;
+                        margin-left: auto;
+                        margin-right: auto;
+                        margin-bottom: 2rem !important;
+                        display: block;
+                        outline: none;
+                        border: none;
+                        text-decoration: none;
+                      "
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table
+              align="center"
+              width="100%"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              role="presentation"
+              style="background-color: rgb(255, 177, 37)"
+            >
+              <tbody>
+                <tr>
+                  <td>
+                    <img
+                      src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757162970/down-zigzag_ivdxyt.png"
+                      style="
+                        width: 100%;
+                        display: block;
+                        outline: none;
+                        border: none;
+                        text-decoration: none;
+                      "
+                    />
+                    <table
+                      align="center"
+                      width="100%"
+                      border="0"
+                      cellpadding="0"
+                      cellspacing="0"
+                      role="presentation"
+                      style="padding-top: 2.5rem; padding-bottom: 2.5rem"
+                    >
+                      <tbody>
+                        <tr>
+                          <td>
+                            <table
+                              align="center"
+                              width="100%"
+                              border="0"
+                              cellpadding="0"
+                              cellspacing="0"
+                              role="presentation"
+                              style="margin-bottom: 1.5rem"
+                            >
+                              <tbody style="width: 100%">
+                                <tr style="width: 100%">
+                                  <td
+                                    width="55%"
+                                    data-id="__react-email-column"
+                                  >
+                                    <table
+                                      align="center"
+                                      width="100%"
+                                      border="0"
+                                      cellpadding="0"
+                                      cellspacing="0"
+                                      role="presentation"
+                                      style="
+                                        padding-left: 1rem;
+                                        padding-right: 1rem;
+                                      "
+                                    >
+                                      <tbody>
+                                        <tr>
+                                          <td>
+                                            <img
+                                              src="${headlinerImg}"
+                                              style="
+                                                width: 100%;
+                                                border-radius: 0.75rem;
+                                                display: block;
+                                                outline: none;
+                                                border: none;
+                                                text-decoration: none;
+                                              "
+                                            />
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </td>
+                                  <td
+                                    width="45%"
+                                    data-id="__react-email-column"
+                                  >
+                                    <table
+                                      align="center"
+                                      width="100%"
+                                      border="0"
+                                      cellpadding="0"
+                                      cellspacing="0"
+                                      role="presentation"
+                                    >
+                                      <tbody>
+                                        <tr>
+                                          <td>
+                                            <img
+                                              src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757163828/Headliner_ppkp4r.png"
+                                              style="
+                                                height: 1.5rem;
+                                                display: block;
+                                                outline: none;
+                                                border: none;
+                                                text-decoration: none;
+                                              "
+                                            />
+                                            <p
+                                              style="
+                                                font-size: 1.2rem;
+                                                font-weight: 700;
+                                                line-height: 24px;
+                                                margin: 16px 0;
+                                              "
+                                            >
+                                              Spandau ballet
+                                            </p>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <table
+                              align="center"
+                              width="100%"
+                              border="0"
+                              cellpadding="0"
+                              cellspacing="0"
+                              role="presentation"
+                              style="margin-bottom: 1.5rem"
+                            >
+                              <tbody style="width: 100%">
+                                <tr style="width: 100%">
+                                  <td
+                                    width="55%"
+                                    data-id="__react-email-column"
+                                  >
+                                    <table
+                                      align="center"
+                                      width="100%"
+                                      border="0"
+                                      cellpadding="0"
+                                      cellspacing="0"
+                                      role="presentation"
+                                      style="
+                                        padding-left: 1rem;
+                                        padding-right: 1rem;
+                                      "
+                                    >
+                                      <tbody>
+                                        <tr>
+                                          <td>
+                                            <img
+                                              src="${secondOpenerImg}"
+                                              style="
+                                                width: 100%;
+                                                border-radius: 0.75rem;
+                                                display: block;
+                                                outline: none;
+                                                border: none;
+                                                text-decoration: none;
+                                              "
+                                            />
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </td>
+                                  <td
+                                    width="45%"
+                                    data-id="__react-email-column"
+                                  >
+                                    <table
+                                      align="center"
+                                      width="100%"
+                                      border="0"
+                                      cellpadding="0"
+                                      cellspacing="0"
+                                      role="presentation"
+                                    >
+                                      <tbody>
+                                        <tr>
+                                          <td>
+                                            <img
+                                              src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757163827/2nd_Opener_bzgaxi.png"
+                                              style="
+                                                height: 1.5rem;
+                                                display: block;
+                                                outline: none;
+                                                border: none;
+                                                text-decoration: none;
+                                              "
+                                            />
+                                            <p
+                                              style="
+                                                font-size: 1.2rem;
+                                                font-weight: 700;
+                                                line-height: 24px;
+                                                margin: 16px 0;
+                                              "
+                                            >
+                                              My Chemical Romance
+                                            </p>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <table
+                              align="center"
+                              width="100%"
+                              border="0"
+                              cellpadding="0"
+                              cellspacing="0"
+                              role="presentation"
+                            >
+                              <tbody style="width: 100%">
+                                <tr style="width: 100%">
+                                  <td
+                                    width="55%"
+                                    data-id="__react-email-column"
+                                  >
+                                    <table
+                                      align="center"
+                                      width="100%"
+                                      border="0"
+                                      cellpadding="0"
+                                      cellspacing="0"
+                                      role="presentation"
+                                      style="
+                                        padding-left: 1rem;
+                                        padding-right: 1rem;
+                                      "
+                                    >
+                                      <tbody>
+                                        <tr>
+                                          <td>
+                                            <img
+                                              src="${openerImg}"
+                                              style="
+                                                width: 100%;
+                                                border-radius: 0.75rem;
+                                                display: block;
+                                                outline: none;
+                                                border: none;
+                                                text-decoration: none;
+                                              "
+                                            />
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </td>
+                                  <td
+                                    width="45%"
+                                    data-id="__react-email-column"
+                                  >
+                                    <table
+                                      align="center"
+                                      width="100%"
+                                      border="0"
+                                      cellpadding="0"
+                                      cellspacing="0"
+                                      role="presentation"
+                                    >
+                                      <tbody>
+                                        <tr>
+                                          <td>
+                                            <img
+                                              src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757163829/Opener_e2xbpw.png"
+                                              style="
+                                                height: 1.5rem;
+                                                display: block;
+                                                outline: none;
+                                                border: none;
+                                                text-decoration: none;
+                                              "
+                                            />
+                                            <p
+                                              style="
+                                                font-size: 1.2rem;
+                                                font-weight: 700;
+                                                line-height: 24px;
+                                                margin: 16px 0;
+                                              "
+                                            >
+                                              Seven seconds to midnight
+                                            </p>
+                                          </td>
+                                        </tr>
+                                      </tbody>
+                                    </table>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <img
+                      src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757162969/up-zigzag_yncjjs.png"
+                      style="
+                        width: 100%;
+                        display: block;
+                        outline: none;
+                        border: none;
+                        text-decoration: none;
+                      "
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table
+              align="center"
+              width="100%"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              role="presentation"
+              style="
+                background-color: rgb(255, 255, 255);
+                padding-top: 1.5rem;
+                padding-bottom: 1.5rem;
+                text-align: center;
+              "
+            >
+              <tbody>
+                <tr>
+                  <td>
+                    <img
+                      src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757164433/spotify_safuoq.png"
+                      style="
+                        margin-left: auto;
+                        margin-right: auto;
+                        height: 3.5rem;
+                        display: block;
+                        outline: none;
+                        border: none;
+                        text-decoration: none;
+                      "
+                    /><img
+                      src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757172212/stream-the-winning-lineups_kytpbr.png"
+                      style="
+                        margin-left: auto;
+                        margin-right: auto;
+                        height: 1.75rem;
+                        padding-top: 1rem;
+                        padding-bottom: 1rem;
+                        margin-bottom: 1rem;
+                        display: block;
+                        outline: none;
+                        border: none;
+                        text-decoration: none;
+                      "
+                    />
+                    <div
+                      style="
+                        padding-top: 0.75rem;
+                        padding-bottom: 0.75rem;
+                        padding-left: 0.5rem;
+                        padding-right: 0.5rem;
+                        text-align: center;
+                        font-size: 1rem;
+                        font-weight: 600;
+                        width: 85%;
+                        margin-left: auto;
+                        margin-right: auto;
+                        border-radius: 1rem;
+                        margin-bottom: 2rem;
+                        border: 2px dashed #62748e;
+                      "
+                    >
+                      <p
+                        style="
+                          font-size: 1.15rem;
+                          line-height: 24px;
+                          margin: 16px 0;
+                        "
+                      >
+                        <a href="${playlistUrl}" style="color:#000; text-decoration:underline; font-weight:700;">${yesterdayPrompt}.Playlist.Ever</a>
+                      </p>
+                    </div>
+                    <p
+                      style="
+                        font-size: 1.15rem;
+                        color: rgb(38, 38, 38);
+                        text-align: center;
+                        margin-bottom: 1.5rem !important;
+                        line-height: 24px;
+                        margin: 16px 0;
+                      "
+                    >
+                      Think you have what it takes to be the ultimate Music
+                      Promoter?
+                    </p>
+                    <a
+                      href="https://bestconcertevergame.com"
+                      style="color: #067df7; text-decoration-line: none"
+                      target="_blank"
+                      ><img
+                        src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757170445/button_bzg5o2.png"
+                        style="
+                          height: 7rem;
+                          vertical-align: middle;
+                          display: inline-block;
+                          margin-left: 0.5rem;
+                          outline: none;
+                          border: none;
+                          text-decoration: none;
+                        "
+                    /></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table
+              align="center"
+              width="100%"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              role="presentation"
+              style="background-color: rgb(250, 223, 106)"
+            >
+              <tbody>
+                <tr>
+                  <td>
+                    <img
+                      src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757162970/down-zigzag_ivdxyt.png"
+                      style="
+                        width: 100%;
+                        display: block;
+                        outline: none;
+                        border: none;
+                        text-decoration: none;
+                      "
+                    />
+                    <table
+                      align="center"
+                      width="100%"
+                      border="0"
+                      cellpadding="0"
+                      cellspacing="0"
+                      role="presentation"
+                      style="
+                        margin-top: 2rem;
+                        margin-bottom: 2rem;
+                        padding-top: 1.5rem;
+                        padding-bottom: 1.5rem;
+                        width: 85%;
+                        border-radius: 1rem;
+                        border: 2px solid #404040;
+                      "
+                    >
+                      <tbody>
+                        <tr>
+                          <td>
+                            <img
+                              src="https://best-concert-ever.vercel.app/email-assets/didyouknow.png?v=20250806"
+                              style="
+                                height: 9rem;
+                                margin-left: auto;
+                                margin-right: auto;
+                                display: block;
+                                outline: none;
+                                border: none;
+                                text-decoration: none;
+                              "
+                            />
+                            <p
+                              style="
+                                font-size: 1.15rem;
+                                text-align: center;
+                                font-weight: 600;
+                                line-height: 24px;
+                                margin: 16px 0;
+                              "
+                            >
+                              ${dailyTip}
+                            </p>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table
+              align="center"
+              width="100%"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              role="presentation"
+              style="background-color: rgb(2, 2, 1); padding-bottom: 2rem"
+            >
+              <tbody>
+                <tr>
+                  <td>
+                    <img
+                      src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757167604/crowd_jf7bcu.png"
+                      style="width: 100%; margin-left: auto; margin-right: auto"
+                    /><img
+                      src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757167034/best-concert-ever_i4wbjt.png"
+                      style="
+                        height: 8rem;
+                        margin-left: auto;
+                        margin-right: auto;
+                        margin-top: 1rem;
+                        margin-bottom: 0.5rem;
+                        display: block;
+                        outline: none;
+                        border: none;
+                        text-decoration: none;
+                      "
+                    />
+                    <hr
+                      style="
+                        height: 1px;
+                        width: 60%;
+                        margin-left: auto;
+                        margin-right: auto;
+                        background-color: rgb(204, 204, 204);
+                        border-radius: 9999px;
+                        margin-top: 2.5rem;
+                        border: none;
+                        border-top: 1px solid #eaeaea;
+                      "
+                    />
+                    <p
+                      style="
+                        color: rgb(255, 255, 255);
+                        font-size: 1.25rem;
+                        text-align: center;
+                        line-height: 24px;
+                        margin: 16px 0;
+                      "
+                    >
+                      Follow us on social:
+                    </p>
+                    <table
+                      align="center"
+                      width="100%"
+                      border="0"
+                      cellpadding="0"
+                      cellspacing="0"
+                      role="presentation"
+                    >
+                      <tbody style="width: 100%">
+                        <tr style="width: 100%">
+                          <td
+                            width="50%"
+                            align="right"
+                            data-id="__react-email-column"
+                          >
+                            <a
+                              href="https://bestconcertevergame.com"
+                              style="color: #067df7; text-decoration-line: none"
+                              target="_blank"
+                              ><img
+                                src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757167032/ig_sirgwm.png"
+                                style="
+                                  height: 2rem;
+                                  margin-right: 0.5rem;
+                                  display: block;
+                                  outline: none;
+                                  border: none;
+                                  text-decoration: none;
+                                "
+                            /></a>
+                          </td>
+                          <td
+                            width="50%"
+                            align="left"
+                            data-id="__react-email-column"
+                          >
+                            <a
+                              href="https://bestconcertevergame.com"
+                              style="color: #067df7; text-decoration-line: none"
+                              target="_blank"
+                              ><img
+                                src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757167033/x_d0d6oy.png"
+                                style="
+                                  height: 2rem;
+                                  margin-left: 0.5rem;
+                                  display: block;
+                                  outline: none;
+                                  border: none;
+                                  text-decoration: none;
+                                "
+                            /></a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table
+              align="center"
+              width="100%"
+              border="0"
+              cellpadding="0"
+              cellspacing="0"
+              role="presentation"
+              style="background-color: rgb(255, 255, 255)"
+            >
+              <tbody>
+                <tr>
+                  <td>
+                    <p
+                      style="
+                        color: rgb(64, 64, 64);
+                        font-weight: 600;
+                        text-align: center;
+                        font-size: 0.9rem;
+                        line-height: 24px;
+                        margin: 16px 0;
+                      "
+                    >
+                      Don&#x27;t want to receive these emails?<!-- -->
+                      <a
+                        href="https://bestconcertevergame.com"
+                        style="color: #067df7; text-decoration-line: none"
+                        target="_blank"
+                         href="https://bestconcertevergame.com/unsubscribe">Unsubscribe</a
+                      >
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <!--/$-->
+  </body>
+</html>
+`;
+}
+
+
 export default async function handler(req, res) {
   const testEmail = req.query.testEmail || req.body?.testEmail;
   if (req.method !== 'GET' && req.method !== 'POST') {
@@ -205,93 +1173,8 @@ export default async function handler(req, res) {
   const playlistUrl = `https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=11fb7c92a53744e0/${playlistSlug}`;
   const dailyTip = getDailyDidYouKnowTip();
 
-  const html = `
-<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#000000" style="background-color: #000000; font-family: sans-serif; padding: 24px 0;">
-  <tr><td align="center">
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #000000;">
-      <tr><td align="center">
-        <table width="584" cellpadding="0" cellspacing="0" border="0" bgcolor="#FADF6B" style="background-color: #FADF6B; color: #000; border-radius: 12px; overflow: hidden;">
-      <tr><td align="center">
-        <img src="https://best-concert-ever.vercel.app/email-assets/01_header-logo-todays-challenge.png?v=20250804" alt="Best Concert Ever + Today's Challenge" width="600" style="display: block; margin-bottom: 8px;" />
-
-        <p style="margin: 0; padding: 12px 24px 16px; font-size: 22px; font-weight: 900; text-transform: uppercase; text-align: center; color: #00B140; letter-spacing: 1px; line-height: 1.2;">
-  ${dailyPrompt}
-</p>
-
-        <img src="https://best-concert-ever.vercel.app/email-assets/03_yesterdays-lineup-header.png?v=20250803" alt="Yesterday's Winning Lineup" width="600" style="display: block; margin-bottom: 8px;" />
-
-        <p style="margin: 0; padding: 12px 24px 16px; font-size: 22px; font-weight: 900; text-transform: uppercase; text-align: center; color: #ED1C24; letter-spacing: 1px; line-height: 1.2;">
-  ${yesterdayPrompt}
-</p>
-
-        <img src="${headlinerImg}" alt="${rawHeadliner}" width="200" style="border-radius: 12px; margin-bottom: 8px;" />
-        <div style="font-weight: bold; text-transform: uppercase; margin-bottom: 20px;">${rawHeadliner} (Headliner)</div>
-
-        <img src="${secondOpenerImg}" alt="${rawSecondOpener}" width="120" style="border-radius: 12px; margin-bottom: 4px;" />
-        <div style="font-weight: bold; text-transform: uppercase; margin-bottom: 12px;">${rawSecondOpener} (2nd Opener)</div>
-
-        <img src="${openerImg}" alt="${rawOpener}" width="120" style="border-radius: 12px; margin-bottom: 4px;" />
-        <div style="font-weight: bold; text-transform: uppercase; margin-bottom: 24px;">${rawOpener} (Opener)</div>
-
-        <img src="https://best-concert-ever.vercel.app/email-assets/05_spotify-now-streaming.png?v=20250803" alt="Stream the Winning Lineups" width="600" style="display: block; margin-top: 20px;" />
-
-        <div style="font-size: 14px; color: #000; margin: 12px 24px 24px; text-align: center;">
-          <a href="${playlistUrl}" style="color: #000; text-decoration: underline; font-weight: bold;">
-            ${yesterdayPrompt}.Playlist.Ever
-          </a>
-        </div>
-
-        <div style="font-size: 16px; text-align: center; padding: 0 24px 24px;">
-          Think you have what it takes to be the ultimate Music Promoter?<br/>
-          <a href="https://bestconcertevergame.com" style="color: black; font-weight: bold; text-decoration: underline;">Submit your own lineup</a>
-        </div>
-
-       <tr>
-  <td align="center" style="padding: 24px 24px 0;">
-    <table cellpadding="0" cellspacing="0" border="0" style="max-width: 520px; width: 100%; background-color: #FADF6B; border-radius: 12px; border: 3px solid black; padding: 16px;">
-      <tr>
-        <td align="center" valign="middle" style="padding-right: 20px;">
-          <img src="https://best-concert-ever.vercel.app/email-assets/didyouknow.png?v=20250806" alt="Did You Know?" width="160" style="display:block;" />
-        </td>
-        <td valign="middle" style="text-align: center;">
-          <p style="font-size: 16px; line-height: 1.5; color: #000; margin: 0;">
-            <strong><em>${dailyTip}</em></strong>
-          </p>
-        </td>
-      </tr>
-    </table>
-  </td>
-</tr>
-
-      <tr>
-  <td align="center" style="padding: 20px 0;">
-    <p style="font-family: Arial, sans-serif; font-size: 16px; color: #000; font-weight: bold; margin: 0 0 10px;">
-      Follow us on social:
-    </p>
-    <a href="https://instagram.com/bestconcertevergame" target="_blank" style="margin: 0 10px; text-decoration: none; display: inline-block;"><img src="https://bestconcertevergame.com/icons/instagram.png" width="32" height="32" alt="Instagram" style="display:inline-block; border:0;"></a>
-    <a href="https://x.com/bestconcertgame" target="_blank" style="margin: 0 10px; text-decoration: none; display: inline-block;"><img src="https://bestconcertevergame.com/icons/twitter.png" width="32" height="32" alt="Twitter" style="display:inline-block; border:0;"></a>
-  </td>
-</tr>
-
-        <tr>
-  <td align="center">
-    <img src="https://best-concert-ever.vercel.app/email-assets/06_footer-crowd.png?v=20250803" alt="Crowd" width="600" style="display: block;" />
-  </td>
-</tr>
-      </td></tr>
-        </table>
-      </td></tr>
-    </table>
-    <div style="font-size: 12px; color: gray; text-align: center; margin-top: 12px;">
-      Don’t want to receive these emails?
-      <a href="https://bestconcertevergame.com/unsubscribe" style="color: gray; text-decoration: underline;">
-        Unsubscribe
-      </a>
-    </div>
-  </td></tr>
-</table>`;
-
-  const messages = recipients.map((email) => ({
+  const html = buildNewsletterHtml({ dailyPrompt, yesterdayPrompt, headlinerImg, secondOpenerImg, openerImg, rawHeadliner, rawSecondOpener, rawOpener, playlistUrl, dailyTip });
+const messages = recipients.map((email) => ({
     from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
     to: [email],
     subject: `🎺 What's Your Best Concert Ever for "${dailyPrompt}"?`,
