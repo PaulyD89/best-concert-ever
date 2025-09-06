@@ -1020,7 +1020,7 @@ function buildNewsletterHtml({
                             data-id="__react-email-column"
                           >
                             <a
-                              href="https://bestconcertevergame.com"
+                              href="https://www.instagram.com/bestconcertevergame"
                               style="color: #067df7; text-decoration-line: none"
                               target="_blank"
                               ><img
@@ -1041,7 +1041,7 @@ function buildNewsletterHtml({
                             data-id="__react-email-column"
                           >
                             <a
-                              href="https://bestconcertevergame.com"
+                              href="https://x.com/bestconcertgame"
                               style="color: #067df7; text-decoration-line: none"
                               target="_blank"
                               ><img
