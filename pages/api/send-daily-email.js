@@ -570,7 +570,7 @@ function buildNewsletterHtml({
                                                 margin: 16px 0;
                                               "
                                             >
-                                              Spandau ballet
+                                              ${rawHeadliner}
                                             </p>
                                           </td>
                                         </tr>
@@ -659,7 +659,7 @@ function buildNewsletterHtml({
                                                 margin: 16px 0;
                                               "
                                             >
-                                              My Chemical Romance
+                                              ${rawSecondOpener}
                                             </p>
                                           </td>
                                         </tr>
@@ -747,7 +747,7 @@ function buildNewsletterHtml({
                                                 margin: 16px 0;
                                               "
                                             >
-                                              Seven seconds to midnight
+                                              ${rawOpener}
                                             </p>
                                           </td>
                                         </tr>
