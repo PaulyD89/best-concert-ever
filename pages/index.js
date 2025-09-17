@@ -48,7 +48,9 @@ const ArtistSearch = ({ label, onSelect, disabled, locked }) => {
     value={query}
     onChange={(e) => setQuery(e.target.value)}
     disabled={disabled}
-    className="w-full px-4 py-3 border-2 border-black rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-400 text-black font-semibold text-sm pr-10"
+    className="w-full px-4 py-3 border-2 border-white rounded-md bg-transparent 
+            focus:outline-none focus:ring-2 focus:ring-yellow-400 
+            text-white placeholder-white/70 font-semibold text-sm pr-10"
   />
   {locked && (
     <div className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 text-sm pointer-events-none">
