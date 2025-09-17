@@ -977,7 +977,7 @@ console.log("Lineup submitted:", { headliner, opener, secondOpener });
 >
         <div
   className="
-    absolute -top-12 left-1/2 -translate-x-1/2
+    absolute -top-12 left-1/2 transform -translate-x-1/2
     w-32 h-32
     rounded-full
     bg-black
@@ -986,8 +986,12 @@ console.log("Lineup submitted:", { headliner, opener, secondOpener });
     flex items-center justify-center overflow-hidden
   "
 >
-          <img src="/new-top-badge.png" alt="Best Concert Ever Logo" className="w-full h-full object-cover" style={{ objectFit: "cover", objectPosition: "center" }} crossOrigin="anonymous" />
-        </div>
+  <img
+    src="/new-top-badge.png"
+    alt="Best Concert Ever Logo"
+    className="w-full h-full object-cover"
+  />
+</div>
 
         <div className="mt-16 mb-4 text-base font-extrabold uppercase tracking-widest text-black inline-block px-4 py-1 border-2 border-black rotate-[-2deg] bg-white shadow-md font-mono">
           {dailyPrompt}
