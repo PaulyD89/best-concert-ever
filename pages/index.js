@@ -1649,7 +1649,7 @@ if (!error) {
   </div>
 )}
 
-{userStats?.total_lineups_submitted >= 5 && !nicknameSaved && (
+{userStats?.total_lineups_submitted >= 2 && !nicknameSaved && (
   <div className="mb-4">
     <button
       onClick={() => setShowNicknameModal(true)}
