@@ -104,7 +104,7 @@ const LineupSlot = ({ artist, label }) => (
     <span className="text-black text-xs font-bold text-center w-full text-center block">{label}</span>
   )}
 </div>
-<div className="mt-2 text-black font-bold text-center max-w-[8rem]">
+<div className="mt-2 text-white font-bold text-center max-w-[8rem]">
   {artist?.name || ""}
 </div>
   </div>
