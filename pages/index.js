@@ -1004,86 +1004,86 @@ console.log("Lineup submitted:", { headliner, opener, secondOpener });
           <LineupSlot artist={headliner} label="Headliner" />
         </div>
 
-        // Find this section in your code (around lines 650-680) and replace it:
+        <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
+          <button
+  onClick={handleSubmit}
+  disabled={submitted || !(headliner && opener && secondOpener)}
+  className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide transition shadow ${
+    submitted || !(headliner && opener && secondOpener)
+      ? "bg-gray-400 cursor-not-allowed text-white"
+      : "bg-[#fdc800] text-black hover:brightness-110 hover:ring-4 hover:ring-[#fdc800]/60 hover:shadow-[0_0_12px_#fdc800] active:scale-95"
+  }`}
+>
+  Submit Lineup
+</button>
+          <button
+  onClick={async () => {
+    if (typeof window !== 'undefined' && window.plausible) {
+      window.plausible("Download Lineup");
+    }    
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+  
+    const background = new Image();
+    background.src = "/bestconcertdownloadimage.png";
+    background.crossOrigin = "anonymous";
+  
+    background.onload = async () => {
+      const WIDTH = background.width;
+      const HEIGHT = background.height;
+      canvas.width = WIDTH;
+      canvas.height = HEIGHT;
+  
+      ctx.drawImage(background, 0, 0, WIDTH, HEIGHT);
+  
+      const loadImage = (src) =>
+        new Promise((resolve) => {
+          const img = new Image();
+          img.crossOrigin = "anonymous";
+          img.src = src;
+          img.onload = () => resolve(img);
+        });
+  
+      try {
+        const [headlinerImg, openerImg, secondOpenerImg] = await Promise.all([
+          loadImage(headliner?.image),
+          loadImage(opener?.image),
+          loadImage(secondOpener?.image),
+        ]);
+  
+ctx.drawImage(headlinerImg, WIDTH / 2 - 125, HEIGHT - 660, 250, 250);
+ctx.drawImage(openerImg, WIDTH / 2 - 250, HEIGHT - 380, 200, 200);
+ctx.drawImage(secondOpenerImg, WIDTH / 2 + 50, HEIGHT - 380, 200, 200);
 
-<div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
-  <button
-    onClick={handleSubmit}
-    disabled={submitted || !(headliner && opener && secondOpener)}
-    className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide transition shadow ${
-      submitted || !(headliner && opener && secondOpener)
-        ? "bg-gray-400 cursor-not-allowed text-white"
-        : "bg-[#fdc800] text-black hover:bg-yellow-300 hover:shadow-lg hover:scale-105"
-    }`}
-  >
-    Submit Lineup
-  </button>
-  <button
-    onClick={async () => {
-      if (typeof window !== 'undefined' && window.plausible) {
-        window.plausible("Download Lineup");
-      }    
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-    
-      const background = new Image();
-      background.src = "/bestconcertdownloadimage.png";
-      background.crossOrigin = "anonymous";
-    
-      background.onload = async () => {
-        const WIDTH = background.width;
-        const HEIGHT = background.height;
-        canvas.width = WIDTH;
-        canvas.height = HEIGHT;
-    
-        ctx.drawImage(background, 0, 0, WIDTH, HEIGHT);
-    
-        const loadImage = (src) =>
-          new Promise((resolve) => {
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.src = src;
-            img.onload = () => resolve(img);
-          });
-    
-        try {
-          const [headlinerImg, openerImg, secondOpenerImg] = await Promise.all([
-            loadImage(headliner?.image),
-            loadImage(opener?.image),
-            loadImage(secondOpener?.image),
-          ]);
-    
-          ctx.drawImage(headlinerImg, WIDTH / 2 - 125, HEIGHT - 660, 250, 250);
-          ctx.drawImage(openerImg, WIDTH / 2 - 250, HEIGHT - 380, 200, 200);
-          ctx.drawImage(secondOpenerImg, WIDTH / 2 + 50, HEIGHT - 380, 200, 200);
+ctx.font = "bold 24px Arial";
+ctx.fillStyle = "#ffffff";
+ctx.textAlign = "center";
 
-          ctx.font = "bold 24px Arial";
-          ctx.fillStyle = "#ffffff";
-          ctx.textAlign = "center";
+ctx.fillText(headliner?.name || "", WIDTH / 2, HEIGHT - 440 + 40);
+ctx.fillText(opener?.name || "", WIDTH / 2 - 140, HEIGHT - 160);
+ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 
-          ctx.fillText(headliner?.name || "", WIDTH / 2, HEIGHT - 440 + 40);
-          ctx.fillText(opener?.name || "", WIDTH / 2 - 140, HEIGHT - 160);
-          ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
-
-          const link = document.createElement("a");
-          link.download = "best-concert-ever.jpg";
-          link.href = canvas.toDataURL("image/jpeg", 0.95);
-          link.click();
-        } catch (err) {
-          console.error("Image download failed:", err);
-        }
-      };
-    }}
-    disabled={!submitted}
-    className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide border transition ${
-      submitted
-        ? "bg-[#fdc800] text-black hover:bg-yellow-300 hover:shadow-lg hover:scale-105 border-[#fdc800]"
-        : "text-gray-400 border-gray-500 cursor-not-allowed bg-transparent"
-    }`}
-  >
-    Download Lineup
-  </button>
-</div>
+  
+        const link = document.createElement("a");
+        link.download = "best-concert-ever.jpg";
+        link.href = canvas.toDataURL("image/jpeg", 0.95);
+        link.click();
+      } catch (err) {
+        console.error("Image download failed:", err);
+      }
+    };
+  }}
+                 
+            disabled={!submitted}
+            className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide border transition ${
+              submitted
+                ? "border-black bg-white text-black hover:bg-yellow-100"
+                : "text-gray-400 border-gray-500 cursor-not-allowed"
+            }`}
+          >
+            Download Lineup
+          </button>
+        </div>
       </div>
       
       <div
