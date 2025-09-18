@@ -1087,7 +1087,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
       </div>
       
       <div
-  className="text-sm text-gray-300 underline cursor-pointer hover:text-white"
+  className="mt-4 text-sm text-gray-300 underline cursor-pointer hover:text-white"
   onClick={() => {
     setShowHowToPlay(true);
     if (typeof window !== 'undefined' && window.plausible) {
