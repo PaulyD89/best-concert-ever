@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       html: `
   <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #000; color: white; border-radius: 12px; border: 2px solid #f66;">
     <div style="text-align: center; margin-bottom: 24px;">
-      <img src="https://best-concert-ever.vercel.app/circularlogo.png" alt="Best Concert Ever Logo" width="180" height="180" style="border-radius: 50%; display: block; margin: 0 auto;" />
+      <img src="https://best-concert-ever.vercel.app/logo-yellow-on-black.png" alt="Best Concert Ever Logo" width="180" height="180" style="border-radius: 50%; display: block; margin: 0 auto;" />
     </div>
     <h1 style="text-align: center; font-size: 24px; color: #ffee33; text-transform: uppercase; font-weight: bold; margin-bottom: 12px; text-shadow: 0 0 6px #ffee33, 0 0 12px #ffee33; animation: pulse 2s infinite alternate;">
       You’re Signed Up!
@@ -41,7 +41,7 @@ export default async function handler(req, res) {
       You can unsubscribe at any time from the footer of any email.
     </p>
     <p style="margin-top: 30px; font-size: 11px; color: gray; text-align: center;">
-      © 2025 Thirty Bucks, LLC. All rights reserved.
+      © 2025 Thirty Bucks, Inc. All rights reserved.
     
 <style>
 @keyframes pulse {
