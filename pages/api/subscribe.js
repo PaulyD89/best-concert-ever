@@ -38,12 +38,17 @@ export default async function handler(req, res) {
       You’ll get a daily prompt + the winning lineup from the day before.
     </p>
 
-    <div style="text-align: center; margin: 20px 0;">
-      <a href="https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=a82160ddef1a4ec0" target="_blank" style="text-decoration: none; color: white; font-size: 14px; display: inline-block;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify" width="40" height="40" style="vertical-align: middle; margin-right: 8px;" />
-        Follow the <strong>Best. Concert. Ever.</strong> Spotify playlist for daily sets from each winning lineup.
-      </a>
-    </div>
+<div style="text-align: center; margin: 20px 0;">
+  <div style="margin-bottom: 8px;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify" width="40" height="40" style="display: block; margin: 0 auto;" />
+  </div>
+  <p style="font-size: 14px; margin: 0; color: white;">
+    <a href="https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=a82160ddef1a4ec0" target="_blank" style="color: #1DB954; text-decoration: underline; font-weight: bold;">
+      Follow
+    </a>
+    the <strong>Best. Concert. Ever.</strong> Spotify playlist for daily sets from each winning lineup.
+  </p>
+</div>
 
     <p style="text-align: center; font-size: 12px; color: gray;">
       You can unsubscribe at any time from the footer of any email.
