@@ -34,7 +34,7 @@ export default async function handler(req, res) {
       You’re Signed Up!
     </h1>
     <p style="font-size: 16px; text-align: center; margin-bottom: 24px;">
-      Thanks for joining <strong>Best Concert Ever</strong>.<br />
+      Thanks for joining <strong>Best. Concert. Ever</strong>.<br />
       You’ll get a daily prompt + the winning lineup from the day before.
     </p>
 
