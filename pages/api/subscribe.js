@@ -39,14 +39,14 @@ export default async function handler(req, res) {
     </p>
 
 <div style="text-align: center; margin: 20px 0;">
-  <div style="margin-bottom: 8px;">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify" width="40" height="40" style="display: block; margin: 0 auto;" />
+  <div style="margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify" width="40" height="40" />
+    <span style="font-size: 16px; font-weight: bold; color: #1DB954;">Spotify</span>
   </div>
   <p style="font-size: 14px; margin: 0; color: white;">
     <a href="https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=a82160ddef1a4ec0" target="_blank" style="color: #1DB954; text-decoration: underline; font-weight: bold;">
       Follow
-    </a>
-    the <strong>Best. Concert. Ever.</strong> Spotify playlist for daily sets from each winning lineup.
+    </a> the <strong>Best. Concert. Ever.</strong> Spotify playlist for daily sets from each winning lineup.
   </p>
 </div>
 
