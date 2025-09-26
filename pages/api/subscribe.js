@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       to: email,
       subject: '🎸 You’re Signed Up!',
       html: `
-  <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #000; color: white; border-radius: 12px; border: 2px solid #f66;">
+<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #000; color: white; border-radius: 12px; border: 2px solid #f66;">
     <div style="text-align: center; margin-bottom: 24px;">
       <img src="https://best-concert-ever.vercel.app/logo-yellow-on-black.png" alt="Best Concert Ever Logo" width="180" height="180" style="border-radius: 50%; display: block; margin: 0 auto;" />
     </div>
@@ -37,18 +37,28 @@ export default async function handler(req, res) {
       Thanks for joining <strong>Best Concert Ever</strong>.<br />
       You’ll get a daily prompt + the winning lineup from the day before.
     </p>
+
+    <div style="text-align: center; margin: 20px 0;">
+      <a href="https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=a82160ddef1a4ec0" target="_blank" style="text-decoration: none; color: white; font-size: 14px; display: inline-block;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify" width="40" height="40" style="vertical-align: middle; margin-right: 8px;" />
+        Follow the <strong>Best. Concert. Ever.</strong> Spotify playlist for daily sets from each winning lineup.
+      </a>
+    </div>
+
     <p style="text-align: center; font-size: 12px; color: gray;">
       You can unsubscribe at any time from the footer of any email.
     </p>
     <p style="margin-top: 30px; font-size: 11px; color: gray; text-align: center;">
       © 2025 Thirty Bucks, Inc. All rights reserved.
+    </p>
     
-<style>
-@keyframes pulse {
-  from { opacity: 1; }
-  to { opacity: 0.85; }
-}
-</style>
+    <style>
+      @keyframes pulse {
+        from { opacity: 1; }
+        to { opacity: 0.85; }
+      }
+    </style>
+  </div>
 `,
     });
 
