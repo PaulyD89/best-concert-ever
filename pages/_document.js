@@ -6,7 +6,7 @@ export default function Document() {
       <Head>
         <title>Best Concert Ever – Your Dream Festival, Every Day</title> {/* ✅ Added title tag */}
 
-        <meta property="og:title" content="Best. Concert. Ever." />
+        <meta property="og:title" content="Best. Concert. Ever. Your Dream Festival, Every Day." />
         <meta property="og:description" content="Assemble the ultimate concert lineup!" />
         <meta name="description" content="Create your dream concert lineup and compete with music fans daily in Best Concert Ever – the ultimate music game." />
         <meta property="og:image" content="https://bestconcertevergame.com/new-preview.jpg" />
