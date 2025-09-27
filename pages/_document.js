@@ -9,7 +9,7 @@ export default function Document() {
         <meta property="og:title" content="Best. Concert. Ever." />
         <meta property="og:description" content="Assemble the ultimate concert lineup!" />
         <meta name="description" content="Create your dream concert lineup and compete with music fans daily in Best Concert Ever – the ultimate music game." />
-        <meta property="og:image" content="https://bestconcertevergame.com/social-preview.jpg" />
+        <meta property="og:image" content="https://bestconcertevergame.com/new-preview.jpg" />
         <meta property="og:url" content="https://bestconcertevergame.com" />
         <link rel="canonical" href="https://www.bestconcertevergame.com" />
 
