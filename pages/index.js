@@ -907,7 +907,7 @@ console.log("Lineup submitted:", { headliner, opener, secondOpener });
               <li>Time to flex those Music Promoter skills and show everyone you know how to assemble the ULTIMATE CONCERT LINE-UP!</li>
               <li>CHECK THE DAILY PROMPT for the genre of the show you&apos;re promoting.</li>
               <li>Use the drop-down menus to select THREE ARTISTS who fit the bill.</li>
-              <li>CHOOSE THE ORDER for your show - the OPENER, 2ND OPENER and HEADLINER.</li>
+              <li>CHOOSE THE ORDER of your show - the OPENER, 2ND OPENER and HEADLINER.</li>
               <li>Once you have made your selections, hit <b>SUBMIT LINEUP</b>. Click SHARE YOUR LINEUP to announce your show and get votes.</li>
               <li>Today&apos;s TOP 10 will be posted daily. <b>VOTE</b> for your favorite lineup from the Top 10 or Recent Drops by clicking the FIRE 🔥 EMOJI. Sometimes a player&apos;s DEEP CUT may appear as well.</li>
               <li>Lineups with the MOST VOTES will win the day. Win points, unlock badges and promoter awards. Bragging rights, baby!</li>
