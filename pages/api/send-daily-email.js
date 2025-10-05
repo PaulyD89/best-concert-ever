@@ -1004,65 +1004,80 @@ function buildNewsletterHtml({
                     >
                       Follow us on social:
                     </p>
-                    <table
-                      align="center"
-                      width="100%"
-                      border="0"
-                      cellpadding="0"
-                      cellspacing="0"
-                      role="presentation"
-                    >
-                      <tbody style="width: 100%">
-                        <tr style="width: 100%">
-                          <td
-                            width="50%"
-                            align="right"
-                            data-id="__react-email-column"
-                          >
-                            <a
-                              href="https://www.instagram.com/bestconcertevergame"
-                              style="color: #067df7; text-decoration-line: none"
-                              target="_blank"
-                              ><img
-                                src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757167032/ig_sirgwm.png"
-                                style="
-                                  height: 2rem;
-                                  margin-right: 0.5rem;
-                                  display: block;
-                                  outline: none;
-                                  border: none;
-                                  text-decoration: none;
-                                "
-                            /></a>
-                          </td>
-                          <td
-                            width="50%"
-                            align="left"
-                            data-id="__react-email-column"
-                          >
-                            <a
-                              href="https://x.com/bestconcertgame"
-                              style="color: #067df7; text-decoration-line: none"
-                              target="_blank"
-                              ><img
-                                src="https://res.cloudinary.com/dvlvsnf5f/image/upload/v1757167033/x_d0d6oy.png"
-                                style="
-                                  height: 2rem;
-                                  margin-left: 0.5rem;
-                                  display: block;
-                                  outline: none;
-                                  border: none;
-                                  text-decoration: none;
-                                "
-                            /></a>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    <!-- Follow us on social: -->
+<table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
+  <tbody style="width:100%">
+    <tr style="width:100%">
+      <td align="center" style="padding-top:8px; padding-bottom:16px;">
+        <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation">
+          <tbody>
+            <tr>
+              <!-- Instagram -->
+              <td style="padding:0 6px;">
+                <a href="https://www.instagram.com/bestconcertevergame" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+                  <img
+                    src="https://bestconcertevergame.com/yellowinstagram.png"
+                    alt="Instagram"
+                    height="32"
+                    style="height:2rem; display:block; outline:none; border:none; text-decoration:none;"
+                  />
+                </a>
+              </td>
+
+              <!-- X (Twitter) -->
+              <td style="padding:0 6px;">
+                <a href="https://x.com/bestconcertgame" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+                  <img
+                    src="https://bestconcertevergame.com/yellowtwitter.png"
+                    alt="X (Twitter)"
+                    height="32"
+                    style="height:2rem; display:block; outline:none; border:none; text-decoration:none;"
+                  />
+                </a>
+              </td>
+
+              <!-- Facebook -->
+              <td style="padding:0 6px;">
+                <a href="https://www.facebook.com/profile.php?id=61578292247052" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+                  <img
+                    src="https://bestconcertevergame.com/yellowfacebook.png"
+                    alt="Facebook"
+                    height="32"
+                    style="height:2rem; display:block; outline:none; border:none; text-decoration:none;"
+                  />
+                </a>
+              </td>
+
+              <!-- Spotify -->
+              <td style="padding:0 6px;">
+                <a href="https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=2706474725af44b2" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+                  <img
+                    src="https://bestconcertevergame.com/yellowspotify.png"
+                    alt="Spotify"
+                    height="32"
+                    style="height:2rem; display:block; outline:none; border:none; text-decoration:none;"
+                  />
+                </a>
+              </td>
+
+              <!-- TikTok -->
+              <td style="padding:0 6px;">
+                <a href="https://www.tiktok.com/@bestconcertever" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
+                  <img
+                    src="https://bestconcertevergame.com/yellowtiktok.png"
+                    alt="TikTok"
+                    height="32"
+                    style="height:2rem; display:block; outline:none; border:none; text-decoration:none;"
+                  />
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
             <table
               align="center"
               width="100%"
