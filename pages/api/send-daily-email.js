@@ -1016,7 +1016,7 @@ function buildNewsletterHtml({
               <td style="padding:0 6px;">
                 <a href="https://www.instagram.com/bestconcertevergame" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
                   <img
-                    src="https://bestconcertevergame.com/yellowinstagram.png"
+                    src="https://bestconcertevergame.com/icons/yellowinstagram.png"
                     alt="Instagram"
                     height="32"
                     style="height:2rem; display:block; outline:none; border:none; text-decoration:none;"
@@ -1028,7 +1028,7 @@ function buildNewsletterHtml({
               <td style="padding:0 6px;">
                 <a href="https://x.com/bestconcertgame" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
                   <img
-                    src="https://bestconcertevergame.com/yellowtwitter.png"
+                    src="https://bestconcertevergame.com/icons/yellowtwitter.png"
                     alt="X (Twitter)"
                     height="32"
                     style="height:2rem; display:block; outline:none; border:none; text-decoration:none;"
@@ -1040,7 +1040,7 @@ function buildNewsletterHtml({
               <td style="padding:0 6px;">
                 <a href="https://www.facebook.com/profile.php?id=61578292247052" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
                   <img
-                    src="https://bestconcertevergame.com/yellowfacebook.png"
+                    src="https://bestconcertevergame.com/icons/yellowfacebook.png"
                     alt="Facebook"
                     height="32"
                     style="height:2rem; display:block; outline:none; border:none; text-decoration:none;"
@@ -1052,7 +1052,7 @@ function buildNewsletterHtml({
               <td style="padding:0 6px;">
                 <a href="https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=2706474725af44b2" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
                   <img
-                    src="https://bestconcertevergame.com/yellowspotify.png"
+                    src="https://bestconcertevergame.com/icons/yellowspotify.png"
                     alt="Spotify"
                     height="32"
                     style="height:2rem; display:block; outline:none; border:none; text-decoration:none;"
@@ -1064,7 +1064,7 @@ function buildNewsletterHtml({
               <td style="padding:0 6px;">
                 <a href="https://www.tiktok.com/@bestconcertever" target="_blank" rel="noopener noreferrer" style="text-decoration:none;">
                   <img
-                    src="https://bestconcertevergame.com/yellowtiktok.png"
+                    src="https://bestconcertevergame.com/icons/yellowtiktok.png"
                     alt="TikTok"
                     height="32"
                     style="height:2rem; display:block; outline:none; border:none; text-decoration:none;"
