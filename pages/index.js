@@ -1154,7 +1154,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 
 const tinyUrl = voteUrl;
 
-const shareText = `Here’s my lineup for “${dailyPrompt}” 🎶🔥 Vote for it: ${tinyUrl} or submit your own! #bestconcertever`;
+const shareText = `Here’s my lineup for “${dailyPrompt}” 🎶🔥 Vote for it: ${tinyUrl} or submit your own! #bestconcertever #MyMidnightLineup`;
 
 await navigator.share({
   title: "Best Concert Ever",
@@ -1177,21 +1177,26 @@ await navigator.share({
       
       className="flex items-center space-x-2 bg-black text-cyan-400 font-bold px-6 py-3 rounded-full border-2 border-cyan-400 hover:text-white hover:border-white hover:shadow-lg transition-all duration-300 shadow-[0_0_15px_rgba(0,255,255,0.7)] uppercase tracking-widest"
 >
-  <span>🎟️ Share Lineup / Get Votes</span>
+  <span>🎟️ Share Lineup To Win</span>
 </button>
   </div>
 )}
 
 {lockedHeadliner && (
   <div className="mb-4">
-    <img
-      src="/locked-and-loaded.png"
-      alt="Locked & Loaded"
-      className="mx-auto w-48 h-auto sparkle-effect"
-    />
+    <a
+      href="https://lnk.to/the-midnight-syndicate"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <img
+        src="/locked-and-loadedmidnight.png"
+        alt="Locked & Loaded — The Midnight"
+        className="mx-auto w-48 h-auto"
+      />
+    </a>
   </div>
 )}
-
       <div id="top-10-section" className="mt-0 flex justify-center items-center w-full">
         <div className="relative w-full max-w-md text-center">
           <div className="absolute inset-0 rounded-xl border-2 border-yellow-400 animate-pulse pointer-events-none"></div>
