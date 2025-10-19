@@ -1154,7 +1154,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 
 const tinyUrl = voteUrl;
 
-const shareText = `Here’s my lineup for “${dailyPrompt}” 🎶🔥 Vote for it: ${tinyUrl} or submit your own! #bestconcertever #MyMidnightLineup`;
+const shareText = `Here’s my lineup for “${dailyPrompt}” 🎶🔥 Vote for it: ${tinyUrl} or submit your own! #bestconcertever`;
 
 await navigator.share({
   title: "Best Concert Ever",
@@ -1177,26 +1177,21 @@ await navigator.share({
       
       className="flex items-center space-x-2 bg-black text-cyan-400 font-bold px-6 py-3 rounded-full border-2 border-cyan-400 hover:text-white hover:border-white hover:shadow-lg transition-all duration-300 shadow-[0_0_15px_rgba(0,255,255,0.7)] uppercase tracking-widest"
 >
-  <span>🎟️ Share Lineup To Win</span>
+  <span>🎟️ Share Lineup / Get Votes</span>
 </button>
   </div>
 )}
 
 {lockedHeadliner && (
   <div className="mb-4">
-    <a
-      href="https://lnk.to/the-midnight-syndicate"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      <img
-        src="/locked-and-loadedmidnight.png"
-        alt="Locked & Loaded — The Midnight"
-        className="mx-auto w-48 h-auto"
-      />
-    </a>
+    <img
+      src="/locked-and-loaded.png"
+      alt="Locked & Loaded"
+      className="mx-auto w-48 h-auto sparkle-effect"
+    />
   </div>
 )}
+
       <div id="top-10-section" className="mt-0 flex justify-center items-center w-full">
         <div className="relative w-full max-w-md text-center">
           <div className="absolute inset-0 rounded-xl border-2 border-yellow-400 animate-pulse pointer-events-none"></div>
@@ -1795,6 +1790,20 @@ if (!error) {
     Copy Account Link For Other Devices
   </button>
 </div>
+
+{userId === "3efc1a59-1cfb-4eb5-adb9-70a56e872b28" && (
+  <div className="flex justify-center mt-3">
+    <button
+      onClick={() =>
+        window.location.href = "mailto:paul@bestconcertevergame.com?subject=My Midnight Lineup Won!&body=Hi Paul,%0D%0A%0D%0AMy lineup won the Midnight challenge! Here’s my mailing address:%0D%0A%0D%0A[Enter your full address here]%0D%0A%0D%0AThanks!"
+      }
+      className="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 px-4 rounded-full shadow-lg"
+      style={{ boxShadow: '0 0 10px #ffd700' }}
+    >
+      🏆 Your Midnight Lineup Won — Click Here To Send Us Your Mailing Address
+    </button>
+  </div>
+)}
 
 <div className="mt-8 mb-4 text-center text-xs text-gray-400 flex flex-col items-center">
 
