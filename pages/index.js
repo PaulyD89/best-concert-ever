@@ -1781,7 +1781,7 @@ if (!error) {
       </div>
     </div>
 {/* Restore link helper: under Greatest Hits, above Spotify */}
-<div className="mt-4 text-center flex flex-col items-center">
+<div className="mt-4 text-center">
   <button
     onClick={copyRestoreLink}
     className="px-3 py-1.5 rounded-full font-semibold text-xs bg-green-500 text-black shadow-md hover:bg-green-400 hover:scale-105 transition-transform"
@@ -1789,21 +1789,6 @@ if (!error) {
   >
     Copy Account Link For Other Devices
   </button>
-
-  {typeof window !== "undefined" &&
-    localStorage.getItem("user_id") ===
-      "3efc1a59-1cfb-4eb5-adb9-70a56e872b28" && (
-      <button
-        onClick={() =>
-          (window.location.href =
-            "mailto:paul@bestconcertevergame.com?subject=My Midnight Lineup Won!&body=Hi Paul,%0D%0A%0D%0AMy lineup won the Midnight challenge! Here’s my mailing address:%0D%0A%0D%0A[Enter your full address here]%0D%0A%0D%0AThanks!")
-        }
-        className="px-3 py-1.5 rounded-full font-semibold text-xs bg-yellow-400 text-black shadow-md hover:bg-yellow-500 hover:scale-105 transition-transform mt-3"
-        style={{ boxShadow: "0 0 10px #ffd700" }}
-      >
-        🏆 Your Midnight Lineup Won — Click Here To Send Us Your Mailing Address
-      </button>
-    )}
 </div>
 
 <div className="mt-8 mb-4 text-center text-xs text-gray-400 flex flex-col items-center">
