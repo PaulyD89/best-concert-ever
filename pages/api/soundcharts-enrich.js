@@ -1,4 +1,4 @@
-// /pages/api/soundcharts-enrich.js
+// /api/soundcharts-enrich.js
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -8,118 +8,111 @@ const supabase = createClient(
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { lineupId, openerSpotifyId, secondSpotifyId, headlinerSpotifyId } = req.body;
+  try {
+    const { lineupId, openerSpotifyId, secondSpotifyId, headlinerSpotifyId } = req.body;
 
-  if (!lineupId || !openerSpotifyId || !secondSpotifyId || !headlinerSpotifyId) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
-
-  const headers = {
-    "x-app-id": process.env.SC_APP_ID,
-    "x-api-key": process.env.SC_API_KEY,
-  };
-
-  // --- Helper: fetch Soundcharts data for one artist ---
-  async function fetchSoundchartsForArtist(spotifyId) {
-    try {
-      // 1️⃣ Get Soundcharts UUID
-      const uuidRes = await fetch(
-        `https://customer.api.soundcharts.com/api/v2.9/artist/by-platform/spotify/${spotifyId}`,
-        { headers }
-      );
-      const uuidData = await uuidRes.json();
-      const uuid = uuidData?.artist?.uuid;
-      if (!uuid) return null;
-
-      // 2️⃣ Popularity
-      const popRes = await fetch(
-        `https://customer.api.soundcharts.com/api/v2/artist/${uuid}/popularity/spotify`,
-        { headers }
-      );
-      const popData = await popRes.json();
-      const popularity = popData.items?.at(-1)?.value ?? null;
-
-      // 3️⃣ Soundcharts Score
-      const scoreRes = await fetch(
-        `https://customer.api.soundcharts.com/api/v2/artist/${uuid}/soundcharts/score`,
-        { headers }
-      );
-      const scoreData = await scoreRes.json();
-      const score = scoreData.items?.at(-1)?.value ?? null;
-
-      // 4️⃣ Radio Spins
-      const radioRes = await fetch(
-        `https://customer.api.soundcharts.com/api/v2/artist/${uuid}/broadcasts?limit=1`,
-        { headers }
-      );
-      const radioData = await radioRes.json();
-      const radio_spins = radioData.items?.length ?? 0;
-
-      // 5️⃣ Playlist Count
-      const playlistsRes = await fetch(
-        `https://customer.api.soundcharts.com/api/v2.20/artist/${uuid}/playlist/current/spotify`,
-        { headers }
-      );
-      const playlistsData = await playlistsRes.json();
-      const playlist_count = playlistsData.items?.length ?? 0;
-
-      return {
-        uuid,
-        popularity,
-        score,
-        radio_spins,
-        playlist_count,
-      };
-    } catch (err) {
-      console.error("Soundcharts fetch failed for", spotifyId, err);
-      return null;
+    if (!lineupId) {
+      return res.status(400).json({ message: "Missing lineupId" });
     }
+
+    const headers = {
+      "x-app-id": "PDAVIDSON-API_8E0D5B7B",
+      "x-api-key": "a4dfd64d99449094",
+    };
+
+    const BASE = "https://customer.api.soundcharts.com/api/v2.9";
+
+    const getSoundchartsData = async (spotifyId) => {
+      if (!spotifyId) return null;
+
+      try {
+        // Step 1: Get Soundcharts UUID via Spotify ID
+        const metaRes = await fetch(`${BASE}/artist/by-platform/spotify/${spotifyId}`, { headers });
+        if (!metaRes.ok) throw new Error(`Meta fetch failed for ${spotifyId}`);
+        const meta = await metaRes.json();
+        const uuid = meta?.artist?.uuid;
+        if (!uuid) return null;
+
+        // Step 2: Fetch individual datasets
+        const [popularityRes, scoreRes, radioRes, playlistsRes] = await Promise.all([
+          fetch(`${BASE}/artist/${uuid}/popularity/spotify`, { headers }),
+          fetch(`https://customer.api.soundcharts.com/api/v2/artist/${uuid}/soundcharts/score`, { headers }),
+          fetch(`https://customer.api.soundcharts.com/api/v2/artist/${uuid}/broadcasts`, { headers }),
+          fetch(`https://customer.api.soundcharts.com/api/v2.20/artist/${uuid}/playlist/current/spotify`, { headers }),
+        ]);
+
+        const popularity = popularityRes.ok ? await popularityRes.json() : null;
+        const score = scoreRes.ok ? await scoreRes.json() : null;
+        const radio = radioRes.ok ? await radioRes.json() : null;
+        const playlists = playlistsRes.ok ? await playlistsRes.json() : null;
+
+        // Step 3: Extract latest values
+        const latestPopularity = popularity?.related?.items?.[0]?.value ?? null;
+        const scoreValue = score?.related?.items?.[0]?.value ?? null;
+        const radioSpins = radio?.related?.items?.length ?? 0;
+        const playlistCount = playlists?.related?.items?.length ?? 0;
+
+        return {
+          uuid,
+          soundcharts: {
+            score: scoreValue,
+            popularity: latestPopularity,
+            radio_spins: radioSpins,
+            playlist_count: playlistCount,
+          },
+        };
+      } catch (err) {
+        console.error(`Error fetching Soundcharts data for ${spotifyId}:`, err);
+        return null;
+      }
+    };
+
+    // Step 4: Fetch existing lineup
+    const { data: existingLineup, error: fetchError } = await supabase
+      .from("lineups")
+      .select("opener, second_opener, headliner")
+      .eq("id", lineupId)
+      .single();
+
+    if (fetchError || !existingLineup) throw fetchError;
+
+    // Step 5: Get new Soundcharts data
+    const [openerData, secondData, headlinerData] = await Promise.all([
+      getSoundchartsData(openerSpotifyId),
+      getSoundchartsData(secondSpotifyId),
+      getSoundchartsData(headlinerSpotifyId),
+    ]);
+
+    // Step 6: Merge new data into existing JSONs
+    const updatedOpener = openerData
+      ? { ...existingLineup.opener, ...openerData }
+      : existingLineup.opener;
+    const updatedSecond = secondData
+      ? { ...existingLineup.second_opener, ...secondData }
+      : existingLineup.second_opener;
+    const updatedHeadliner = headlinerData
+      ? { ...existingLineup.headliner, ...headlinerData }
+      : existingLineup.headliner;
+
+    // Step 7: Update Supabase record
+    const { error: updateError } = await supabase
+      .from("lineups")
+      .update({
+        opener: updatedOpener,
+        second_opener: updatedSecond,
+        headliner: updatedHeadliner,
+      })
+      .eq("id", lineupId);
+
+    if (updateError) throw updateError;
+
+    console.log(`✅ Lineup ${lineupId} enriched with Soundcharts data`);
+    return res.status(200).json({ success: true });
+  } catch (err) {
+    console.error("❌ Soundcharts enrichment failed:", err);
+    return res.status(500).json({ message: "Internal error", error: err.message });
   }
-
-  // --- Fetch data for all three artists ---
-  const [openerData, secondOpenerData, headlinerData] = await Promise.all([
-    fetchSoundchartsForArtist(openerSpotifyId),
-    fetchSoundchartsForArtist(secondSpotifyId),
-    fetchSoundchartsForArtist(headlinerSpotifyId),
-  ]);
-
-  // --- Fetch the existing lineup row to merge new data ---
-  const { data: existingLineup, error: fetchError } = await supabase
-    .from("lineups")
-    .select("opener, second_opener, headliner")
-    .eq("id", lineupId)
-    .single();
-
-  if (fetchError || !existingLineup) {
-    console.error("Error fetching existing lineup:", fetchError);
-    return res.status(404).json({ error: "Lineup not found" });
-  }
-
-  // --- Merge Soundcharts data into existing artist JSON ---
-  const updatedLineup = {
-    opener: { ...existingLineup.opener, soundcharts: openerData },
-    second_opener: { ...existingLineup.second_opener, soundcharts: secondOpenerData },
-    headliner: { ...existingLineup.headliner, soundcharts: headlinerData },
-  };
-
-  // --- Update the lineup row in Supabase ---
-  const { error: updateError } = await supabase
-    .from("lineups")
-    .update(updatedLineup)
-    .eq("id", lineupId);
-
-  if (updateError) {
-    console.error("Supabase update error:", updateError);
-    return res.status(500).json({ error: "Failed to update lineup with Soundcharts data." });
-  }
-
-  return res.status(200).json({
-    message: "Lineup enriched with Soundcharts data",
-    openerData,
-    secondOpenerData,
-    headlinerData,
-  });
 }
