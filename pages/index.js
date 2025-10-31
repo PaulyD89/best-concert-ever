@@ -904,7 +904,7 @@ if (uniqueNames.size < 3) {
       opener: enrichedOpener,
       second_opener: enrichedSecondOpener,
       user_id: userId,
-      decibel_level: decibelLevel,
+      decibel_score: decibelLevel,
     },
   ])
   .select("id")
