@@ -820,6 +820,44 @@ const refreshTopLineups = async () => {
     ]);
 
     console.log('✅ All artists enriched!');
+    const calculateDecibelLevel = (headliner, opener, secondOpener) => {
+  // Normalization functions (each metric contributes 0-25 points)
+  const normalizePopularity = (pop) => ((pop || 0) / 100) * 25;
+  const normalizeScore = (score) => Math.min(((score || 0) / 100000) * 25, 25);
+  const normalizeRadio = (spins) => Math.min(((spins || 0) / 150000) * 25, 25);
+  const normalizePlaylists = (count) => Math.min(((count || 0) / 1500000) * 25, 25);
+
+  // Calculate total decibels for one artist (max 100)
+  const artistDecibels = (artist) => {
+    if (!artist) return 0;
+    
+    const popPoints = normalizePopularity(artist.popularity);
+    const scorePoints = normalizeScore(artist.soundcharts_score);
+    const radioPoints = normalizeRadio(artist.radio_spins);
+    const playlistPoints = normalizePlaylists(artist.playlist_count);
+    
+    return popPoints + scorePoints + radioPoints + playlistPoints;
+  };
+
+  // Calculate average across all 3 artists
+  const headlinerDecibels = artistDecibels(headliner);
+  const openerDecibels = artistDecibels(opener);
+  const secondOpenerDecibels = artistDecibels(secondOpener);
+  
+  const averageDecibels = (headlinerDecibels + openerDecibels + secondOpenerDecibels) / 3;
+  
+  // Round to whole number for clean 0-100 scale
+  return Math.round(averageDecibels);
+};
+
+// Calculate the Decibel Level for this lineup
+const decibelLevel = calculateDecibelLevel(
+  enrichedHeadliner, 
+  enrichedOpener, 
+  enrichedSecondOpener
+);
+
+console.log(`🔊 Decibel Level: ${decibelLevel}/100`);
       const normalize = (artist) => {
   if (typeof artist === "object" && artist?.name) return artist.name.trim().toLowerCase();
   return "";
@@ -866,6 +904,7 @@ if (uniqueNames.size < 3) {
       opener: enrichedOpener,
       second_opener: enrichedSecondOpener,
       user_id: userId,
+      decibel_level: decibelLevel,
     },
   ])
   .select("id")
