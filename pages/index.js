@@ -833,6 +833,34 @@ if (error) {
   return;
 }
 
+// 🔥 SOUNDCHARTS ENRICHMENT TRIGGER (Step 1)
+try {
+  const lineupId = inserted?.id;
+  const openerSpotifyId = opener?.spotify?.id;
+  const secondSpotifyId = secondOpener?.spotify?.id;
+  const headlinerSpotifyId = (lockedHeadliner || headliner)?.spotify?.id;
+
+  if (lineupId && openerSpotifyId && secondSpotifyId && headlinerSpotifyId) {
+    console.log("Triggering Soundcharts enrichment for lineup:", lineupId);
+
+    await fetch("/api/soundcharts-enrich", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        lineupId,
+        openerSpotifyId,
+        secondSpotifyId,
+        headlinerSpotifyId,
+      }),
+    });
+  } else {
+    console.warn("Missing lineupId or Spotify artist IDs; skipping Soundcharts enrichment.");
+  }
+} catch (err) {
+  console.error("Error triggering Soundcharts enrichment:", err);
+}
+
+
 setLineupId(inserted.id);
 setLineupReady(true);
 
