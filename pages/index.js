@@ -777,14 +777,57 @@ const refreshTopLineups = async () => {
 
   const handleSubmit = async () => {
     if ((lockedHeadliner || headliner) && opener && secondOpener) {
+          const enrichArtist = async (artist) => {
+      if (!artist.spotifyId) {
+        console.warn(`⚠️ No Spotify ID for ${artist.name}, skipping enrichment`);
+        return artist;
+      }
+
+      try {
+        console.log(`🎵 Enriching ${artist.name}...`);
+        
+        const response = await fetch('/api/enrich-artist', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            spotifyId: artist.spotifyId,
+            artistName: artist.name 
+          })
+        });
+        
+        const enrichedData = await response.json();
+        
+        if (enrichedData.enriched) {
+          console.log(`✅ Enriched ${artist.name}:`, enrichedData);
+          return { ...artist, ...enrichedData };
+        }
+        
+        console.warn(`⚠️ Enrichment failed for ${artist.name}`);
+        return artist;
+        
+      } catch (error) {
+        console.error(`❌ Error enriching ${artist.name}:`, error);
+        return artist;
+      }
+    };
+
+    console.log('🔄 Enriching all artists with Soundcharts data...');
+
+    const [enrichedHeadliner, enrichedOpener, enrichedSecondOpener] = await Promise.all([
+      enrichArtist(lockedHeadliner || headliner),
+      enrichArtist(opener),
+      enrichArtist(secondOpener)
+    ]);
+
+    console.log('✅ All artists enriched!');
       const normalize = (artist) => {
   if (typeof artist === "object" && artist?.name) return artist.name.trim().toLowerCase();
   return "";
 };
 
-const name1 = normalize(lockedHeadliner || headliner);
-const name2 = normalize(opener);
-const name3 = normalize(secondOpener);
+const name1 = normalize(enrichedHeadliner);
+const name2 = normalize(enrichedOpener);
+const name3 = normalize(enrichedSecondOpener);
 const uniqueNames = new Set([name1, name2, name3]);
 
 if (uniqueNames.size < 3) {
@@ -819,9 +862,9 @@ if (uniqueNames.size < 3) {
   .insert([
     {
       prompt: dailyPrompt,
-      headliner: lockedHeadliner || headliner,
-      opener,
-      second_opener: secondOpener,
+      headliner: enrichedHeadliner,
+      opener: enrichedOpener,
+      second_opener: enrichedSecondOpener,
       user_id: userId,
     },
   ])
@@ -849,9 +892,9 @@ setTicketReady(true);
 localStorage.setItem('ticketReadyToday', 'true');
 localStorage.setItem('lineupReadyToday', 'true');
 localStorage.setItem('lineupIdToday', inserted.id);
-localStorage.setItem('savedHeadliner', headliner?.name || "");
-localStorage.setItem('savedSecondOpener', secondOpener?.name || "");
-localStorage.setItem('savedOpener', opener?.name || "");
+localStorage.setItem('savedHeadliner', enrichedHeadliner?.name || "");
+localStorage.setItem('savedSecondOpener', enrichedSecondOpener?.name || "");
+localStorage.setItem('savedOpener', enrichedOpener?.name || "");
 console.log("Lineup submitted:", { headliner, opener, secondOpener });  
     }
   };  
