@@ -67,7 +67,8 @@ const ArtistSearch = ({ label, onSelect, disabled, locked }) => {
                   name: artist.name,
                   image: artist.images?.[0]?.url,
                   url: artist.external_urls?.spotify,
-                  followers: artist.followers?.total || 0
+                  followers: artist.followers?.total || 0,
+                  spotifyId: artist.id
                 });                              
               setQuery("");
               setShowDropdown(false);
