@@ -827,6 +827,25 @@ if (uniqueNames.size < 3) {
   .select("id")
   .single();
 
+  // 🔊 Trigger Soundcharts enrichment after lineup submission
+if (inserted?.id) {
+  try {
+    console.log("Triggering Soundcharts enrichment for lineup:", inserted.id);
+    await fetch("/api/soundcharts-enrich", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        lineupId: inserted.id,
+        openerSpotifyId: opener?.id,
+        secondSpotifyId: secondOpener?.id,
+        headlinerSpotifyId: (lockedHeadliner || headliner)?.id,
+      }),
+    });
+  } catch (e) {
+    console.error("Soundcharts enrichment failed:", e);
+  }
+}
+
 if (error) {
   console.error("Submission error:", error);
   alert("There was an error submitting your lineup.");
