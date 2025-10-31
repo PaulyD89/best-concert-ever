@@ -38,7 +38,24 @@ export default async function handler(req, res) {
 
     console.log(`✅ Got UUID: ${uuid}`);
 
-    // STEP 2: Fetch all metrics in parallel
+    // STEP 2: Calculate rolling 30-day window
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 30);
+    
+    const formatDate = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+    
+    const endDateStr = formatDate(endDate);
+    const startDateStr = formatDate(startDate);
+    
+    console.log(`📅 Fetching radio data for: ${startDateStr} to ${endDateStr}`);
+
+    // STEP 3: Fetch all metrics in parallel
     const [popularityRes, scoreRes, radioRes, playlistRes] = await Promise.all([
       fetch(`https://customer.api.soundcharts.com/api/v2/artist/${uuid}/popularity/spotify`, {
         headers: { 'x-app-id': APP_ID, 'x-api-key': API_KEY }
@@ -46,7 +63,7 @@ export default async function handler(req, res) {
       fetch(`https://customer.api.soundcharts.com/api/v2/artist/${uuid}/soundcharts/score`, {
         headers: { 'x-app-id': APP_ID, 'x-api-key': API_KEY }
       }),
-      fetch(`https://customer.api.soundcharts.com/api/v2/artist/${uuid}/broadcasts?country=US&startDate=2025-10-01&endDate=2025-10-31&limit=1`, {
+      fetch(`https://customer.api.soundcharts.com/api/v2/artist/${uuid}/broadcasts?country=US&startDate=${startDateStr}&endDate=${endDateStr}&limit=1`, {
         headers: { 'x-app-id': APP_ID, 'x-api-key': API_KEY }
       }),
       fetch(`https://customer.api.soundcharts.com/api/v2.20/artist/${uuid}/playlist/current/spotify?limit=1`, {
