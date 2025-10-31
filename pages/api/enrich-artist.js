@@ -69,19 +69,26 @@ export default async function handler(req, res) {
       })
     ]);
 
-    // Parse all responses
+    // Parse all responses and log them for debugging
     const popularity = popularityRes.ok ? await popularityRes.json() : null;
     const score = scoreRes.ok ? await scoreRes.json() : null;
     const radio = radioRes.ok ? await radioRes.json() : null;
     const playlists = playlistRes.ok ? await playlistRes.json() : null;
 
-    // Extract the actual values
+    // Log the raw responses to see their structure
+    console.log('📊 Raw Soundcharts responses:');
+    console.log('Popularity:', JSON.stringify(popularity, null, 2));
+    console.log('Score:', JSON.stringify(score, null, 2));
+    console.log('Radio:', JSON.stringify(radio, null, 2));
+    console.log('Playlists:', JSON.stringify(playlists, null, 2));
+
+    // Extract the actual values - try multiple possible paths
     const enrichedData = {
       soundcharts_uuid: uuid,
-      popularity: popularity?.items?.[0]?.value || 0,
-      soundcharts_score: score?.object?.current || 0,
-      radio_spins: radio?.total || 0,
-      playlist_count: playlists?.total || 0,
+      popularity: popularity?.items?.[0]?.value || popularity?.object?.value || 0,
+      soundcharts_score: score?.object?.current || score?.object?.score || score?.current || 0,
+      radio_spins: radio?.total || radio?.object?.total || 0,
+      playlist_count: playlists?.total || playlists?.object?.total || playlists?.object?.count || 0,
       enriched: true
     };
 
