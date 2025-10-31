@@ -858,6 +858,17 @@ const decibelLevel = calculateDecibelLevel(
 );
 
 console.log(`🔊 Decibel Level: ${decibelLevel}/100`);
+let bonusVotes = 0;
+if (decibelLevel >= 90) bonusVotes = 10;      // 90-100: Superstar lineup
+else if (decibelLevel >= 80) bonusVotes = 7;  // 80-89: Elite lineup
+else if (decibelLevel >= 70) bonusVotes = 5;  // 70-79: Strong lineup
+else if (decibelLevel >= 60) bonusVotes = 4;  // 60-69: Good lineup
+else if (decibelLevel >= 50) bonusVotes = 3;  // 50-59: Solid lineup
+else if (decibelLevel >= 40) bonusVotes = 2;  // 40-49: Decent lineup
+else if (decibelLevel >= 30) bonusVotes = 1;  // 30-39: Entry bonus
+// Below 30 = no bonus votes
+
+console.log(`🎁 Bonus votes earned: ${bonusVotes}`);
       const normalize = (artist) => {
   if (typeof artist === "object" && artist?.name) return artist.name.trim().toLowerCase();
   return "";
@@ -905,8 +916,10 @@ if (uniqueNames.size < 3) {
       second_opener: enrichedSecondOpener,
       user_id: userId,
       decibel_score: decibelLevel,
+      votes: bonusVotes,  // 👈 ADD THIS LINE
     },
   ])
+
   .select("id")
   .single();
 
