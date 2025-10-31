@@ -1005,7 +1005,7 @@ console.log("Lineup submitted:", { headliner, opener, secondOpener });
               <li>Use the drop-down menus to select THREE ARTISTS who fit the bill.</li>
               <li>CHOOSE THE ORDER of your show - the OPENER, 2ND OPENER and HEADLINER.</li>
               <li>Once you have made your selections, hit <b>SUBMIT LINEUP</b>. Click SHARE YOUR LINEUP to announce your show and get votes.</li>
-              <li>All lineups will benefit from a <b>Decibel Level</b> boost, granting bonus votes based on music industry buzz.</li>
+              <li>All lineups benefit from a <b>DECIBEL LEVEL</b> boost, granting bonus votes based on artist's daily industry buzz.</li>
               <li>Today&apos;s TOP 10 will be posted daily. <b>VOTE</b> for your favorite lineup from the Top 10 or Recent Drops by clicking the FIRE 🔥 EMOJI. Sometimes a player&apos;s DEEP CUT may appear as well.</li>
               <li>Lineups with the MOST VOTES will win the day. Win points, unlock badges and promoter awards. Bragging rights, baby!</li>
               <li>NEW GAMES and YESTERDAY&apos;S WINNERS are posted every single day at 5pm PST.</li>
