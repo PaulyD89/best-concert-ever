@@ -722,6 +722,7 @@ useEffect(() => {
   const [ticketReady, setTicketReady] = useState(false);
   const [lineupId, setLineupId] = useState(null);
   const [lineupReady, setLineupReady] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const refreshRecentLineups = async () => {
   const { data, error } = await supabase
@@ -777,6 +778,7 @@ const refreshTopLineups = async () => {
 
   const handleSubmit = async () => {
     if ((lockedHeadliner || headliner) && opener && secondOpener) {
+      setIsSubmitting(true);
           const enrichArtist = async (artist) => {
       if (!artist.spotifyId) {
         console.warn(`⚠️ No Spotify ID for ${artist.name}, skipping enrichment`);
@@ -898,11 +900,13 @@ if (uniqueNames.size < 3) {
       if (checkError) {
         console.error("Error checking existing submission:", checkError);
         alert("There was an error checking your previous submission.");
+        setIsSubmitting(false); 
         return;
       }
   
       if (existing.length > 0) {
         alert("You've already submitted a lineup for today's prompt!");
+        setIsSubmitting(false); 
         return;
       }
   
@@ -926,6 +930,7 @@ if (uniqueNames.size < 3) {
 if (error) {
   console.error("Submission error:", error);
   alert("There was an error submitting your lineup.");
+  setIsSubmitting(false); 
   return;
 }
 
@@ -947,7 +952,8 @@ localStorage.setItem('lineupIdToday', inserted.id);
 localStorage.setItem('savedHeadliner', enrichedHeadliner?.name || "");
 localStorage.setItem('savedSecondOpener', enrichedSecondOpener?.name || "");
 localStorage.setItem('savedOpener', enrichedOpener?.name || "");
-console.log("Lineup submitted:", { headliner, opener, secondOpener });  
+console.log("Lineup submitted:", { headliner, opener, secondOpener });
+setIsSubmitting(false);   
     }
   };  
 
@@ -1104,14 +1110,21 @@ console.log("Lineup submitted:", { headliner, opener, secondOpener });
         <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
           <button
   onClick={handleSubmit}
-  disabled={submitted || !(headliner && opener && secondOpener)}
+  disabled={submitted || isSubmitting || !(headliner && opener && secondOpener)}
   className={`px-6 py-2 rounded-full font-bold uppercase tracking-wide transition shadow ${
-    submitted || !(headliner && opener && secondOpener)
+    submitted || isSubmitting || !(headliner && opener && secondOpener)
       ? "bg-gray-400 cursor-not-allowed text-white"
       : "bg-[#fdc800] text-black hover:brightness-110 hover:ring-4 hover:ring-[#fdc800]/60 hover:shadow-[0_0_12px_#fdc800] active:scale-95"
   }`}
 >
-  Submit Lineup
+  {isSubmitting ? (
+    <span className="flex items-center gap-2">
+      <span className="animate-pulse">🔊</span>
+      Calculating Decibel Level...
+    </span>
+  ) : (
+    "Submit Lineup"
+  )}
 </button>
           <button
   onClick={async () => {
@@ -1912,6 +1925,13 @@ if (!error) {
   }
   .animate-fade-in {
     animation: fade-in 1s ease-out forwards;
+  }
+  @keyframes speaker-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+  }
+  .animate-pulse {
+    animation: speaker-pulse 1s ease-in-out infinite;
   }
 `}</style>
 </div>
