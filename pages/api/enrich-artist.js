@@ -14,17 +14,38 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Spotify ID required' });
   }
 
+  // Helper: Fetch with timeout to prevent hanging requests
+  const fetchWithTimeout = async (url, options, timeoutMs = 8000) => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), timeoutMs);
+    
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal
+      });
+      clearTimeout(timeout);
+      return response;
+    } catch (error) {
+      clearTimeout(timeout);
+      if (error.name === 'AbortError') {
+        console.error(`⏱️ Timeout after ${timeoutMs}ms: ${url}`);
+      }
+      throw error;
+    }
+  };
+
   try {
     console.log(`🎵 Enriching artist: ${artistName} (${spotifyId})`);
 
-    // STEP 1: Get Artist UUID
+    // STEP 1: Get Artist UUID with timeout
     const uuidUrl = `https://customer.api.soundcharts.com/api/v2.9/artist/by-platform/spotify/${spotifyId}`;
-    const uuidResponse = await fetch(uuidUrl, {
+    const uuidResponse = await fetchWithTimeout(uuidUrl, {
       headers: { 'x-app-id': APP_ID, 'x-api-key': API_KEY }
-    });
+    }, 5000);
 
     if (!uuidResponse.ok) {
-      console.error(`❌ Failed to get UUID for ${artistName}`);
+      console.error(`❌ Failed to get UUID for ${artistName}: ${uuidResponse.status}`);
       return res.status(200).json({ enriched: false });
     }
 
@@ -55,26 +76,53 @@ export default async function handler(req, res) {
     
     console.log(`📅 Fetching radio data for: ${startDateStr} to ${endDateStr}`);
 
-    // STEP 3: Fetch all metrics in parallel
-    const [popularityRes, scoreRes, radioRes, playlistRes] = await Promise.all([
-      fetch(`https://customer.api.soundcharts.com/api/v2/artist/${uuid}/popularity/spotify`, {
-        headers: { 'x-app-id': APP_ID, 'x-api-key': API_KEY }
-      }),
-      fetch(`https://customer.api.soundcharts.com/api/v2/artist/${uuid}/soundcharts/score`, {
-        headers: { 'x-app-id': APP_ID, 'x-api-key': API_KEY }
-      }),
-      fetch(`https://customer.api.soundcharts.com/api/v2/artist/${uuid}/broadcasts?country=US&startDate=${startDateStr}&endDate=${endDateStr}&limit=1`, {
-        headers: { 'x-app-id': APP_ID, 'x-api-key': API_KEY }
-      }),
-      fetch(`https://customer.api.soundcharts.com/api/v2.20/artist/${uuid}/playlist/current/spotify?limit=1`, {
-        headers: { 'x-app-id': APP_ID, 'x-api-key': API_KEY }
-      })
+    // STEP 3: Fetch all metrics in parallel with timeout protection
+    // Use Promise.allSettled so one failure doesn't kill all requests
+    const [popularityRes, scoreRes, radioRes, playlistRes] = await Promise.allSettled([
+      fetchWithTimeout(
+        `https://customer.api.soundcharts.com/api/v2/artist/${uuid}/popularity/spotify`,
+        { headers: { 'x-app-id': APP_ID, 'x-api-key': API_KEY } },
+        6000
+      ),
+      fetchWithTimeout(
+        `https://customer.api.soundcharts.com/api/v2/artist/${uuid}/soundcharts/score`,
+        { headers: { 'x-app-id': APP_ID, 'x-api-key': API_KEY } },
+        6000
+      ),
+      fetchWithTimeout(
+        `https://customer.api.soundcharts.com/api/v2/artist/${uuid}/broadcasts?country=US&startDate=${startDateStr}&endDate=${endDateStr}&limit=1`,
+        { headers: { 'x-app-id': APP_ID, 'x-api-key': API_KEY } },
+        6000
+      ),
+      fetchWithTimeout(
+        `https://customer.api.soundcharts.com/api/v2.20/artist/${uuid}/playlist/current/spotify?limit=1`,
+        { headers: { 'x-app-id': APP_ID, 'x-api-key': API_KEY } },
+        6000
+      )
     ]);
 
-    const popularity = popularityRes.ok ? await popularityRes.json() : null;
-    const score = scoreRes.ok ? await scoreRes.json() : null;
-    const radio = radioRes.ok ? await radioRes.json() : null;
-    const playlists = playlistRes.ok ? await playlistRes.json() : null;
+    // Helper to safely extract data from Promise.allSettled results
+    const getResponse = async (result, name) => {
+      if (result.status === 'rejected') {
+        console.error(`❌ ${name} request failed:`, result.reason?.message || 'Unknown error');
+        return null;
+      }
+      if (!result.value.ok) {
+        console.error(`❌ ${name} returned ${result.value.status}`);
+        return null;
+      }
+      try {
+        return await result.value.json();
+      } catch (e) {
+        console.error(`❌ ${name} JSON parse failed:`, e.message);
+        return null;
+      }
+    };
+
+    const popularity = await getResponse(popularityRes, 'Popularity');
+    const score = await getResponse(scoreRes, 'Score');
+    const radio = await getResponse(radioRes, 'Radio');
+    const playlists = await getResponse(playlistRes, 'Playlists');
 
     // Extract values using the correct paths
     const enrichedData = {
