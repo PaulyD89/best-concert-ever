@@ -111,6 +111,86 @@ const LineupSlot = ({ artist, label }) => (
   </div>
 );
 
+const DecibelScoreBar = ({ decibelScore, isCalculating }) => {
+  const [displayProgress, setDisplayProgress] = React.useState(0);
+  const [displayScore, setDisplayScore] = React.useState(0);
+  const [isRevealing, setIsRevealing] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!isCalculating) {
+      setDisplayProgress(0);
+      setDisplayScore(0);
+      setIsRevealing(false);
+      return;
+    }
+
+    const quickProgress = setInterval(() => {
+      setDisplayProgress(prev => {
+        if (prev < 60) return prev + 5;
+        return prev;
+      });
+    }, 50);
+
+    setTimeout(() => clearInterval(quickProgress), 600);
+    return () => clearInterval(quickProgress);
+  }, [isCalculating]);
+
+  React.useEffect(() => {
+    if (decibelScore !== null && decibelScore !== undefined && isCalculating && !isRevealing) {
+      setIsRevealing(true);
+      
+      const targetLevel = decibelScore;
+      const startLevel = displayProgress;
+      const steps = 30;
+      const increment = (targetLevel - startLevel) / steps;
+      let step = 0;
+
+      const barTimer = setInterval(() => {
+        step++;
+        const current = Math.min(Math.round(startLevel + (increment * step)), targetLevel);
+        setDisplayProgress(current);
+        setDisplayScore(current);
+
+        if (current >= targetLevel) {
+          clearInterval(barTimer);
+        }
+      }, 30);
+
+      return () => clearInterval(barTimer);
+    }
+  }, [decibelScore, isCalculating, isRevealing, displayProgress]);
+
+  const totalBlocks = 20;
+  const filledBlocks = Math.round((displayProgress / 100) * totalBlocks);
+
+  return (
+    <span className="flex items-center gap-3 font-mono text-sm">
+      <span className={isRevealing ? "text-xl" : "animate-pulse"}>🔊</span>
+      <span className="flex items-center gap-1.5">
+        <span 
+          className="text-yellow-400 transition-all duration-100"
+          style={{ textShadow: '0 0 6px rgba(251, 191, 36, 0.8)' }}
+        >
+          {'█'.repeat(filledBlocks)}
+        </span>
+        <span className="text-gray-600">
+          {'░'.repeat(totalBlocks - filledBlocks)}
+        </span>
+        
+        {isRevealing ? (
+          <span className="text-yellow-400 font-bold ml-1.5 text-base">
+            {displayScore}dB
+          </span>
+        ) : (
+          <span className="text-xs text-gray-400 ml-1">
+            {displayProgress}%
+          </span>
+        )}
+      </span>
+    </span>
+  );
+};
+
 export default function BestConcertEver() {
   const [dailyPrompt, setDailyPrompt] = useState(null);
   const [lockedHeadliner, setLockedHeadliner] = useState(null);
@@ -723,6 +803,7 @@ useEffect(() => {
   const [lineupId, setLineupId] = useState(null);
   const [lineupReady, setLineupReady] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentDecibelScore, setCurrentDecibelScore] = useState(null);
 
   const refreshRecentLineups = async () => {
   const { data, error } = await supabase
@@ -777,8 +858,9 @@ const refreshTopLineups = async () => {
 };
 
   const handleSubmit = async () => {
-    if ((lockedHeadliner || headliner) && opener && secondOpener) {
-      setIsSubmitting(true);
+  if ((lockedHeadliner || headliner) && opener && secondOpener) {
+    setIsSubmitting(true);
+    setCurrentDecibelScore(null);
           const enrichArtist = async (artist) => {
       if (!artist.spotifyId) {
         console.warn(`⚠️ No Spotify ID for ${artist.name}, skipping enrichment`);
@@ -860,6 +942,7 @@ const decibelLevel = calculateDecibelLevel(
 );
 
 console.log(`🔊 Decibel Level: ${decibelLevel}/100`);
+setCurrentDecibelScore(decibelLevel);
 let bonusVotes = 0;
 if (decibelLevel >= 90) bonusVotes = 10;      // 90-100: Superstar lineup
 else if (decibelLevel >= 80) bonusVotes = 7;  // 80-89: Elite lineup
@@ -944,7 +1027,6 @@ setLineupReady(true);
   window.plausible("Submit Lineup");
 }
 setSubmitted(true);
-setShowVotePrompt(true);
 setTicketReady(true);
 localStorage.setItem('ticketReadyToday', 'true');
 localStorage.setItem('lineupReadyToday', 'true');
@@ -953,7 +1035,12 @@ localStorage.setItem('savedHeadliner', enrichedHeadliner?.name || "");
 localStorage.setItem('savedSecondOpener', enrichedSecondOpener?.name || "");
 localStorage.setItem('savedOpener', enrichedOpener?.name || "");
 console.log("Lineup submitted:", { headliner, opener, secondOpener });
-setIsSubmitting(false);   
+
+// Wait 2.5 seconds to show the score before showing vote prompt
+setTimeout(() => {
+  setIsSubmitting(false);
+  setShowVotePrompt(true);
+}, 2500); 
     }
   };  
 
@@ -1118,10 +1205,10 @@ setIsSubmitting(false);
   }`}
 >
   {isSubmitting ? (
-    <span className="flex items-center gap-2">
-      <span className="animate-speaker-pulse">🔊</span>
-      Calculating Decibel Level...
-    </span>
+    <DecibelScoreBar 
+      decibelScore={currentDecibelScore} 
+      isCalculating={isSubmitting}
+    />
   ) : (
     "Submit Lineup"
   )}
