@@ -1119,7 +1119,7 @@ setIsSubmitting(false);
 >
   {isSubmitting ? (
     <span className="flex items-center gap-2">
-      <span className="animate-pulse">🔊</span>
+      <span className="animate-speaker-pulse">🔊</span>
       Calculating Decibel Level...
     </span>
   ) : (
@@ -1926,13 +1926,20 @@ if (!error) {
   .animate-fade-in {
     animation: fade-in 1s ease-out forwards;
   }
-  @keyframes speaker-pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-  }
-  .animate-pulse {
-    animation: speaker-pulse 1s ease-in-out infinite;
-  }
+  @keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fade-in 1s ease-out forwards;
+}
+@keyframes speaker-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+.animate-speaker-pulse {
+  animation: speaker-pulse 1s ease-in-out infinite;
+}
 `}</style>
 </div>
 );
