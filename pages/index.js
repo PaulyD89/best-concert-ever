@@ -243,46 +243,44 @@ const fetchWeeklyTopPromoters = async () => {
   try {
     console.log("📅 Fetching weekly top promoters");
     
-    // Get the last 7 prompts from the prompts table
+    // Get the last 7 prompts
     const { data: recentPrompts, error: promptsError } = await supabase
       .from("prompts")
       .select("prompt")
       .order("prompt_date", { ascending: false })
       .limit(7);
     
-    if (promptsError) {
+    if (promptsError || !recentPrompts || recentPrompts.length === 0) {
       console.error("❌ Prompts error:", promptsError);
       return [];
     }
     
-    if (!recentPrompts || recentPrompts.length === 0) {
-      console.log("📋 No recent prompts found");
-      return [];
-    }
-    
     const promptList = recentPrompts.map(p => p.prompt);
-    console.log(`📋 Last 7 prompts:`, promptList);
+    console.log(`📋 Last 7 prompts found`);
     
-    // Fetch lineups for these specific prompts
-    const { data: recentLineups, error: lineupsError } = await supabase
-      .from("lineups")
-      .select("user_id, points, votes, prompt")
-      .in("prompt", promptList);
+    // Fetch lineups for each prompt separately
+    const allLineups = [];
     
-    if (lineupsError) {
-      console.error("❌ Lineups error:", lineupsError);
-      return [];
+    for (const prompt of promptList) {
+      const { data, error } = await supabase
+        .from("lineups")
+        .select("user_id, points, votes")
+        .eq("prompt", prompt);
+      
+      if (!error && data) {
+        allLineups.push(...data);
+      }
     }
     
-    if (!recentLineups || recentLineups.length === 0) {
-      console.log("📊 No recent lineups found");
+    console.log(`📊 Found ${allLineups.length} total lineups`);
+    
+    if (allLineups.length === 0) {
+      console.log("No lineups found");
       return [];
     }
-    
-    console.log(`📊 Found ${recentLineups.length} recent lineups`);
     
     // Get unique user IDs
-    const uniqueUserIds = [...new Set(recentLineups.map(l => l.user_id))];
+    const uniqueUserIds = [...new Set(allLineups.map(l => l.user_id))];
     console.log(`👥 Unique users: ${uniqueUserIds.length}`);
     
     // Fetch users with nicknames in batches
@@ -318,7 +316,7 @@ const fetchWeeklyTopPromoters = async () => {
     // Aggregate points
     const userStatsMap = {};
     
-    recentLineups.forEach(lineup => {
+    allLineups.forEach(lineup => {
       const userId = lineup.user_id;
       const nickname = nicknameMap[userId];
       
