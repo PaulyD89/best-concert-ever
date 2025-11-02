@@ -241,46 +241,32 @@ const fetchDeepCutLineup = async () => {
 
 const fetchWeeklyTopPromoters = async () => {
   try {
-    console.log("📅 Fetching weekly top promoters");
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const dateString = sevenDaysAgo.toISOString();
     
-    // Get the last 7 prompts
-    const { data: recentPrompts, error: promptsError } = await supabase
-      .from("prompts")
-      .select("prompt")
-      .order("prompt_date", { ascending: false })
-      .limit(7);
+    console.log("📅 Fetching promoters from:", dateString);
     
-    if (promptsError || !recentPrompts || recentPrompts.length === 0) {
-      console.error("❌ Prompts error:", promptsError);
+    // Fetch all lineups from last 7 days
+    const { data: recentLineups, error: lineupsError } = await supabase
+      .from("lineups")
+      .select("user_id, votes, created_at")
+      .gte("created_at", dateString);
+    
+    if (lineupsError) {
+      console.error("❌ Lineups error:", lineupsError);
       return [];
     }
     
-    const promptList = recentPrompts.map(p => p.prompt);
-    console.log(`📋 Last 7 prompts found`);
-    
-    // Fetch lineups for each prompt separately
-    const allLineups = [];
-    
-    for (const prompt of promptList) {
-      const { data, error } = await supabase
-        .from("lineups")
-        .select("user_id, points, votes")
-        .eq("prompt", prompt);
-      
-      if (!error && data) {
-        allLineups.push(...data);
-      }
-    }
-    
-    console.log(`📊 Found ${allLineups.length} total lineups`);
-    
-    if (allLineups.length === 0) {
-      console.log("No lineups found");
+    if (!recentLineups || recentLineups.length === 0) {
+      console.log("📊 No recent lineups found");
       return [];
     }
+    
+    console.log(`📊 Found ${recentLineups.length} recent lineups`);
     
     // Get unique user IDs
-    const uniqueUserIds = [...new Set(allLineups.map(l => l.user_id))];
+    const uniqueUserIds = [...new Set(recentLineups.map(l => l.user_id))];
     console.log(`👥 Unique users: ${uniqueUserIds.length}`);
     
     // Fetch users with nicknames in batches
@@ -313,10 +299,10 @@ const fetchWeeklyTopPromoters = async () => {
       nicknameMap[user.user_id] = user.nickname;
     });
     
-    // Aggregate points
+    // Aggregate votes per user (only those with nicknames)
     const userStatsMap = {};
     
-    allLineups.forEach(lineup => {
+    recentLineups.forEach(lineup => {
       const userId = lineup.user_id;
       const nickname = nicknameMap[userId];
       
@@ -332,8 +318,9 @@ const fetchWeeklyTopPromoters = async () => {
         };
       }
       
-      userStatsMap[userId].totalPoints += (lineup.points || 0);
-      userStatsMap[userId].totalVotes += (lineup.votes || 0);
+      const votes = lineup.votes || 0;
+      userStatsMap[userId].totalPoints += votes; // Using votes as points
+      userStatsMap[userId].totalVotes += votes;
       userStatsMap[userId].lineupsSubmitted += 1;
     });
     
