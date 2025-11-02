@@ -243,6 +243,8 @@ const fetchWeeklyTopPromoters = async () => {
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
   
+  console.log("📅 Fetching promoters from:", sevenDaysAgo.toISOString());
+  
   // Step 1: Get all users with nicknames
   const { data: usersWithNicknames, error: usersError } = await supabase
     .from("users")
@@ -250,9 +252,11 @@ const fetchWeeklyTopPromoters = async () => {
     .not("nickname", "is", null);
   
   if (usersError || !usersWithNicknames) {
-    console.error("Error fetching users:", usersError);
+    console.error("❌ Error fetching users:", usersError);
     return [];
   }
+  
+  console.log(`👥 Found ${usersWithNicknames.length} users with nicknames`);
   
   const userIds = usersWithNicknames.map(u => u.user_id);
   
@@ -264,9 +268,11 @@ const fetchWeeklyTopPromoters = async () => {
     .gte("created_at", sevenDaysAgo.toISOString());
   
   if (lineupsError || !recentLineups) {
-    console.error("Error fetching lineups:", lineupsError);
+    console.error("❌ Error fetching lineups:", lineupsError);
     return [];
   }
+  
+  console.log(`📊 Found ${recentLineups.length} recent lineups`);
   
   // Step 3: Aggregate points per user
   const userStatsMap = {};
@@ -291,10 +297,16 @@ const fetchWeeklyTopPromoters = async () => {
   });
   
   // Step 4: Sort by points and take top 10
-  const topPromoters = Object.values(userStatsMap)
-    .filter(user => user.totalPoints > 0)
-    .sort((a, b) => b.totalPoints - a.totalPoints)
-    .slice(0, 10);
+  const allUsers = Object.values(userStatsMap);
+  console.log(`📈 Total users in map: ${allUsers.length}`);
+  
+  const usersWithPoints = allUsers.filter(user => user.totalPoints > 0);
+  console.log(`✅ Users with points: ${usersWithPoints.length}`);
+  
+  const sorted = usersWithPoints.sort((a, b) => b.totalPoints - a.totalPoints);
+  const topPromoters = sorted.slice(0, 10);
+  
+  console.log(`🏆 Top 10 promoters:`, topPromoters);
   
   return topPromoters;
 };
