@@ -115,6 +115,10 @@ export default function BestConcertEver() {
   const [dailyPrompt, setDailyPrompt] = useState(null);
   const [lockedHeadliner, setLockedHeadliner] = useState(null);
   const [yesterdayPrompt, setYesterdayPrompt] = useState(null);
+  const [weeklyTopPromoters, setWeeklyTopPromoters] = useState([]);
+  const [selectedPromoter, setSelectedPromoter] = useState(null);
+  const [showPromoterModal, setShowPromoterModal] = useState(false);
+  const [promoterDetails, setPromoterDetails] = useState(null);
 
 useEffect(() => {
   const params = new URLSearchParams(window.location.search);
@@ -233,6 +237,92 @@ const fetchDeepCutLineup = async () => {
     const randomIndex = Math.floor(Math.random() * eligible.length);
     setDeepCutLineup(eligible[randomIndex]);
   }
+};
+
+const fetchWeeklyTopPromoters = async () => {
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  
+  // Step 1: Get all users with nicknames
+  const { data: usersWithNicknames, error: usersError } = await supabase
+    .from("users")
+    .select("user_id, nickname")
+    .not("nickname", "is", null);
+  
+  if (usersError || !usersWithNicknames) {
+    console.error("Error fetching users:", usersError);
+    return [];
+  }
+  
+  const userIds = usersWithNicknames.map(u => u.user_id);
+  
+  // Step 2: Get lineups from last 7 days for these users
+  const { data: recentLineups, error: lineupsError } = await supabase
+    .from("lineups")
+    .select("user_id, points, votes, created_at")
+    .in("user_id", userIds)
+    .gte("created_at", sevenDaysAgo.toISOString());
+  
+  if (lineupsError || !recentLineups) {
+    console.error("Error fetching lineups:", lineupsError);
+    return [];
+  }
+  
+  // Step 3: Aggregate points per user
+  const userStatsMap = {};
+  
+  usersWithNicknames.forEach(user => {
+    userStatsMap[user.user_id] = {
+      userId: user.user_id,
+      nickname: user.nickname,
+      totalPoints: 0,
+      totalVotes: 0,
+      lineupsSubmitted: 0
+    };
+  });
+  
+  recentLineups.forEach(lineup => {
+    const userId = lineup.user_id;
+    if (userStatsMap[userId]) {
+      userStatsMap[userId].totalPoints += (lineup.points || 0);
+      userStatsMap[userId].totalVotes += (lineup.votes || 0);
+      userStatsMap[userId].lineupsSubmitted += 1;
+    }
+  });
+  
+  // Step 4: Sort by points and take top 10
+  const topPromoters = Object.values(userStatsMap)
+    .filter(user => user.totalPoints > 0)
+    .sort((a, b) => b.totalPoints - a.totalPoints)
+    .slice(0, 10);
+  
+  return topPromoters;
+};
+
+const fetchPromoterDetails = async (userId) => {
+  const { data: userStats, error: statsError } = await supabase
+    .from("users")
+    .select("*")
+    .eq("user_id", userId)
+    .single();
+  
+  if (statsError) {
+    console.error("Error fetching user details:", statsError);
+    return null;
+  }
+  
+  const { data: topLineup, error: lineupError } = await supabase
+    .from("lineups")
+    .select("headliner, opener, second_opener, votes, prompt")
+    .eq("user_id", userId)
+    .order("votes", { ascending: false })
+    .limit(1)
+    .single();
+  
+  return {
+    ...userStats,
+    topLineup: topLineup || null
+  };
 };
 
 const performVote = async (prompt) => {
@@ -501,6 +591,14 @@ const handleBadgeClick = () => {
   if (newWindow) newWindow.focus();
 };
 
+const handlePromoterClick = async (promoter) => {
+  setSelectedPromoter(promoter);
+  setShowPromoterModal(true);
+  
+  const details = await fetchPromoterDetails(promoter.userId);
+  setPromoterDetails(details);
+};
+
 const handleEmailSignup = async () => {
   try {
     const res = await fetch("/api/subscribe", {
@@ -568,6 +666,7 @@ const handleEmailSignup = async () => {
   }
 
     fetchUserStats();
+    fetchWeeklyTopPromoters().then(promoters => setWeeklyTopPromoters(promoters));
 
     const fetchMostVotedLineup = async () => {
       const userId = localStorage.getItem("bce_user_id");
@@ -1745,6 +1844,51 @@ if (!error) {
   </div>
 )}
 
+{/* WEEKLY TOP PROMOTERS SECTION */}
+      {weeklyTopPromoters.length > 0 && (
+        <div className="mt-12 flex justify-center items-center w-full">
+          <div className="relative w-full max-w-md text-center">
+            <div className="absolute inset-0 -z-10 rounded-xl border-2 border-yellow-400 animate-pulse"></div>
+            <div className="relative bg-black rounded-xl p-6 border-2 border-yellow-400">
+              <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-yellow-400 drop-shadow-[0_0_12px_yellow]">
+                🔥 Weekly Top Promoters
+              </h2>
+              <p className="text-xs text-yellow-300 mb-4 italic">
+                Top 10 from the last 7 days
+              </p>
+              <ol className="flex flex-col gap-2 text-white">
+                {weeklyTopPromoters.map((promoter, index) => (
+                  <li 
+                    key={promoter.userId}
+                    onClick={() => handlePromoterClick(promoter)}
+                    className={`flex justify-between items-center text-sm px-3 py-2 rounded-lg cursor-pointer transition-all hover:scale-102 ${
+                      index === 0 
+                        ? "bg-yellow-500/20 border border-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.4)] hover:bg-yellow-500/30"
+                        : index <= 2
+                        ? "bg-yellow-500/10 hover:bg-yellow-500/20"
+                        : "bg-gray-800/50 hover:bg-gray-700/50"
+                    }`}
+                  >
+                    <span className="font-bold">
+                      {index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `${index + 1}.`}
+                    </span>
+                    <span className="flex-1 text-center font-semibold">
+                      {promoter.nickname}
+                    </span>
+                    <span className="text-yellow-400 font-bold">
+                      {promoter.totalPoints} pts
+                    </span>
+                  </li>
+                ))}
+              </ol>
+              <p className="mt-4 text-[10px] text-yellow-300">
+                Resets weekly • Set your nickname to compete
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* YOUR GREATEST HITS SECTION */}
       <div className="mt-12 flex justify-center items-center w-full">
         <div className="relative w-full max-w-md text-center">
@@ -1917,6 +2061,153 @@ if (!error) {
       />
     </a>
   </div>
+  {/* PROMOTER DETAILS MODAL */}
+      {showPromoterModal && (
+        <div 
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+          onClick={() => {
+            setShowPromoterModal(false);
+            setPromoterDetails(null);
+          }}
+        >
+          <div 
+            className="bg-gradient-to-br from-gray-900 to-black border-2 border-yellow-400 rounded-xl p-6 max-w-md w-full relative shadow-[0_0_30px_rgba(250,204,21,0.3)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => {
+                setShowPromoterModal(false);
+                setPromoterDetails(null);
+              }}
+              className="absolute top-4 right-4 text-white hover:text-yellow-400 text-2xl font-bold"
+            >
+              ×
+            </button>
+            
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-yellow-400 mb-2">
+                {selectedPromoter?.nickname || "Promoter"}
+              </h2>
+              <p className="text-sm text-gray-400">Promoter Profile</p>
+            </div>
+            
+            {promoterDetails ? (
+              <>
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="bg-black/50 rounded-lg p-3 border border-yellow-400/30">
+                    <div className="text-yellow-400 text-xs uppercase mb-1">Global Rank</div>
+                    <div className="text-white text-2xl font-bold">
+                      #{promoterDetails.global_rank || "N/A"}
+                    </div>
+                  </div>
+                  
+                  <div className="bg-black/50 rounded-lg p-3 border border-green-400/30">
+                    <div className="text-green-400 text-xs uppercase mb-1">Total Wins</div>
+                    <div className="text-white text-2xl font-bold">
+                      🥇 {promoterDetails.total_wins || 0}
+                    </div>
+                  </div>
+                  
+                  <div className="bg-black/50 rounded-lg p-3 border border-purple-400/30">
+                    <div className="text-purple-400 text-xs uppercase mb-1">Top 10 Hits</div>
+                    <div className="text-white text-2xl font-bold">
+                      🏆 {promoterDetails.total_top_10s || 0}
+                    </div>
+                  </div>
+                  
+                  <div className="bg-black/50 rounded-lg p-3 border border-orange-400/30">
+                    <div className="text-orange-400 text-xs uppercase mb-1">Longest Streak</div>
+                    <div className="text-white text-2xl font-bold">
+                      🔥 {promoterDetails.longest_streak || 0}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <h3 className="text-white font-bold mb-3 text-center">Badges Earned</h3>
+                  <div className="flex justify-center gap-3">
+                    {["streaker", "hitmaker", "charttopper"].map((type) => {
+                      const val =
+                        type === "streaker"
+                          ? promoterDetails.longest_streak ?? 0
+                          : type === "hitmaker"
+                          ? promoterDetails.total_wins ?? 0
+                          : promoterDetails.total_top_10s ?? 0;
+                      
+                      let badgeSrc = "/streaker-locked.png";
+                      
+                      if (type === "streaker") {
+                        if (val >= 150) badgeSrc = "/streaker-150.png";
+                        else if (val >= 125) badgeSrc = "/streaker-125.png";
+                        else if (val >= 100) badgeSrc = "/streaker-gold.png";
+                        else if (val >= 50) badgeSrc = "/streaker-silver.png";
+                        else if (val >= 25) badgeSrc = "/streaker-bronze.png";
+                      } else if (type === "hitmaker") {
+                        if (val >= 100) badgeSrc = "/charttopper-100.png";
+                        else if (val >= 75) badgeSrc = "/charttopper-75.png";
+                        else if (val >= 50) badgeSrc = "/charttopper-gold.png";
+                        else if (val >= 20) badgeSrc = "/charttopper-silver.png";
+                        else if (val >= 5) badgeSrc = "/charttopper-bronze.png";
+                      } else if (type === "charttopper") {
+                        if (val >= 100) badgeSrc = "/hitmaker-100.png";
+                        else if (val >= 75) badgeSrc = "/hitmaker-75.png";
+                        else if (val >= 50) badgeSrc = "/hitmaker-gold.png";
+                        else if (val >= 25) badgeSrc = "/hitmaker-silver.png";
+                        else if (val >= 10) badgeSrc = "/hitmaker-bronze.png";
+                      }
+                      
+                      return (
+                        <div key={type} className="flex flex-col items-center">
+                          <img
+                            src={badgeSrc}
+                            alt={`${type} badge`}
+                            className="w-16 h-16 rounded-md object-contain"
+                          />
+                          <div className="text-xs text-gray-400 mt-1">
+                            {type === "streaker" ? "Streaker" : type === "hitmaker" ? "Hit Maker" : "Chart Topper"}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                
+                {promoterDetails.topLineup && (
+                  <div className="bg-black/50 rounded-lg p-4 border border-yellow-400/30">
+                    <h3 className="text-yellow-400 font-bold mb-3 text-center">
+                      🔥 Most Voted Lineup
+                    </h3>
+                    <div className="flex justify-center gap-3 mb-2">
+                      {[promoterDetails.topLineup.opener, promoterDetails.topLineup.second_opener, promoterDetails.topLineup.headliner].map((artist, idx) => (
+                        <div key={idx} className="flex flex-col items-center">
+                          <img
+                            src={artist?.image || "/placeholder.jpg"}
+                            alt={artist?.name || "Artist"}
+                            className="w-14 h-14 rounded-md object-cover border border-yellow-400"
+                          />
+                          <span className="text-[10px] text-white font-bold text-center max-w-[4rem] break-words mt-1">
+                            {artist?.name || "Artist"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-center text-sm text-yellow-400">
+                      {promoterDetails.topLineup.votes || 0} votes
+                    </p>
+                    <p className="text-center text-xs text-gray-400 mt-1">
+                      {promoterDetails.topLineup.prompt}
+                    </p>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-center text-gray-400 py-8">
+                Loading stats...
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 </div>
 <style jsx global>{`
   @keyframes fade-in {
