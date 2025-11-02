@@ -671,7 +671,7 @@ Can you beat me?`;
   const shareData = {
     title: "Best Concert Ever - My Promoter Card",
     text: shareText,
-    url: "https://bestconcertever.com"
+    url: "https://bestconcertevergame.com"
   };
 
   try {
