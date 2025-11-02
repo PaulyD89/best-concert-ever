@@ -245,58 +245,51 @@ const fetchWeeklyTopPromoters = async () => {
   
   console.log("📅 Fetching promoters from:", sevenDaysAgo.toISOString());
   
-  // Step 1: Get all users with nicknames
-  const { data: usersWithNicknames, error: usersError } = await supabase
-    .from("users")
-    .select("user_id, nickname")
-    .not("nickname", "is", null);
-  
-  if (usersError || !usersWithNicknames) {
-    console.error("❌ Error fetching users:", usersError);
-    return [];
-  }
-  
-  console.log(`👥 Found ${usersWithNicknames.length} users with nicknames`);
-  
-  const userIds = usersWithNicknames.map(u => u.user_id);
-  
-  // Step 2: Get lineups from last 7 days for these users
+  // Fetch lineups from last 7 days with user data in one query
   const { data: recentLineups, error: lineupsError } = await supabase
     .from("lineups")
-    .select("user_id, points, votes, created_at")
-    .in("user_id", userIds)
-    .gte("created_at", sevenDaysAgo.toISOString());
+    .select(`
+      user_id,
+      points,
+      votes,
+      created_at,
+      users!inner(nickname)
+    `)
+    .gte("created_at", sevenDaysAgo.toISOString())
+    .not("users.nickname", "is", null);
   
   if (lineupsError || !recentLineups) {
     console.error("❌ Error fetching lineups:", lineupsError);
     return [];
   }
   
-  console.log(`📊 Found ${recentLineups.length} recent lineups`);
+  console.log(`📊 Found ${recentLineups.length} recent lineups with nicknames`);
   
-  // Step 3: Aggregate points per user
+  // Aggregate points per user
   const userStatsMap = {};
-  
-  usersWithNicknames.forEach(user => {
-    userStatsMap[user.user_id] = {
-      userId: user.user_id,
-      nickname: user.nickname,
-      totalPoints: 0,
-      totalVotes: 0,
-      lineupsSubmitted: 0
-    };
-  });
   
   recentLineups.forEach(lineup => {
     const userId = lineup.user_id;
-    if (userStatsMap[userId]) {
-      userStatsMap[userId].totalPoints += (lineup.points || 0);
-      userStatsMap[userId].totalVotes += (lineup.votes || 0);
-      userStatsMap[userId].lineupsSubmitted += 1;
+    const nickname = lineup.users?.nickname;
+    
+    if (!nickname) return;
+    
+    if (!userStatsMap[userId]) {
+      userStatsMap[userId] = {
+        userId: userId,
+        nickname: nickname,
+        totalPoints: 0,
+        totalVotes: 0,
+        lineupsSubmitted: 0
+      };
     }
+    
+    userStatsMap[userId].totalPoints += (lineup.points || 0);
+    userStatsMap[userId].totalVotes += (lineup.votes || 0);
+    userStatsMap[userId].lineupsSubmitted += 1;
   });
   
-  // Step 4: Sort by points and take top 10
+  // Sort by points and take top 10
   const allUsers = Object.values(userStatsMap);
   console.log(`📈 Total users in map: ${allUsers.length}`);
   
