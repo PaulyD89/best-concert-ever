@@ -343,17 +343,26 @@ const fetchWeeklyTopPromoters = async () => {
 };
 
 const fetchPromoterDetails = async (userId) => {
+  // Fetch from user_stats table (not users table)
   const { data: userStats, error: statsError } = await supabase
-    .from("users")
+    .from("user_stats")
     .select("*")
     .eq("user_id", userId)
     .single();
   
   if (statsError) {
-    console.error("Error fetching user details:", statsError);
+    console.error("Error fetching user stats:", statsError);
     return null;
   }
   
+  // Also get nickname from users table
+  const { data: userData, error: userError } = await supabase
+    .from("users")
+    .select("nickname")
+    .eq("user_id", userId)
+    .single();
+  
+  // Get their most voted lineup
   const { data: topLineup, error: lineupError } = await supabase
     .from("lineups")
     .select("headliner, opener, second_opener, votes, prompt")
@@ -364,6 +373,7 @@ const fetchPromoterDetails = async (userId) => {
   
   return {
     ...userStats,
+    nickname: userData?.nickname,
     topLineup: topLineup || null
   };
 };
@@ -1897,7 +1907,7 @@ if (!error) {
                 🔥 Weekly Top Promoters
               </h2>
               <p className="text-xs text-yellow-300 mb-4 italic">
-                Top 10 from the last 7 days
+                Top 10 Promoters by Votes (Last 7 Days)
               </p>
               <ol className="flex flex-col gap-2 text-white">
                 {weeklyTopPromoters.map((promoter, index) => (
@@ -1919,7 +1929,7 @@ if (!error) {
                       {promoter.nickname}
                     </span>
                     <span className="text-yellow-400 font-bold">
-                      {promoter.totalPoints} pts
+                      {promoter.totalPoints} votes
                     </span>
                   </li>
                 ))}
