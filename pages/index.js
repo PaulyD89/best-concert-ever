@@ -240,88 +240,105 @@ const fetchDeepCutLineup = async () => {
 };
 
 const fetchWeeklyTopPromoters = async () => {
-  const sevenDaysAgo = new Date();
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-  
-  console.log("📅 Fetching promoters from:", sevenDaysAgo.toISOString());
-  
-  // Step 1: Fetch all lineups from last 7 days
-  const { data: recentLineups, error: lineupsError } = await supabase
-    .from("lineups")
-    .select("user_id, points, votes, created_at")
-    .gte("created_at", sevenDaysAgo.toISOString());
-  
-  if (lineupsError || !recentLineups) {
-    console.error("❌ Error fetching lineups:", lineupsError);
+  try {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const dateString = sevenDaysAgo.toISOString();
+    
+    console.log("📅 Fetching promoters from:", dateString);
+    
+    // Step 1: Fetch all lineups from last 7 days - simplified query
+    const { data: recentLineups, error: lineupsError } = await supabase
+      .from("lineups")
+      .select("user_id, points, votes")
+      .gte("created_at", dateString);
+    
+    if (lineupsError) {
+      console.error("❌ Lineups error:", lineupsError);
+      return [];
+    }
+    
+    if (!recentLineups || recentLineups.length === 0) {
+      console.log("📊 No recent lineups found");
+      return [];
+    }
+    
+    console.log(`📊 Found ${recentLineups.length} recent lineups`);
+    
+    // Step 2: Get unique user IDs
+    const uniqueUserIds = [...new Set(recentLineups.map(l => l.user_id))];
+    console.log(`👥 Unique users: ${uniqueUserIds.length}`);
+    
+    // Step 3: Fetch users with nicknames (in smaller batches)
+    const batchSize = 50; // Smaller batches
+    const allUsers = [];
+    
+    for (let i = 0; i < uniqueUserIds.length; i += batchSize) {
+      const batch = uniqueUserIds.slice(i, i + batchSize);
+      const { data, error } = await supabase
+        .from("users")
+        .select("user_id, nickname")
+        .in("user_id", batch)
+        .not("nickname", "is", null);
+      
+      if (!error && data) {
+        allUsers.push(...data);
+      }
+    }
+    
+    console.log(`✅ Found ${allUsers.length} users with nicknames`);
+    
+    if (allUsers.length === 0) {
+      console.log("No users with nicknames found");
+      return [];
+    }
+    
+    // Step 4: Create nickname map
+    const nicknameMap = {};
+    allUsers.forEach(user => {
+      nicknameMap[user.user_id] = user.nickname;
+    });
+    
+    // Step 5: Aggregate points
+    const userStatsMap = {};
+    
+    recentLineups.forEach(lineup => {
+      const userId = lineup.user_id;
+      const nickname = nicknameMap[userId];
+      
+      if (!nickname) return;
+      
+      if (!userStatsMap[userId]) {
+        userStatsMap[userId] = {
+          userId: userId,
+          nickname: nickname,
+          totalPoints: 0,
+          totalVotes: 0,
+          lineupsSubmitted: 0
+        };
+      }
+      
+      userStatsMap[userId].totalPoints += (lineup.points || 0);
+      userStatsMap[userId].totalVotes += (lineup.votes || 0);
+      userStatsMap[userId].lineupsSubmitted += 1;
+    });
+    
+    // Step 6: Sort and return top 10
+    const usersWithPoints = Object.values(userStatsMap).filter(user => user.totalPoints > 0);
+    console.log(`🔥 Users with points: ${usersWithPoints.length}`);
+    
+    const topPromoters = usersWithPoints
+      .sort((a, b) => b.totalPoints - a.totalPoints)
+      .slice(0, 10);
+    
+    console.log(`🏆 Top 10 promoters:`, topPromoters);
+    
+    return topPromoters;
+    
+  } catch (err) {
+    console.error("❌ Unexpected error:", err);
     return [];
   }
-  
-  console.log(`📊 Found ${recentLineups.length} recent lineups`);
-  
-  // Step 2: Get unique user IDs
-  const uniqueUserIds = [...new Set(recentLineups.map(l => l.user_id))];
-  console.log(`👥 Unique users: ${uniqueUserIds.length}`);
-  
-  // Step 3: Fetch users with nicknames (in batches if needed)
-  const batchSize = 100;
-  const allUsers = [];
-  
-  for (let i = 0; i < uniqueUserIds.length; i += batchSize) {
-    const batch = uniqueUserIds.slice(i, i + batchSize);
-    const { data, error } = await supabase
-      .from("users")
-      .select("user_id, nickname")
-      .in("user_id", batch)
-      .not("nickname", "is", null);
-    
-    if (!error && data) {
-      allUsers.push(...data);
-    }
-  }
-  
-  console.log(`✅ Found ${allUsers.length} users with nicknames`);
-  
-  // Step 4: Create a map of userId to nickname
-  const nicknameMap = {};
-  allUsers.forEach(user => {
-    nicknameMap[user.user_id] = user.nickname;
-  });
-  
-  // Step 5: Aggregate points per user (only those with nicknames)
-  const userStatsMap = {};
-  
-  recentLineups.forEach(lineup => {
-    const userId = lineup.user_id;
-    const nickname = nicknameMap[userId];
-    
-    if (!nickname) return; // Skip users without nicknames
-    
-    if (!userStatsMap[userId]) {
-      userStatsMap[userId] = {
-        userId: userId,
-        nickname: nickname,
-        totalPoints: 0,
-        totalVotes: 0,
-        lineupsSubmitted: 0
-      };
-    }
-    
-    userStatsMap[userId].totalPoints += (lineup.points || 0);
-    userStatsMap[userId].totalVotes += (lineup.votes || 0);
-    userStatsMap[userId].lineupsSubmitted += 1;
-  });
-  
-  // Step 6: Sort by points and take top 10
-  const usersWithPoints = Object.values(userStatsMap).filter(user => user.totalPoints > 0);
-  console.log(`🔥 Users with points in last 7 days: ${usersWithPoints.length}`);
-  
-  const topPromoters = usersWithPoints
-    .sort((a, b) => b.totalPoints - a.totalPoints)
-    .slice(0, 10);
-  
-  console.log(`🏆 Top 10 promoters:`, topPromoters);
-  
-  return topPromoters;
 };
 
 const fetchPromoterDetails = async (userId) => {
