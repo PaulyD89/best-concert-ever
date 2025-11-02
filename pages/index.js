@@ -652,6 +652,54 @@ const handlePromoterClick = async (promoter) => {
   setPromoterDetails(details);
 };
 
+const handleSharePromoterCard = async () => {
+  if (!selectedPromoter || !promoterDetails) return;
+  
+  const rank = weeklyTopPromoters.findIndex(p => p.userId === selectedPromoter.userId) + 1;
+  const rankEmoji = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : `#${rank}`;
+  
+  const shareText = `🔥 I'm ${rankEmoji} on Best Concert Ever this week!
+
+📊 My Stats:
+- ${selectedPromoter.totalPoints} votes this week
+- Global Rank: ${promoterDetails.global_rank ? `#${promoterDetails.global_rank}` : "Climbing!"}
+- ${promoterDetails.total_wins || 0} total wins
+- ${promoterDetails.current_streak || 0}-day current streak
+
+Can you beat me?`;
+
+  const shareData = {
+    title: "Best Concert Ever - My Promoter Card",
+    text: shareText,
+    url: "https://bestconcertever.com"
+  };
+
+  try {
+    // Check if Web Share API is available
+    if (navigator.share) {
+      await navigator.share(shareData);
+      // Track the share
+      if (typeof window !== "undefined" && window.plausible) {
+        window.plausible("Shared Promoter Card");
+      }
+    } else {
+      // Fallback: Copy to clipboard if share not available
+      await navigator.clipboard.writeText(shareText + "\n\nhttps://bestconcertever.com");
+      alert("✅ Copied to clipboard! Paste it anywhere to share! 🎸");
+    }
+  } catch (err) {
+    // If user cancels or error occurs, try clipboard as fallback
+    if (err.name !== "AbortError") {
+      try {
+        await navigator.clipboard.writeText(shareText + "\n\nhttps://bestconcertever.com");
+        alert("✅ Copied to clipboard! Paste it anywhere to share! 🎸");
+      } catch (clipErr) {
+        console.error("Share failed:", err);
+      }
+    }
+  }
+};
+
 const handleEmailSignup = async () => {
   try {
     const res = await fetch("/api/subscribe", {
@@ -2224,6 +2272,18 @@ if (!error) {
                     })}
                   </div>
                 </div>
+
+                {/* Share Button - Only show if viewing own profile */}
+                {selectedPromoter && localStorage.getItem("bce_user_id") === selectedPromoter.userId && (
+                  <div className="mb-6 text-center">
+                    <button
+                      onClick={handleSharePromoterCard}
+                      className="bg-yellow-400 hover:bg-yellow-300 text-black font-bold py-3 px-6 rounded-full transition-all hover:scale-105 shadow-lg"
+                    >
+                      📤 Share My Promoter Card
+                    </button>
+                  </div>
+                )}
                 
                 {promoterDetails.topLineup && (
                   <div className="bg-black/50 rounded-lg p-4 border border-yellow-400/30">
