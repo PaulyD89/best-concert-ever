@@ -555,6 +555,8 @@ setPastWinners(filteredResults);
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [showHowToPlayInfographic, setShowHowToPlayInfographic] = useState(false);
   const [showVotePrompt, setShowVotePrompt] = useState(false);
+  const [lastDecibelScore, setLastDecibelScore] = useState(0);
+const [lastBonusVotes, setLastBonusVotes] = useState(0);
 const [showEmailSignup, setShowEmailSignup] = useState(false);
 const [email, setEmail] = useState("");
 const [emailSubmitted, setEmailSubmitted] = useState(false);
@@ -1071,6 +1073,8 @@ else if (decibelLevel >= 30) bonusVotes = 1;  // 30-39: Entry bonus
 // Below 30 = no bonus votes
 
 console.log(`🎁 Bonus votes earned: ${bonusVotes}`);
+setLastDecibelScore(decibelLevel);
+setLastBonusVotes(bonusVotes);
       const normalize = (artist) => {
   if (typeof artist === "object" && artist?.name) return artist.name.trim().toLowerCase();
   return "";
@@ -1255,8 +1259,48 @@ setIsSubmitting(false);
       >
         &times;
       </button>
-      <h2 className="text-2xl font-bold mb-4">Thanks for submitting!</h2>
-      <p className="text-sm mb-6">Now complete today&apos;s game by voting for your favorite lineup by clicking on the 🔥!</p>
+<h2 className="text-2xl font-bold mb-4">🎉 Lineup Submitted!</h2>
+
+{/* Decibel Score Display */}
+<div className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-400 rounded-lg p-4 mb-4 shadow-md">
+  <div className="flex items-center justify-center gap-3 mb-2">
+    <span className="text-4xl">🔊</span>
+    <div className="text-left">
+      <div className="text-3xl font-black text-yellow-600">
+        {lastDecibelScore}
+        <span className="text-lg text-gray-500">/100</span>
+      </div>
+      <div className="text-xs text-gray-600 uppercase tracking-wide font-bold">
+        Decibel Level
+      </div>
+    </div>
+  </div>
+  
+  {lastBonusVotes > 0 && (
+    <div className="mt-3 pt-3 border-t-2 border-yellow-300">
+      <p className="text-sm font-bold text-green-700">
+        🎁 +{lastBonusVotes} Bonus Votes Earned!
+      </p>
+      <p className="text-xs text-gray-700 mt-1 font-semibold">
+        {lastDecibelScore >= 90 ? "🌟 Superstar lineup!" :
+         lastDecibelScore >= 80 ? "💎 Elite lineup!" :
+         lastDecibelScore >= 70 ? "💪 Strong lineup!" :
+         lastDecibelScore >= 60 ? "👍 Good lineup!" :
+         lastDecibelScore >= 50 ? "✨ Solid lineup!" :
+         lastDecibelScore >= 40 ? "👌 Decent lineup!" :
+         "🎵 Nice work!"}
+      </p>
+    </div>
+  )}
+  
+  {lastBonusVotes === 0 && (
+    <p className="text-xs text-gray-600 mt-2 italic">
+      Pick artists with more buzz next time for bonus votes!
+    </p>
+  )}
+</div>
+
+<p className="text-sm mb-6 font-semibold">Now complete today&apos;s game by voting for your favorite lineup by clicking on the 🔥!</p>
       <button
         onClick={() => {
           setShowVotePrompt(false);
