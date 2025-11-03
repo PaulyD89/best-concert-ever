@@ -684,14 +684,14 @@ Can you beat me?`;
       }
     } else {
       // Fallback: Copy to clipboard if share not available
-      await navigator.clipboard.writeText(shareText + "\n\nhttps://bestconcertever.com");
+      await navigator.clipboard.writeText(shareText + "\n\nhttps://bestconcertevergame.com");
       alert("✅ Copied to clipboard! Paste it anywhere to share! 🎸");
     }
   } catch (err) {
     // If user cancels or error occurs, try clipboard as fallback
     if (err.name !== "AbortError") {
       try {
-        await navigator.clipboard.writeText(shareText + "\n\nhttps://bestconcertever.com");
+        await navigator.clipboard.writeText(shareText + "\n\nhttps://bestconcertevergame.com");
         alert("✅ Copied to clipboard! Paste it anywhere to share! 🎸");
       } catch (clipErr) {
         console.error("Share failed:", err);
