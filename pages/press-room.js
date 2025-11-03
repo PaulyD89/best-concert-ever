@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 export default function PressRoom() {
   return (
@@ -16,13 +17,13 @@ export default function PressRoom() {
 
         {/* Back to Game Link */}
         <div className="text-center mb-8">
-          <a
+          <Link
             href="/"
             className="inline-flex items-center gap-2 text-yellow-400 hover:text-yellow-300 transition-colors"
           >
             <span>←</span>
             <span>Back to Game</span>
-          </a>
+          </Link>
         </div>
 
         {/* Latest Press Release Section */}
