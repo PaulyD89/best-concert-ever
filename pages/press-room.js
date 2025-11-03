@@ -21,7 +21,7 @@ export default function PressRoom() {
             href="/"
             className="inline-flex items-center gap-2 text-yellow-400 hover:text-yellow-300 transition-colors"
           >
-            <span>←</span>
+            <span>&larr;</span>
             <span>Back to Game</span>
           </Link>
         </div>
@@ -104,15 +104,15 @@ export default function PressRoom() {
           </h2>
           <ul className="space-y-3 text-gray-300">
             <li className="flex items-start gap-2">
-              <span className="text-yellow-400 mt-1">•</span>
+              <span className="text-yellow-400 mt-1">&bull;</span>
               <span>High-resolution logos and images available upon request</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-yellow-400 mt-1">•</span>
+              <span className="text-yellow-400 mt-1">&bull;</span>
               <span>Founder interviews can be scheduled via email</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-yellow-400 mt-1">•</span>
+              <span className="text-yellow-400 mt-1">&bull;</span>
               <span>Product screenshots and demo access available</span>
             </li>
           </ul>
@@ -120,7 +120,7 @@ export default function PressRoom() {
 
         {/* Footer */}
         <div className="mt-12 text-center text-sm text-gray-400">
-          <p>© 2025 Best Concert Ever. All rights reserved.</p>
+          <p>&copy; 2025 Best Concert Ever. All rights reserved.</p>
         </div>
       </div>
     </div>
