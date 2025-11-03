@@ -8,9 +8,9 @@ export default function PressRoom() {
         {/* Logo */}
         <div className="text-center mb-8">
           <img 
-            src="/logo.png" 
+            src="https://www.bestconcertevergame.com/yellow-top-badge.png" 
             alt="Best Concert Ever Logo" 
-            className="w-32 h-32 mx-auto rounded-full"
+            className="w-32 h-32 mx-auto"
           />
         </div>
         
@@ -174,11 +174,6 @@ export default function PressRoom() {
               <span>Product screenshots and demo access available</span>
             </li>
           </ul>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-12 text-center text-sm text-gray-400">
-          <p>&copy; 2025 Best Concert Ever. All rights reserved.</p>
         </div>
       </div>
     </div>
