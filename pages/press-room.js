@@ -41,7 +41,7 @@ export default function PressRoom() {
             <p className="text-xs text-gray-400 uppercase tracking-wide mb-4">For Immediate Release</p>
             
             <h3 className="text-2xl font-bold text-white mb-4">
-              Best. Concert. Ever. Partners with Soundcharts to Launch "Decibel Level™," a Data-Driven Evolution of the Fantasy Concert Game
+              Best. Concert. Ever. Partners with Soundcharts to Launch &ldquo;Decibel Level™,&rdquo; a Data-Driven Evolution of the Fantasy Concert Game
             </h3>
             
             <p className="text-sm text-gray-400 mb-6">
@@ -53,7 +53,7 @@ export default function PressRoom() {
             </p>
             
             <p className="text-gray-300 mb-4 leading-relaxed">
-              The Decibel Level analyzes a range of verified music industry metrics, including an artist's streaming and social media followers, trending track growth, streaming music platform popularity, radio airplay and more. Such trending global data is combined with a proprietary algorithm to create Best Concert Ever's Decibel Level™ score each and every player's daily concert lineup across their Opener, 2nd Opener, and Headliner.
+              The Decibel Level analyzes a range of verified music industry metrics, including an artist&rsquo;s streaming and social media followers, trending track growth, streaming music platform popularity, radio airplay and more. Such trending global data is combined with a proprietary algorithm to create Best Concert Ever&rsquo;s Decibel Level™ score each and every player&rsquo;s daily concert lineup across their Opener, 2nd Opener, and Headliner.
             </p>
             
             <p className="text-gray-300 mb-4 leading-relaxed italic">
@@ -77,7 +77,7 @@ export default function PressRoom() {
             </p>
             
             <p className="text-gray-300 mb-6 leading-relaxed">
-              Fans can play, track their Decibel Levels, and compete for the day's top lineup at{" "}
+              Fans can play, track their Decibel Levels, and compete for the day&rsquo;s top lineup at{" "}
               <a href="https://www.bestconcertevergame.com" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:text-yellow-300 transition-colors">
                 www.bestconcertevergame.com
               </a>
@@ -88,7 +88,7 @@ export default function PressRoom() {
               ABOUT SOUNDCHARTS
             </h4>
             <p className="text-gray-300 mb-6 leading-relaxed">
-              Soundcharts is a global music intelligence platform used by music industry businesses to track artists and releases in real time. Through a developer-friendly API and web tools, Soundcharts aggregates metrics across streaming and social platforms, playlist placements, and radio airplay to surface what's trending and why. Teams rely on Soundcharts to monitor momentum, benchmark performance, and power products and experiences with music data - like the Decibel Level™ in Best Concert Ever. Learn more at{" "}
+              Soundcharts is a global music intelligence platform used by music industry businesses to track artists and releases in real time. Through a developer-friendly API and web tools, Soundcharts aggregates metrics across streaming and social platforms, playlist placements, and radio airplay to surface what&rsquo;s trending and why. Teams rely on Soundcharts to monitor momentum, benchmark performance, and power products and experiences with music data - like the Decibel Level™ in Best Concert Ever. Learn more at{" "}
               <a href="https://soundcharts.com" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:text-yellow-300 transition-colors">
                 soundcharts.com
               </a>
