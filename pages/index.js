@@ -1983,7 +1983,7 @@ if (!error) {
                 ))}
               </ol>
               <p className="mt-4 text-[10px] text-yellow-300">
-                Resets weekly • Set your nickname to compete
+                Rolling 7-day leaderboard • Set your nickname to compete
               </p>
             </div>
           </div>
