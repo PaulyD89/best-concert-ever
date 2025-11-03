@@ -49,7 +49,7 @@ export default function PressRoom() {
             </p>
             
             <p className="text-gray-300 mb-4 leading-relaxed">
-              Best Concert Ever, the daily fantasy concert game that lets fans play promoter by building dream lineups around themed challenges, has announced a new partnership with global music intelligence platform Soundcharts. Leveraging their robust music industry data, Best Concert Ever has developed The Decibel Level™ — a groundbreaking new feature that uses real-time music industry data to give each lineup an official "buzz score."
+              Best Concert Ever, the daily fantasy concert game that lets fans play promoter by building dream lineups around themed challenges, has announced a new partnership with global music intelligence platform Soundcharts. Leveraging their robust music industry data, Best Concert Ever has developed The Decibel Level™ — a groundbreaking new feature that uses real-time music industry data to give each lineup an official &ldquo;buzz score.&rdquo;
             </p>
             
             <p className="text-gray-300 mb-4 leading-relaxed">
@@ -57,23 +57,23 @@ export default function PressRoom() {
             </p>
             
             <p className="text-gray-300 mb-4 leading-relaxed italic">
-              "Best Concert Ever is making music fandom strategic," said Aël Guégan, Head of Partnerships at Soundcharts. "We're proud to supply the data behind the Decibel Level™, ensuring every lineup reflects real-world momentum."
+              &ldquo;Best Concert Ever is making music fandom strategic,&rdquo; said Aël Guégan, Head of Partnerships at Soundcharts. &ldquo;We&rsquo;re proud to supply the data behind the Decibel Level™, ensuring every lineup reflects real-world momentum.&rdquo;
             </p>
             
             <p className="text-gray-300 mb-4 leading-relaxed">
-              The higher a lineup's Decibel Level, the more bonus votes it earns Best Concert Ever's aspiring music promoters when submitted — rewarding users who not only curate inspired lineups but also keep a pulse on what's trending in music. This is all in service of players' quest to have their unique lineups chart in the game's daily top ten, ultimately win as the day's "best concert ever" and unlock badges, rewards and help them ascend the global charts.
+              The higher a lineup&rsquo;s Decibel Level, the more bonus votes it earns Best Concert Ever&rsquo;s aspiring music promoters when submitted — rewarding users who not only curate inspired lineups but also keep a pulse on what&rsquo;s trending in music. This is all in service of players&rsquo; quest to have their unique lineups chart in the game&rsquo;s daily top ten, ultimately win as the day&rsquo;s &ldquo;best concert ever&rdquo; and unlock badges, rewards and help them ascend the global charts.
             </p>
             
             <p className="text-gray-300 mb-4 leading-relaxed italic">
-              "The Decibel Level takes Best Concert Ever to the next stage," said Paul Davidson, Co-Creator and CEO of Best Concert Ever. "By partnering with Soundcharts, we're connecting the creative instinct of music fandom with real-time industry analytics. It's a fun, data-driven way to measure how much heat your lineup truly has."
+              &ldquo;The Decibel Level takes Best Concert Ever to the next stage,&rdquo; said Paul Davidson, Co-Creator and CEO of Best Concert Ever. &ldquo;By partnering with Soundcharts, we&rsquo;re connecting the creative instinct of music fandom with real-time industry analytics. It&rsquo;s a fun, data-driven way to measure how much heat your lineup truly has.&rdquo;
             </p>
             
             <p className="text-gray-300 mb-4 leading-relaxed italic">
-              "When it comes to their favorite bands, music lovers are diehards. Their intense fandom powers the entire recording industry. But to win this game, you need to be more than just a fan. You need to be strategic with the lineups you promote," added Ben Raab, Co-Creator and President of Best Concert Ever. "Now, our global community of players can crank their gaming to 11 and increase their chances of success with Best Concert Ever's all-new dB Level feature."
+              &ldquo;When it comes to their favorite bands, music lovers are diehards. Their intense fandom powers the entire recording industry. But to win this game, you need to be more than just a fan. You need to be strategic with the lineups you promote,&rdquo; added Ben Raab, Co-Creator and President of Best Concert Ever. &ldquo;Now, our global community of players can crank their gaming to 11 and increase their chances of success with Best Concert Ever&rsquo;s all-new dB Level feature.&rdquo;
             </p>
             
             <p className="text-gray-300 mb-4 leading-relaxed">
-              Since its launch in May 2025, Best Concert Ever has built a passionate daily community of hundreds of thousands of fans assembling dream lineups across decades and genres. As the game has grown, Best Concert Ever has partnered with music labels and live event companies to provide players with incentives for winning. Most recently, the game partnered with Ultra Records and Sony Music to help promote The Midnight's latest album "Syndicate" and saw the passionate fan base rally around the game. Now, with the Soundcharts integration, the game's next chapter in its evolution is merging fans' cultural passion with data-driven insight in a way no other music experience has before.
+              Since its launch in May 2025, Best Concert Ever has built a passionate daily community of hundreds of thousands of fans assembling dream lineups across decades and genres. As the game has grown, Best Concert Ever has partnered with music labels and live event companies to provide players with incentives for winning. Most recently, the game partnered with Ultra Records and Sony Music to help promote The Midnight&rsquo;s latest album &ldquo;Syndicate&rdquo; and saw the passionate fan base rally around the game. Now, with the Soundcharts integration, the game&rsquo;s next chapter in its evolution is merging fans&rsquo; cultural passion with data-driven insight in a way no other music experience has before.
             </p>
             
             <p className="text-gray-300 mb-6 leading-relaxed">
@@ -99,7 +99,7 @@ export default function PressRoom() {
               ABOUT BEST CONCERT EVER
             </h4>
             <p className="text-gray-300 mb-4 leading-relaxed">
-              Best Concert Ever is the daily fantasy concert game that gamifies music fandom. Each day, players step into the role of concert promoters, building dream lineups of an Opener, 2nd Opener, and Headliner around a themed challenge — from "Best 2000s Indie Night" to "Best Red Rocks Lineup." Powered by Spotify and integrated with real-time music data, the game lets fans discover artists, compete for votes, and climb the leaderboards to have their lineup crowned the day's Best Concert Ever. Co-created by Paul Davidson and Ben Raab, the platform has partnered with major labels and artists to promote new releases and live events while sourcing valuable insights from the global music fan community. By blending data, creativity, and competition, Best Concert Ever is redefining how fans engage with the artists they love. Play daily at{" "}
+              Best Concert Ever is the daily fantasy concert game that gamifies music fandom. Each day, players step into the role of concert promoters, building dream lineups of an Opener, 2nd Opener, and Headliner around a themed challenge — from &ldquo;Best 2000s Indie Night&rdquo; to &ldquo;Best Red Rocks Lineup.&rdquo; Powered by Spotify and integrated with real-time music data, the game lets fans discover artists, compete for votes, and climb the leaderboards to have their lineup crowned the day&rsquo;s Best Concert Ever. Co-created by Paul Davidson and Ben Raab, the platform has partnered with major labels and artists to promote new releases and live events while sourcing valuable insights from the global music fan community. By blending data, creativity, and competition, Best Concert Ever is redefining how fans engage with the artists they love. Play daily at{" "}
               <a href="https://www.bestconcertevergame.com" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:text-yellow-300 transition-colors">
                 www.bestconcertevergame.com
               </a>
