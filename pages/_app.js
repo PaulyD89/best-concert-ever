@@ -1,5 +1,6 @@
 // pages/_app.js
 import '@/styles/globals.css'; // or wherever your global styles are
+import Link from 'next/link';
 
 export default function App({ Component, pageProps }) {
   return (
@@ -35,7 +36,7 @@ export default function App({ Component, pageProps }) {
       </a>
     </div>
     
-    <a
+    <Link
       href="/press-room"
       style={{ 
         color: '#888', 
@@ -49,7 +50,7 @@ export default function App({ Component, pageProps }) {
       onMouseLeave={(e) => e.target.style.color = '#888'}
     >
       Press Room
-    </a>
+    </Link>
   </div>
 </footer>
     </div>
