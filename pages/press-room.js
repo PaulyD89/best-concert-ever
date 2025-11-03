@@ -3,8 +3,17 @@ import Link from "next/link";
 
 export default function PressRoom() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-900 via-indigo-900 to-black text-white font-sans">
+    <div className="min-h-screen bg-gradient-to-b from-[#0f0f0f] to-[#1e1e1e] text-white font-sans">
       <div className="max-w-4xl mx-auto px-4 py-12">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <img 
+            src="/logo.png" 
+            alt="Best Concert Ever Logo" 
+            className="w-32 h-32 mx-auto rounded-full"
+          />
+        </div>
+        
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-5xl md:text-6xl font-extrabold text-yellow-400 mb-4 tracking-tight">
@@ -128,9 +137,6 @@ export default function PressRoom() {
                   <a href="mailto:apoillard@plhpr.com" className="hover:text-yellow-400 transition-colors">
                     apoillard@plhpr.com
                   </a>
-                </p>
-                <p>
-                  <span className="text-yellow-400 font-semibold">Phone:</span> [Phone Number]
                 </p>
                 <p>
                   <span className="text-yellow-400 font-semibold">Agency:</span> PLH Public Relations
