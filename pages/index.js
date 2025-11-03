@@ -557,6 +557,7 @@ setPastWinners(filteredResults);
   const [showVotePrompt, setShowVotePrompt] = useState(false);
   const [lastDecibelScore, setLastDecibelScore] = useState(0);
 const [lastBonusVotes, setLastBonusVotes] = useState(0);
+const [highestDecibel, setHighestDecibel] = useState(null);
 const [showEmailSignup, setShowEmailSignup] = useState(false);
 const [email, setEmail] = useState("");
 const [emailSubmitted, setEmailSubmitted] = useState(false);
@@ -756,6 +757,23 @@ const handleEmailSignup = async () => {
   }
 };
 
+const fetchHighestDecibel = async () => {
+  const userId = localStorage.getItem("bce_user_id");
+  if (!userId) return;
+
+  const { data, error } = await supabase
+    .from("lineups")
+    .select("decibel_score")
+    .eq("user_id", userId)
+    .order("decibel_score", { ascending: false })
+    .limit(1)
+    .single();
+
+  if (!error && data) {
+    setHighestDecibel(data.decibel_score);
+  }
+};
+
   useEffect(() => {
     const bounceTimeout = setTimeout(() => {
       if (typeof window !== 'undefined' && window.plausible) {
@@ -769,6 +787,7 @@ const handleEmailSignup = async () => {
   }
 
     fetchUserStats();
+    fetchHighestDecibel();
     fetchWeeklyTopPromoters().then(promoters => setWeeklyTopPromoters(promoters));
 
     const fetchMostVotedLineup = async () => {
@@ -2062,6 +2081,7 @@ if (!error) {
   <li className="text-sm">🎤 Promoted Lineups (So Far): <span className="font-bold">{userStats?.total_lineups_submitted ?? "--"}</span></li>
   <li className="text-sm">🏆 All-Time Top 10 Hits: <span className="font-bold">{userStats?.total_top_10s ?? "--"}</span></li>
   <li className="text-sm">🥇 Winning Lineups: <span className="font-bold">{userStats?.total_wins ?? "--"}</span></li>
+  <li className="text-sm">🔊 Highest dB Level: <span className="font-bold">{highestDecibel ?? "--"}</span></li>
   <li className="text-sm">🔥 Current Streak: <span className="font-bold">{userStats?.current_streak ?? "--"}</span></li>
   <li className="text-sm">📆 Longest Daily Streak: <span className="font-bold">{userStats?.longest_streak ?? "--"}</span></li>
   <li className="text-sm">🌍 Global Rank: <span className="font-bold">
