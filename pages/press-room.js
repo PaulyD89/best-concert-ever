@@ -38,20 +38,72 @@ export default function PressRoom() {
           </div>
           
           <div className="prose prose-invert max-w-none">
+            <p className="text-xs text-gray-400 uppercase tracking-wide mb-4">For Immediate Release</p>
+            
             <h3 className="text-2xl font-bold text-white mb-4">
-              [Press Release Title Here]
+              Best. Concert. Ever. Partners with Soundcharts to Launch "Decibel Level™," a Data-Driven Evolution of the Fantasy Concert Game
             </h3>
             
-            <p className="text-gray-300 mb-4 leading-relaxed">
-              [Your press release content goes here. Replace this text with your actual press release content, including all the details about your game, recent milestones, user statistics, or announcements you want to share with the media.]
+            <p className="text-sm text-gray-400 mb-6">
+              <strong>Los Angeles, CA — November 3, 2025</strong>
             </p>
             
             <p className="text-gray-300 mb-4 leading-relaxed">
-              [Add additional paragraphs as needed to fully communicate your news and story to journalists and media outlets.]
+              Best Concert Ever, the daily fantasy concert game that lets fans play promoter by building dream lineups around themed challenges, has announced a new partnership with global music intelligence platform Soundcharts. Leveraging their robust music industry data, Best Concert Ever has developed The Decibel Level™ — a groundbreaking new feature that uses real-time music industry data to give each lineup an official "buzz score."
             </p>
             
             <p className="text-gray-300 mb-4 leading-relaxed">
-              [Include quotes from founders, key team members, or partners to add credibility and human interest to your press release.]
+              The Decibel Level analyzes a range of verified music industry metrics, including an artist's streaming and social media followers, trending track growth, streaming music platform popularity, radio airplay and more. Such trending global data is combined with a proprietary algorithm to create Best Concert Ever's Decibel Level™ score each and every player's daily concert lineup across their Opener, 2nd Opener, and Headliner.
+            </p>
+            
+            <p className="text-gray-300 mb-4 leading-relaxed italic">
+              "Best Concert Ever is making music fandom strategic," said Aël Guégan, Head of Partnerships at Soundcharts. "We're proud to supply the data behind the Decibel Level™, ensuring every lineup reflects real-world momentum."
+            </p>
+            
+            <p className="text-gray-300 mb-4 leading-relaxed">
+              The higher a lineup's Decibel Level, the more bonus votes it earns Best Concert Ever's aspiring music promoters when submitted — rewarding users who not only curate inspired lineups but also keep a pulse on what's trending in music. This is all in service of players' quest to have their unique lineups chart in the game's daily top ten, ultimately win as the day's "best concert ever" and unlock badges, rewards and help them ascend the global charts.
+            </p>
+            
+            <p className="text-gray-300 mb-4 leading-relaxed italic">
+              "The Decibel Level takes Best Concert Ever to the next stage," said Paul Davidson, Co-Creator and CEO of Best Concert Ever. "By partnering with Soundcharts, we're connecting the creative instinct of music fandom with real-time industry analytics. It's a fun, data-driven way to measure how much heat your lineup truly has."
+            </p>
+            
+            <p className="text-gray-300 mb-4 leading-relaxed italic">
+              "When it comes to their favorite bands, music lovers are diehards. Their intense fandom powers the entire recording industry. But to win this game, you need to be more than just a fan. You need to be strategic with the lineups you promote," added Ben Raab, Co-Creator and President of Best Concert Ever. "Now, our global community of players can crank their gaming to 11 and increase their chances of success with Best Concert Ever's all-new dB Level feature."
+            </p>
+            
+            <p className="text-gray-300 mb-4 leading-relaxed">
+              Since its launch in May 2025, Best Concert Ever has built a passionate daily community of hundreds of thousands of fans assembling dream lineups across decades and genres. As the game has grown, Best Concert Ever has partnered with music labels and live event companies to provide players with incentives for winning. Most recently, the game partnered with Ultra Records and Sony Music to help promote The Midnight's latest album "Syndicate" and saw the passionate fan base rally around the game. Now, with the Soundcharts integration, the game's next chapter in its evolution is merging fans' cultural passion with data-driven insight in a way no other music experience has before.
+            </p>
+            
+            <p className="text-gray-300 mb-6 leading-relaxed">
+              Fans can play, track their Decibel Levels, and compete for the day's top lineup at{" "}
+              <a href="https://www.bestconcertevergame.com" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:text-yellow-300 transition-colors">
+                www.bestconcertevergame.com
+              </a>
+              .
+            </p>
+            
+            <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-8">
+              ABOUT SOUNDCHARTS
+            </h4>
+            <p className="text-gray-300 mb-6 leading-relaxed">
+              Soundcharts is a global music intelligence platform used by music industry businesses to track artists and releases in real time. Through a developer-friendly API and web tools, Soundcharts aggregates metrics across streaming and social platforms, playlist placements, and radio airplay to surface what's trending and why. Teams rely on Soundcharts to monitor momentum, benchmark performance, and power products and experiences with music data - like the Decibel Level™ in Best Concert Ever. Learn more at{" "}
+              <a href="https://soundcharts.com" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:text-yellow-300 transition-colors">
+                soundcharts.com
+              </a>
+              .
+            </p>
+            
+            <h4 className="text-xl font-bold text-yellow-400 mb-3">
+              ABOUT BEST CONCERT EVER
+            </h4>
+            <p className="text-gray-300 mb-4 leading-relaxed">
+              Best Concert Ever is the daily fantasy concert game that gamifies music fandom. Each day, players step into the role of concert promoters, building dream lineups of an Opener, 2nd Opener, and Headliner around a themed challenge — from "Best 2000s Indie Night" to "Best Red Rocks Lineup." Powered by Spotify and integrated with real-time music data, the game lets fans discover artists, compete for votes, and climb the leaderboards to have their lineup crowned the day's Best Concert Ever. Co-created by Paul Davidson and Ben Raab, the platform has partnered with major labels and artists to promote new releases and live events while sourcing valuable insights from the global music fan community. By blending data, creativity, and competition, Best Concert Ever is redefining how fans engage with the artists they love. Play daily at{" "}
+              <a href="https://www.bestconcertevergame.com" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:text-yellow-300 transition-colors">
+                www.bestconcertevergame.com
+              </a>
+              .
             </p>
           </div>
         </div>
@@ -69,19 +121,19 @@ export default function PressRoom() {
               </h3>
               <div className="text-gray-300 space-y-2">
                 <p>
-                  <span className="text-yellow-400 font-semibold">Name:</span> [Publicist Name]
+                  <span className="text-yellow-400 font-semibold">Name:</span> Austin Poillard
                 </p>
                 <p>
                   <span className="text-yellow-400 font-semibold">Email:</span>{" "}
-                  <a href="mailto:press@example.com" className="hover:text-yellow-400 transition-colors">
-                    press@example.com
+                  <a href="mailto:apoillard@plhpr.com" className="hover:text-yellow-400 transition-colors">
+                    apoillard@plhpr.com
                   </a>
                 </p>
                 <p>
                   <span className="text-yellow-400 font-semibold">Phone:</span> [Phone Number]
                 </p>
                 <p>
-                  <span className="text-yellow-400 font-semibold">Agency:</span> [Agency Name, if applicable]
+                  <span className="text-yellow-400 font-semibold">Agency:</span> PLH Public Relations
                 </p>
               </div>
             </div>
