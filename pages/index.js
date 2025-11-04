@@ -116,6 +116,8 @@ export default function BestConcertEver() {
   const [lockedHeadliner, setLockedHeadliner] = useState(null);
   const [yesterdayPrompt, setYesterdayPrompt] = useState(null);
   const [weeklyTopPromoters, setWeeklyTopPromoters] = useState([]);
+  const [monthlyTopPromoters, setMonthlyTopPromoters] = useState([]);
+  const [showMonthlyLeaderboard, setShowMonthlyLeaderboard] = useState(false);
   const [selectedPromoter, setSelectedPromoter] = useState(null);
   const [showPromoterModal, setShowPromoterModal] = useState(false);
   const [promoterDetails, setPromoterDetails] = useState(null);
@@ -333,6 +335,109 @@ const fetchWeeklyTopPromoters = async () => {
       .slice(0, 10);
     
     console.log(`🏆 Top 10 promoters:`, topPromoters);
+    
+    return topPromoters;
+    
+  } catch (err) {
+    console.error("❌ Unexpected error:", err);
+    return [];
+  }
+};
+
+const fetchMonthlyTopPromoters = async () => {
+  try {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const dateString = thirtyDaysAgo.toISOString();
+    
+    console.log("📅 Fetching monthly promoters from:", dateString);
+    
+    // Fetch all lineups from last 30 days
+    const { data: recentLineups, error: lineupsError } = await supabase
+      .from("lineups")
+      .select("user_id, votes, created_at")
+      .gte("created_at", dateString);
+    
+    if (lineupsError) {
+      console.error("❌ Lineups error:", lineupsError);
+      return [];
+    }
+    
+    if (!recentLineups || recentLineups.length === 0) {
+      console.log("📊 No recent lineups found");
+      return [];
+    }
+    
+    console.log(`📊 Found ${recentLineups.length} recent lineups`);
+    
+    // Get unique user IDs
+    const uniqueUserIds = [...new Set(recentLineups.map(l => l.user_id))];
+    console.log(`👥 Unique users: ${uniqueUserIds.length}`);
+    
+    // Fetch users with nicknames in batches
+    const batchSize = 50;
+    const allUsers = [];
+    
+    for (let i = 0; i < uniqueUserIds.length; i += batchSize) {
+      const batch = uniqueUserIds.slice(i, i + batchSize);
+      const { data, error } = await supabase
+        .from("users")
+        .select("user_id, nickname")
+        .in("user_id", batch)
+        .not("nickname", "is", null);
+      
+      if (!error && data) {
+        allUsers.push(...data);
+      }
+    }
+    
+    console.log(`✅ Found ${allUsers.length} users with nicknames`);
+    
+    if (allUsers.length === 0) {
+      console.log("No users with nicknames");
+      return [];
+    }
+    
+    // Create nickname map
+    const nicknameMap = {};
+    allUsers.forEach(user => {
+      nicknameMap[user.user_id] = user.nickname;
+    });
+    
+    // Aggregate votes per user (only those with nicknames)
+    const userStatsMap = {};
+    
+    recentLineups.forEach(lineup => {
+      const userId = lineup.user_id;
+      const nickname = nicknameMap[userId];
+      
+      if (!nickname) return;
+      
+      if (!userStatsMap[userId]) {
+        userStatsMap[userId] = {
+          userId: userId,
+          nickname: nickname,
+          totalPoints: 0,
+          totalVotes: 0,
+          lineupsSubmitted: 0
+        };
+      }
+      
+      const votes = lineup.votes || 0;
+      userStatsMap[userId].totalPoints += votes;
+      userStatsMap[userId].totalVotes += votes;
+      userStatsMap[userId].lineupsSubmitted += 1;
+    });
+    
+    // Sort and return top 10
+    const usersWithPoints = Object.values(userStatsMap).filter(user => user.totalPoints > 0);
+    console.log(`🔥 Users with points: ${usersWithPoints.length}`);
+    
+    const topPromoters = usersWithPoints
+      .sort((a, b) => b.totalPoints - a.totalPoints)
+      .slice(0, 10);
+    
+    console.log(`🏆 Top 10 monthly promoters:`, topPromoters);
     
     return topPromoters;
     
@@ -799,6 +904,7 @@ const fetchHighestDecibel = async () => {
     fetchUserStats();
     fetchHighestDecibel();
     fetchWeeklyTopPromoters().then(promoters => setWeeklyTopPromoters(promoters));
+    fetchMonthlyTopPromoters().then(promoters => setMonthlyTopPromoters(promoters));
 
     const fetchMostVotedLineup = async () => {
       const userId = localStorage.getItem("bce_user_id");
@@ -2018,20 +2124,48 @@ if (!error) {
   </div>
 )}
 
-{/* WEEKLY TOP PROMOTERS SECTION */}
-      {weeklyTopPromoters.length > 0 && (
+{/* WEEKLY/MONTHLY TOP PROMOTERS SECTION */}
+      {(weeklyTopPromoters.length > 0 || monthlyTopPromoters.length > 0) && (
         <div className="mt-12 flex justify-center items-center w-full">
           <div className="relative w-full max-w-md text-center">
             <div className="absolute inset-0 -z-10 rounded-xl border-2 border-yellow-400 animate-pulse"></div>
             <div className="relative bg-black rounded-xl p-6 border-2 border-yellow-400">
               <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-yellow-400 drop-shadow-[0_0_12px_yellow]">
-                🔥 Weekly Top Promoters
+                🔥 Top Promoters
               </h2>
+              
+              {/* Toggle Tabs */}
+              <div className="flex justify-center gap-2 mb-4">
+                <button
+                  onClick={() => setShowMonthlyLeaderboard(false)}
+                  className={`px-4 py-2 rounded-full font-bold text-sm transition-all ${
+                    !showMonthlyLeaderboard
+                      ? "bg-yellow-400 text-black shadow-[0_0_12px_rgba(250,204,21,0.6)]"
+                      : "bg-gray-800 text-yellow-400 hover:bg-gray-700"
+                  }`}
+                >
+                  Weekly
+                </button>
+                <button
+                  onClick={() => setShowMonthlyLeaderboard(true)}
+                  className={`px-4 py-2 rounded-full font-bold text-sm transition-all ${
+                    showMonthlyLeaderboard
+                      ? "bg-yellow-400 text-black shadow-[0_0_12px_rgba(250,204,21,0.6)]"
+                      : "bg-gray-800 text-yellow-400 hover:bg-gray-700"
+                  }`}
+                >
+                  Monthly
+                </button>
+              </div>
+              
               <p className="text-xs text-yellow-300 mb-4 italic">
-                Top 10 Promoters by Votes (Last 7 Days)
+                {showMonthlyLeaderboard 
+                  ? "Top 10 Promoters by Votes (Last 30 Days)"
+                  : "Top 10 Promoters by Votes (Last 7 Days)"}
               </p>
+              
               <ol className="flex flex-col gap-2 text-white">
-                {weeklyTopPromoters.map((promoter, index) => (
+                {(showMonthlyLeaderboard ? monthlyTopPromoters : weeklyTopPromoters).map((promoter, index) => (
                   <li 
                     key={promoter.userId}
                     onClick={() => handlePromoterClick(promoter)}
@@ -2055,8 +2189,11 @@ if (!error) {
                   </li>
                 ))}
               </ol>
+              
               <p className="mt-4 text-[10px] text-yellow-300">
-                Rolling 7-day leaderboard • Set your nickname to compete
+                {showMonthlyLeaderboard 
+                  ? "Rolling 30-day leaderboard • Set your nickname to compete"
+                  : "Rolling 7-day leaderboard • Set your nickname to compete"}
               </p>
             </div>
           </div>
