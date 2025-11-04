@@ -526,53 +526,65 @@ const fetchPromoterDetails = async (userId) => {
 };
 
 const performVote = async (prompt) => {
-    console.log("🔍 Running performVote for prompt:", prompt);
+  console.log("🔍 Running performVote for prompt:", prompt);
   const urlParams = new URLSearchParams(window.location.search);
   const voteId = urlParams.get("vote");
 
-if (!voteId || voteId === "null") {
-  console.warn("⚠️ No voteId present in URL, skipping vote.");
-  return;
-}
+  if (!voteId || voteId === "null") {
+    console.warn("⚠️ No voteId present in URL, skipping vote.");
+    return;
+  }
 
-const alreadyVoted = localStorage.getItem(`bce-voted-${prompt}`);
-if (alreadyVoted) return;
+  const alreadyVoted = localStorage.getItem(`bce-voted-${prompt}`);
+  if (alreadyVoted) {
+    console.log("✅ Already voted for this prompt (localStorage check)");
+    return;
+  }
 
   try {
-    const { data, error } = await supabase
-      .from("lineups")
-      .select("votes")
-      .eq("id", voteId)
-      .single();
+    // Call the new API endpoint instead of direct Supabase update
+    const response = await fetch('/api/vote', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json' 
+      },
+      body: JSON.stringify({ 
+        lineupId: voteId, 
+        prompt: prompt 
+      })
+    });
 
-    if (error || !data) {
-      console.error("Failed to fetch lineup for voting:", error);
+    const result = await response.json();
+
+    if (!response.ok) {
+      // Vote was blocked (likely hit IP limit)
+      console.error("Vote blocked:", result.error);
+      
+      if (response.status === 429) {
+        // IP rate limit hit
+        alert("⚠️ " + result.error);
+      } else {
+        console.error("Vote failed:", result.error);
+      }
       return;
     }
 
-    const updatedVotes = (data.votes || 0) + 1;
-    const { error: voteError } = await supabase
-      .from("lineups")
-      .update({ votes: updatedVotes })
-      .eq("id", voteId);
+    // Vote succeeded!
+    localStorage.setItem(`bce-voted-${prompt}`, "social");
+    localStorage.setItem("fromSocialVote", "true");
+    localStorage.setItem("socialVoteLineupId", voteId);
 
-      if (voteError) {
-  console.error("Vote failed:", voteError);
-} else {
-  localStorage.setItem(`bce-voted-${prompt}`, "social");
-  localStorage.setItem("fromSocialVote", "true");
-  localStorage.setItem("socialVoteLineupId", voteId);
+    if (typeof window.plausible === "function") {
+      window.plausible("Social Vote", {
+        props: { lineupId: voteId }
+      });
+    }
 
-  if (typeof window.plausible === "function") {
-    window.plausible("Social Vote", {
-      props: { lineupId: voteId }
-    });
-  }
-
-  alert("🔥 Your vote has been counted! Now submit your own.");
-}
+    alert("🔥 Your vote has been counted! Now submit your own.");
+    
   } catch (err) {
     console.error("Vote execution error:", err);
+    alert("⚠️ There was an error recording your vote. Please try again.");
   }
 };
 
