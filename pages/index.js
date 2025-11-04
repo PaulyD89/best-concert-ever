@@ -249,27 +249,42 @@ const fetchWeeklyTopPromoters = async () => {
     
     console.log("📅 Fetching promoters from:", dateString);
     
-  // Fetch all lineups from last 7 days
-  const { data: recentLineups, error: lineupsError } = await supabase
-  .from("lineups")
-  .select("user_id, votes, created_at")
-  .gte("created_at", dateString)
-  .limit(10000);
+  // Fetch all lineups from last 7 days with pagination
+    let allLineups = [];
+    let from = 0;
+    const pageSize = 1000;
+    let hasMore = true;
     
-    if (lineupsError) {
-      console.error("❌ Lineups error:", lineupsError);
+    while (hasMore) {
+      const { data: recentLineups, error: lineupsError } = await supabase
+        .from("lineups")
+        .select("user_id, votes, created_at")
+        .gte("created_at", dateString)
+        .range(from, from + pageSize - 1);
+      
+      if (lineupsError) {
+        console.error("❌ Lineups error:", lineupsError);
+        break;
+      }
+      
+      if (!recentLineups || recentLineups.length === 0) {
+        hasMore = false;
+      } else {
+        allLineups = allLineups.concat(recentLineups);
+        from += pageSize;
+        hasMore = recentLineups.length === pageSize;
+      }
+    }
+    
+    if (allLineups.length === 0) {
+      console.log("📊 No recent lineups found");
       return [];
     }
     
-if (!recentLineups || recentLineups.length === 0) {
-  console.log("📊 No recent lineups found");
-  return [];
-}
-
-console.log(`📊 [WEEKLY] Found ${recentLineups.length} recent lineups`);
+    console.log(`📊 [WEEKLY] Found ${allLineups.length} recent lineups`);
     
     // Get unique user IDs
-    const uniqueUserIds = [...new Set(recentLineups.map(l => l.user_id))];
+    const uniqueUserIds = [...new Set(allLineups.map(l => l.user_id))];
     console.log(`👥 Unique users: ${uniqueUserIds.length}`);
     
     // Fetch users with nicknames in batches
@@ -305,7 +320,7 @@ console.log(`📊 [WEEKLY] Found ${recentLineups.length} recent lineups`);
     // Aggregate votes per user (only those with nicknames)
     const userStatsMap = {};
     
-    recentLineups.forEach(lineup => {
+    allLineups.forEach(lineup => {
       const userId = lineup.user_id;
       const nickname = nicknameMap[userId];
       
@@ -353,27 +368,42 @@ const fetchMonthlyTopPromoters = async () => {
     
     console.log("📅 Fetching monthly promoters from:", dateString);
     
-  // Fetch all lineups from last 30 days
-  const { data: recentLineups, error: lineupsError } = await supabase
-  .from("lineups")
-  .select("user_id, votes, created_at")
-  .gte("created_at", dateString)
-  .limit(10000);
+  // Fetch all lineups from last 30 days with pagination
+    let allLineups = [];
+    let from = 0;
+    const pageSize = 1000;
+    let hasMore = true;
     
-    if (lineupsError) {
-      console.error("❌ Lineups error:", lineupsError);
+    while (hasMore) {
+      const { data: recentLineups, error: lineupsError } = await supabase
+        .from("lineups")
+        .select("user_id, votes, created_at")
+        .gte("created_at", dateString)
+        .range(from, from + pageSize - 1);
+      
+      if (lineupsError) {
+        console.error("❌ Lineups error:", lineupsError);
+        break;
+      }
+      
+      if (!recentLineups || recentLineups.length === 0) {
+        hasMore = false;
+      } else {
+        allLineups = allLineups.concat(recentLineups);
+        from += pageSize;
+        hasMore = recentLineups.length === pageSize;
+      }
+    }
+    
+    if (allLineups.length === 0) {
+      console.log("📊 No recent lineups found");
       return [];
     }
     
-if (!recentLineups || recentLineups.length === 0) {
-  console.log("📊 No recent lineups found");
-  return [];
-}
-
-console.log(`📊 [MONTHLY] Found ${recentLineups.length} recent lineups`);
+    console.log(`📊 [MONTHLY] Found ${allLineups.length} recent lineups`);
     
     // Get unique user IDs
-    const uniqueUserIds = [...new Set(recentLineups.map(l => l.user_id))];
+    const uniqueUserIds = [...new Set(allLineups.map(l => l.user_id))];
     console.log(`👥 Unique users: ${uniqueUserIds.length}`);
     
     // Fetch users with nicknames in batches
@@ -409,7 +439,7 @@ console.log(`📊 [MONTHLY] Found ${recentLineups.length} recent lineups`);
     // Aggregate votes per user (only those with nicknames)
     const userStatsMap = {};
     
-    recentLineups.forEach(lineup => {
+    allLineups.forEach(lineup => {
       const userId = lineup.user_id;
       const nickname = nicknameMap[userId];
       
