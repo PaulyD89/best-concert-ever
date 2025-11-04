@@ -371,10 +371,20 @@ const fetchPromoterDetails = async (userId) => {
     .limit(1)
     .single();
   
+  // Get their highest decibel score
+  const { data: highestDecibelData, error: decibelError } = await supabase
+    .from("lineups")
+    .select("decibel_score")
+    .eq("user_id", userId)
+    .order("decibel_score", { ascending: false })
+    .limit(1)
+    .single();
+  
   return {
     ...userStats,
     nickname: userData?.nickname,
-    topLineup: topLineup || null
+    topLineup: topLineup || null,
+    highest_decibel: highestDecibelData?.decibel_score || 0
   };
 };
 
@@ -2291,13 +2301,15 @@ if (!error) {
                 <div className="mb-6">
                   <h3 className="text-white font-bold mb-3 text-center">Badges Earned</h3>
                   <div className="flex justify-center gap-3">
-                    {["streaker", "hitmaker", "charttopper"].map((type) => {
+                    {["streaker", "hitmaker", "charttopper", "dblevel"].map((type) => {
                       const val =
-                        type === "streaker"
-                          ? promoterDetails.longest_streak ?? 0
-                          : type === "hitmaker"
-                          ? promoterDetails.total_wins ?? 0
-                          : promoterDetails.total_top_10s ?? 0;
+    type === "streaker"
+    ? promoterDetails.longest_streak ?? 0
+    : type === "hitmaker"
+    ? promoterDetails.total_wins ?? 0
+    : type === "charttopper"
+    ? promoterDetails.total_top_10s ?? 0
+    : promoterDetails.highest_decibel ?? 0;
                       
                       let badgeSrc = "/streaker-locked.png";
                       
@@ -2314,12 +2326,17 @@ if (!error) {
                         else if (val >= 20) badgeSrc = "/charttopper-silver.png";
                         else if (val >= 5) badgeSrc = "/charttopper-bronze.png";
                       } else if (type === "charttopper") {
-                        if (val >= 100) badgeSrc = "/hitmaker-100.png";
-                        else if (val >= 75) badgeSrc = "/hitmaker-75.png";
-                        else if (val >= 50) badgeSrc = "/hitmaker-gold.png";
-                        else if (val >= 25) badgeSrc = "/hitmaker-silver.png";
-                        else if (val >= 10) badgeSrc = "/hitmaker-bronze.png";
-                      }
+  if (val >= 100) badgeSrc = "/hitmaker-100.png";
+  else if (val >= 75) badgeSrc = "/hitmaker-75.png";
+  else if (val >= 50) badgeSrc = "/hitmaker-gold.png";
+  else if (val >= 25) badgeSrc = "/hitmaker-silver.png";
+  else if (val >= 10) badgeSrc = "/hitmaker-bronze.png";
+} else if (type === "dblevel") {
+  if (val >= 81) badgeSrc = "/dbgold.png";
+  else if (val >= 41) badgeSrc = "/dbsilver.png";
+  else if (val >= 1) badgeSrc = "/dbbronze.png";
+  else badgeSrc = "/dbbronze.png"; // Default to bronze if no score
+}
                       
                       return (
                         <div key={type} className="flex flex-col items-center">
@@ -2329,7 +2346,7 @@ if (!error) {
                             className="w-16 h-16 rounded-md object-contain"
                           />
                           <div className="text-xs text-gray-400 mt-1">
-                            {type === "streaker" ? "Streaker" : type === "hitmaker" ? "Hit Maker" : "Chart Topper"}
+                            {type === "streaker" ? "Streaker" : type === "hitmaker" ? "Hit Maker" : type === "charttopper" ? "Chart Topper" : "dB Level"}
                           </div>
                         </div>
                       );
