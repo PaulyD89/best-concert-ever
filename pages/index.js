@@ -249,11 +249,12 @@ const fetchWeeklyTopPromoters = async () => {
     
     console.log("📅 Fetching promoters from:", dateString);
     
-    // Fetch all lineups from last 7 days
-    const { data: recentLineups, error: lineupsError } = await supabase
-      .from("lineups")
-      .select("user_id, votes, created_at")
-      .gte("created_at", dateString);
+  // Fetch all lineups from last 7 days
+  const { data: recentLineups, error: lineupsError } = await supabase
+  .from("lineups")
+  .select("user_id, votes, created_at")
+  .gte("created_at", dateString)
+  .limit(10000);
     
     if (lineupsError) {
       console.error("❌ Lineups error:", lineupsError);
@@ -352,11 +353,12 @@ const fetchMonthlyTopPromoters = async () => {
     
     console.log("📅 Fetching monthly promoters from:", dateString);
     
-    // Fetch all lineups from last 30 days
-    const { data: recentLineups, error: lineupsError } = await supabase
-      .from("lineups")
-      .select("user_id, votes, created_at")
-      .gte("created_at", dateString);
+  // Fetch all lineups from last 30 days
+  const { data: recentLineups, error: lineupsError } = await supabase
+  .from("lineups")
+  .select("user_id, votes, created_at")
+  .gte("created_at", dateString)
+  .limit(10000);
     
     if (lineupsError) {
       console.error("❌ Lineups error:", lineupsError);
