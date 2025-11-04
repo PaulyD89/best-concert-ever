@@ -261,12 +261,12 @@ const fetchWeeklyTopPromoters = async () => {
       return [];
     }
     
-    if (!recentLineups || recentLineups.length === 0) {
-      console.log("📊 No recent lineups found");
-      return [];
-    }
-    
-    console.log(`📊 Found ${recentLineups.length} recent lineups`);
+if (!recentLineups || recentLineups.length === 0) {
+  console.log("📊 No recent lineups found");
+  return [];
+}
+
+console.log(`📊 [WEEKLY] Found ${recentLineups.length} recent lineups`);
     
     // Get unique user IDs
     const uniqueUserIds = [...new Set(recentLineups.map(l => l.user_id))];
@@ -365,12 +365,12 @@ const fetchMonthlyTopPromoters = async () => {
       return [];
     }
     
-    if (!recentLineups || recentLineups.length === 0) {
-      console.log("📊 No recent lineups found");
-      return [];
-    }
-    
-    console.log(`📊 Found ${recentLineups.length} recent lineups`);
+if (!recentLineups || recentLineups.length === 0) {
+  console.log("📊 No recent lineups found");
+  return [];
+}
+
+console.log(`📊 [MONTHLY] Found ${recentLineups.length} recent lineups`);
     
     // Get unique user IDs
     const uniqueUserIds = [...new Set(recentLineups.map(l => l.user_id))];
