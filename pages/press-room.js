@@ -35,16 +35,88 @@ export default function PressRoom() {
           </Link>
         </div>
 
-        {/* Latest Press Release Section */}
-        <div className="bg-gradient-to-br from-gray-900/80 to-black/80 border-2 border-yellow-400/30 rounded-xl p-8 mb-8 backdrop-blur-sm">
-          <div className="border-b border-yellow-400/30 pb-4 mb-6">
-            <h2 className="text-3xl font-bold text-yellow-400 mb-2">
-              Latest Press Release
-            </h2>
-            <p className="text-sm text-gray-400">
-              November 3, 2025
-            </p>
+        {/* Press Releases Section */}
+        <div className="space-y-8">
+          {/* Latest Press Release - November 5, 2025 */}
+          <div className="bg-gradient-to-br from-gray-900/80 to-black/80 border-2 border-yellow-400/30 rounded-xl p-8 backdrop-blur-sm">
+            <div className="border-b border-yellow-400/30 pb-4 mb-6">
+              <h2 className="text-3xl font-bold text-yellow-400 mb-2">
+                Latest Press Release
+              </h2>
+              <p className="text-sm text-gray-400">
+                November 5, 2025
+              </p>
+            </div>
+            
+            <div className="prose prose-invert max-w-none">
+              <p className="text-xs text-gray-400 uppercase tracking-wide mb-4">For Immediate Release</p>
+              
+              <h3 className="text-2xl font-bold text-white mb-4">
+                Best. Concert. Ever.™ Turns Up the Volume with All-New Game Features: Decibel Level™, Badges, and Leaderboards
+              </h3>
+              
+              <p className="text-sm text-gray-400 mb-6">
+                <strong>Los Angeles, CA — November 5, 2025</strong>
+              </p>
+              
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                Best. Concert. Ever.™, the daily fantasy concert game where music fans build dream lineups and compete for votes, has just rolled out its biggest feature update yet. The new tools deepen the gameplay experience, enhance competition, and reward music fandom like never before.
+              </p>
+              
+              <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-6">
+                Introducing Decibel Level™
+              </h4>
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                Every lineup submission now earns a Decibel Level™, a real-time score from 1–100 powered by live music industry data. Pulling from streaming numbers, radio airplay, social followers, and more, each lineup receives a unique performance rating. The higher your Decibel Level, the more extra votes your lineup gets. It's the next evolution of how Best Concert Ever™ connects music data to fan creativity.
+              </p>
+              
+              <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-6">
+                Earn Decibel Level™ Badges
+              </h4>
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                The game now tracks each player's highest Decibel Level — visible anytime in Your Greatest Hits. Players climbing the Weekly or Monthly Leaderboards will also see special Decibel Level Badges, celebrating their performance and status as top Promoters in the community.
+              </p>
+              
+              <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-6">
+                Weekly & Monthly Leaderboards
+              </h4>
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                Competition just got louder. Fans can now view Top Promoters across both 7-day (Weekly) and 30-day (Monthly) periods. Each leaderboard features clickable Promoter nicknames that reveal personal stats, badges, and achievements — encouraging friendly rivalries and community engagement. (Pro tip: choose your Nickname in the game to make sure you're seen on the charts!)
+              </p>
+              
+              <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-6">
+                More on the Horizon
+              </h4>
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                This update marks the beginning of a new era for Best Concert Ever™, with even more features, collaborations, and giveaways coming soon. The game also teased a special Month of December event, where top-performing Promoters can win cold, hard cash for their musical mastery.
+              </p>
+              
+              <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-8">
+                About Best. Concert. Ever.™
+              </h4>
+              <p className="text-gray-300 mb-6 leading-relaxed">
+                Best. Concert. Ever.™ is a free daily fantasy concert game where music fans become promoters, building dream lineups of three artists around each day's creative prompt. Players vote, share, and compete to climb the charts — earning badges, streaks, and bragging rights along the way. Powered by real music data and a global fanbase, Best Concert Ever™ is changing the way fans play with music.
+              </p>
+              
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                Play now at:{" "}
+                <a href="https://www.bestconcertevergame.com" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:text-yellow-300 transition-colors">
+                  www.bestconcertevergame.com
+                </a>
+              </p>
+            </div>
           </div>
+
+          {/* Previous Press Releases - November 3, 2025 */}
+          <div className="bg-gradient-to-br from-gray-900/80 to-black/80 border-2 border-yellow-400/30 rounded-xl p-8 backdrop-blur-sm">
+            <div className="border-b border-yellow-400/30 pb-4 mb-6">
+              <h2 className="text-3xl font-bold text-yellow-400 mb-2">
+                Previous Press Release
+              </h2>
+              <p className="text-sm text-gray-400">
+                November 3, 2025
+              </p>
+            </div>
           
           <div className="prose prose-invert max-w-none">
             <p className="text-xs text-gray-400 uppercase tracking-wide mb-4">For Immediate Release</p>
@@ -115,6 +187,7 @@ export default function PressRoom() {
               .
             </p>
           </div>
+        </div>
         </div>
 
         {/* Contact Information Section */}
