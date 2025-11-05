@@ -871,13 +871,19 @@ const handlePromoterClick = async (promoter) => {
 const handleSharePromoterCard = async () => {
   if (!selectedPromoter || !promoterDetails) return;
   
-  const rank = weeklyTopPromoters.findIndex(p => p.userId === selectedPromoter.userId) + 1;
+  // Determine which leaderboard to use based on current view
+  const isMonthly = showMonthlyLeaderboard;
+  const leaderboard = isMonthly ? monthlyTopPromoters : weeklyTopPromoters;
+  const timeframe = isMonthly ? "this month" : "this week";
+  
+  // Find rank in the appropriate leaderboard
+  const rank = leaderboard.findIndex(p => p.userId === selectedPromoter.userId) + 1;
   const rankEmoji = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : `#${rank}`;
   
-  const shareText = `🔥 I'm ${rankEmoji} on Best Concert Ever this week!
+  const shareText = `🔥 I'm ${rankEmoji} on Best Concert Ever ${timeframe}!
 
 📊 My Stats:
-- ${selectedPromoter.totalPoints} votes this week
+- ${selectedPromoter.totalPoints} votes ${timeframe}
 - Global Rank: ${promoterDetails.global_rank ? `#${promoterDetails.global_rank}` : "Climbing!"}
 - ${promoterDetails.total_wins || 0} total wins
 - ${promoterDetails.current_streak || 0}-day current streak
