@@ -41,7 +41,7 @@ export default async function handler(req, res) {
     if (existingVotes && existingVotes.length >= 1) {
       console.log('⛔ IP already voted today:', userIP);
       return res.status(429).json({ 
-        error: 'You can only vote once per day from this connection.' 
+        error: 'Daily vote limit reached. Come back tomorrow to vote again!' 
       });
     }
 

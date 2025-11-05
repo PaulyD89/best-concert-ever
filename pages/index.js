@@ -617,7 +617,7 @@ const handleFireVote = async (lineupId, voteType) => {
       
       if (response.status === 429) {
         // IP rate limit hit
-        alert("⚠️ " + result.error);
+        alert(result.error);
       } else {
         alert("Oops, there was an issue recording your vote.");
       }
