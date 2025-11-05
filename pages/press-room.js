@@ -99,7 +99,7 @@ export default function PressRoom() {
               </p>
               
               <p className="text-gray-300 mb-4 leading-relaxed">
-                Play now at:{&quot; &quot;}
+                Play now at:{" "}
                 <a href="https://www.bestconcertevergame.com" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:text-yellow-300 transition-colors">
                   www.bestconcertevergame.com
                 </a>
@@ -158,7 +158,7 @@ export default function PressRoom() {
             </p>
             
             <p className="text-gray-300 mb-6 leading-relaxed">
-              Fans can play, track their Decibel Levels, and compete for the day&apos;s top lineup at{&quot; &quot;}
+              Fans can play, track their Decibel Levels, and compete for the day&apos;s top lineup at{" "}
               <a href="https://www.bestconcertevergame.com" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:text-yellow-300 transition-colors">
                 www.bestconcertevergame.com
               </a>
@@ -169,7 +169,7 @@ export default function PressRoom() {
               ABOUT SOUNDCHARTS
             </h4>
             <p className="text-gray-300 mb-6 leading-relaxed">
-              Soundcharts is a global music intelligence platform used by music industry businesses to track artists and releases in real time. Through a developer-friendly API and web tools, Soundcharts aggregates metrics across streaming and social platforms, playlist placements, and radio airplay to surface what&apos;s trending and why. Teams rely on Soundcharts to monitor momentum, benchmark performance, and power products and experiences with music data - like the Decibel Level™ in Best Concert Ever. Learn more at{&quot; &quot;}
+              Soundcharts is a global music intelligence platform used by music industry businesses to track artists and releases in real time. Through a developer-friendly API and web tools, Soundcharts aggregates metrics across streaming and social platforms, playlist placements, and radio airplay to surface what&apos;s trending and why. Teams rely on Soundcharts to monitor momentum, benchmark performance, and power products and experiences with music data - like the Decibel Level™ in Best Concert Ever. Learn more at{" "}
               <a href="https://soundcharts.com" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:text-yellow-300 transition-colors">
                 soundcharts.com
               </a>
@@ -180,7 +180,7 @@ export default function PressRoom() {
               ABOUT BEST CONCERT EVER
             </h4>
             <p className="text-gray-300 mb-4 leading-relaxed">
-              Best Concert Ever is the daily fantasy concert game that gamifies music fandom. Each day, players step into the role of concert promoters, building dream lineups of an Opener, 2nd Opener, and Headliner around a themed challenge - from &quot;Best 2000s Indie Night&quot; to &quot;Best Red Rocks Lineup.&quot; Powered by Spotify and integrated with real-time music data, the game lets fans discover artists, compete for votes, and climb the leaderboards to have their lineup crowned the day&apos;s Best Concert Ever. Co-created by Paul Davidson and Ben Raab, the platform has partnered with major labels and artists to promote new releases and live events while sourcing valuable insights from the global music fan community. By blending data, creativity, and competition, Best Concert Ever is redefining how fans engage with the artists they love. Play daily at{&quot; &quot;}
+              Best Concert Ever is the daily fantasy concert game that gamifies music fandom. Each day, players step into the role of concert promoters, building dream lineups of an Opener, 2nd Opener, and Headliner around a themed challenge - from &quot;Best 2000s Indie Night&quot; to &quot;Best Red Rocks Lineup.&quot; Powered by Spotify and integrated with real-time music data, the game lets fans discover artists, compete for votes, and climb the leaderboards to have their lineup crowned the day&apos;s Best Concert Ever. Co-created by Paul Davidson and Ben Raab, the platform has partnered with major labels and artists to promote new releases and live events while sourcing valuable insights from the global music fan community. By blending data, creativity, and competition, Best Concert Ever is redefining how fans engage with the artists they love. Play daily at{" "}
               <a href="https://www.bestconcertevergame.com" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:text-yellow-300 transition-colors">
                 www.bestconcertevergame.com
               </a>
