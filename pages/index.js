@@ -588,6 +588,60 @@ const performVote = async (prompt) => {
   }
 };
 
+const handleFireVote = async (lineupId, voteType) => {
+  // Check localStorage first for UX
+  const alreadyVoted = localStorage.getItem(`bce-voted-${dailyPrompt}`);
+  if (alreadyVoted) {
+    alert("You've already voted today!");
+    return;
+  }
+
+  try {
+    // Call our IP-protected API endpoint
+    const response = await fetch('/api/vote', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json' 
+      },
+      body: JSON.stringify({ 
+        lineupId: lineupId, 
+        prompt: dailyPrompt 
+      })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      // Vote was blocked (likely hit IP limit)
+      console.error("Vote blocked:", result.error);
+      
+      if (response.status === 429) {
+        // IP rate limit hit
+        alert("⚠️ " + result.error);
+      } else {
+        alert("Oops, there was an issue recording your vote.");
+      }
+      return;
+    }
+
+    // Vote succeeded!
+    localStorage.setItem(`bce-voted-${dailyPrompt}`, voteType);
+    
+    // Track analytics
+    if (typeof window !== "undefined" && window.plausible) {
+      window.plausible(`${voteType} Vote Clicked`);
+      window.plausible("Any Vote Cast");
+    }
+
+    alert("🔥 Your vote has been counted!");
+    window.location.reload();
+    
+  } catch (err) {
+    console.error("Vote execution error:", err);
+    alert("⚠️ There was an error recording your vote. Please try again.");
+  }
+};
+
 useEffect(() => {
   if (dailyPrompt) {
     performVote(dailyPrompt);
@@ -1743,39 +1797,20 @@ await navigator.share({
         {lineup.opener?.name} / {lineup.second_opener?.name} / {lineup.headliner?.name}
         </div>
         {!hasVoted && (
-          <button
-            onClick={async () => {
-              localStorage.setItem(`bce-voted-${dailyPrompt}`, key);
-            
-              if (typeof window !== "undefined" && window.plausible) {
-                window.plausible("Top 10 Vote Clicked");
-                window.plausible("Any Vote Cast");
-              }            
-          
-            if (!lineup.id) {
-              alert("Oops, could not find lineup to vote for.");
-              return;
-            }
-            
-            const { error: voteError } = await supabase
-              .from("lineups")
-              .update({ votes: (lineup.votes || 0) + 1 })
-              .eq("id", lineup.id);            
-          
-              if (voteError) {
-                console.error("Vote failed:", voteError);              
-              alert("Oops, there was an issue recording your vote.");
-            } else {
-              alert("🔥 Your vote has been counted!");
-              window.location.reload();
-            }
-          }}          
-            className="mt-1 text-xl hover:scale-110 transition-transform"
-            title="Vote for this lineup"
-          >
-            🔥
-          </button>
-        )}
+  <button
+    onClick={() => {
+      if (!lineup.id) {
+        alert("Oops, could not find lineup to vote for.");
+        return;
+      }
+      handleFireVote(lineup.id, "Top 10");
+    }}
+    className="mt-1 text-xl hover:scale-110 transition-transform"
+    title="Vote for this lineup"
+  >
+    🔥
+  </button>
+)}
       </li>
     );
   })}
@@ -1789,39 +1824,20 @@ await navigator.share({
     </div>
 
     {!localStorage.getItem(`bce-voted-${dailyPrompt}`) && (
-      <button
-          onClick={async () => {
-            localStorage.setItem(`bce-voted-${dailyPrompt}`, "deepcut");
-          
-            if (typeof window !== "undefined" && window.plausible) {
-              window.plausible("Deep Cut Vote Clicked");
-              window.plausible("Any Vote Cast");
-            }          
-
-          if (!deepCutLineup.id) {
-            alert("Oops, could not find Deep Cut lineup to vote for.");
-            return;
-          }
-
-          const { error: voteError } = await supabase
-            .from("lineups")
-            .update({ votes: (deepCutLineup.votes || 0) + 1 })
-            .eq("id", deepCutLineup.id);
-
-          if (voteError) {
-            console.error("Vote failed:", voteError);
-            alert("Oops, there was an issue recording your vote.");
-          } else {
-            alert("🔥 Your vote for the Deep Cut has been counted!");
-            window.location.reload();
-          }
-        }}
-        className="mt-1 text-xl hover:scale-110 transition-transform"
-        title="Vote for this Deep Cut lineup"
-      >
-        🔥
-      </button>
-    )}
+  <button
+    onClick={() => {
+      if (!deepCutLineup.id) {
+        alert("Oops, could not find Deep Cut lineup to vote for.");
+        return;
+      }
+      handleFireVote(deepCutLineup.id, "Deep Cut");
+    }}
+    className="mt-1 text-xl hover:scale-110 transition-transform"
+    title="Vote for this Deep Cut lineup"
+  >
+    🔥
+  </button>
+)}
   </div>
 )}
           </div>
@@ -1845,38 +1861,20 @@ await navigator.share({
                   {lineup.opener?.name} / {lineup.second_opener?.name} / {lineup.headliner?.name}
                 </div>
                 {!hasVoted && (
-                  <button
-                    onClick={async () => {
-                      localStorage.setItem(`bce-voted-${dailyPrompt}`, `recent-${idx}`);
-                      if (typeof window !== "undefined" && window.plausible) {
-                        window.plausible("Recent Drop Vote Clicked");
-                        window.plausible("Any Vote Cast");
-                      }
-
-                      if (!lineup.id) {
-                        alert("Oops, could not find lineup to vote for.");
-                        return;
-                      }
-
-                      const { error: voteError } = await supabase
-                        .from("lineups")
-                        .update({ votes: (lineup.votes || 0) + 1 })
-                        .eq("id", lineup.id);
-
-                      if (voteError) {
-                        console.error("Vote failed:", voteError);
-                        alert("Oops, there was an issue recording your vote.");
-                      } else {
-                        alert("🔥 Your vote has been counted!");
-                        window.location.reload();
-                      }
-                    }}
-                    className="mt-1 text-xl hover:scale-110 transition-transform"
-                    title="Vote for this Recent Drop lineup"
-                  >
-                    🔥
-                  </button>
-                )}
+  <button
+    onClick={() => {
+      if (!lineup.id) {
+        alert("Oops, could not find lineup to vote for.");
+        return;
+      }
+      handleFireVote(lineup.id, "Recent Drop");
+    }}
+    className="mt-1 text-xl hover:scale-110 transition-transform"
+    title="Vote for this Recent Drop lineup"
+  >
+    🔥
+  </button>
+)}
               </li>
             );
           })}
