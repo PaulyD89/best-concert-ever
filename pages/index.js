@@ -131,6 +131,11 @@ useEffect(() => {
       // Save the old user_id into localStorage
       localStorage.setItem("bce_user_id", restoreId);
 
+      // Track restore link usage
+      if (typeof window !== "undefined" && window.plausible) {
+        window.plausible("Restore Link Used");
+      }
+
       // Clean up the URL so the restore code disappears
       window.history.replaceState({}, "", window.location.pathname);
 
@@ -863,6 +868,16 @@ const handleBadgeClick = () => {
 const handlePromoterClick = async (promoter) => {
   setSelectedPromoter(promoter);
   setShowPromoterModal(true);
+
+  // Track promoter modal open
+  const currentUserId = localStorage.getItem("bce_user_id");
+  if (typeof window !== "undefined" && window.plausible) {
+    window.plausible("Promoter Modal Opened", {
+      props: { 
+        isOwnProfile: currentUserId === promoter.userId ? "true" : "false"
+      }
+    });
+  }
   
   const details = await fetchPromoterDetails(promoter.userId);
   setPromoterDetails(details);
@@ -2185,7 +2200,14 @@ if (!error) {
               {/* Toggle Tabs */}
               <div className="flex justify-center gap-2 mb-4">
                 <button
-                  onClick={() => setShowMonthlyLeaderboard(false)}
+                  onClick={() => {
+                    setShowMonthlyLeaderboard(false);
+                    if (typeof window !== "undefined" && window.plausible) {
+                      window.plausible("Leaderboard Toggle", {
+                        props: { view: "weekly" }
+                      });
+                    }
+                  }}
                   className={`px-4 py-2 rounded-full font-bold text-sm transition-all ${
                     !showMonthlyLeaderboard
                       ? "bg-yellow-400 text-black shadow-[0_0_12px_rgba(250,204,21,0.6)]"
@@ -2195,7 +2217,14 @@ if (!error) {
                   Weekly
                 </button>
                 <button
-                  onClick={() => setShowMonthlyLeaderboard(true)}
+                  onClick={() => {
+                    setShowMonthlyLeaderboard(true);
+                    if (typeof window !== "undefined" && window.plausible) {
+                      window.plausible("Leaderboard Toggle", {
+                        props: { view: "monthly" }
+                      });
+                    }
+                  }}
                   className={`px-4 py-2 rounded-full font-bold text-sm transition-all ${
                     showMonthlyLeaderboard
                       ? "bg-yellow-400 text-black shadow-[0_0_12px_rgba(250,204,21,0.6)]"
