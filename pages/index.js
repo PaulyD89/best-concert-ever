@@ -1349,50 +1349,59 @@ if (uniqueNames.size < 3) {
       }
       const userId = localStorage.getItem("bce_user_id");
   
-      const { data: existing, error: checkError } = await supabase
-        .from("lineups")
-        .select("id")
-        .eq("user_id", userId)
-        .eq("prompt", dailyPrompt);
-  
-      if (checkError) {
-        console.error("Error checking existing submission:", checkError);
-        alert("There was an error checking your previous submission.");
-        setIsSubmitting(false); 
-        return;
-      }
-  
-      if (existing.length > 0) {
-        alert("You've already submitted a lineup for today's prompt!");
-        setIsSubmitting(false); 
-        return;
-      }
-  
-      const { data: inserted, error } = await supabase
+const { data: existing, error: checkError } = await supabase
   .from("lineups")
-  .insert([
-    {
-      prompt: dailyPrompt,
-      headliner: enrichedHeadliner,
-      opener: enrichedOpener,
-      second_opener: enrichedSecondOpener,
-      user_id: userId,
-      decibel_score: decibelLevel,
-      votes: bonusVotes,  // 👈 ADD THIS LINE
-    },
-  ])
-
   .select("id")
-  .single();
+  .eq("user_id", userId)
+  .eq("prompt", dailyPrompt);
 
-if (error) {
-  console.error("Submission error:", error);
-  alert("There was an error submitting your lineup.");
+if (checkError) {
+  console.error("Error checking existing submission:", checkError);
+  alert("There was an error checking your previous submission.");
   setIsSubmitting(false); 
   return;
 }
 
-setLineupId(inserted.id);
+if (existing.length > 0) {
+  alert("You've already submitted a lineup for today's prompt!");
+  setIsSubmitting(false); 
+  return;
+}
+
+// Call the new API endpoint that handles IP checking
+const response = await fetch('/api/submit-lineup', {
+  method: 'POST',
+  headers: { 
+    'Content-Type': 'application/json' 
+  },
+  body: JSON.stringify({ 
+    prompt: dailyPrompt,
+    headliner: enrichedHeadliner,
+    opener: enrichedOpener,
+    secondOpener: enrichedSecondOpener,
+    userId: userId,
+    decibelScore: decibelLevel,
+    bonusVotes: bonusVotes
+  })
+});
+
+const result = await response.json();
+
+if (!response.ok) {
+  console.error("Submission blocked:", result.error);
+  
+  if (response.status === 429) {
+    // IP rate limit hit
+    alert(result.error);
+  } else {
+    alert("There was an error submitting your lineup.");
+  }
+  setIsSubmitting(false); 
+  return;
+}
+
+// Submission succeeded!
+setLineupId(result.lineupId);
 setLineupReady(true);
 
       await refreshRecentLineups();
@@ -1406,7 +1415,7 @@ setShowVotePrompt(true);
 setTicketReady(true);
 localStorage.setItem('ticketReadyToday', 'true');
 localStorage.setItem('lineupReadyToday', 'true');
-localStorage.setItem('lineupIdToday', inserted.id);
+localStorage.setItem('lineupIdToday', result.lineupId);
 localStorage.setItem('savedHeadliner', enrichedHeadliner?.name || "");
 localStorage.setItem('savedSecondOpener', enrichedSecondOpener?.name || "");
 localStorage.setItem('savedOpener', enrichedOpener?.name || "");
