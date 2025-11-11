@@ -1247,12 +1247,16 @@ export default async function handler(req, res) {
         dailyTip 
       });
 
-      const messages = emails.map((email) => ({
-        from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
-        to: [email],
-        subject: `🎺 What's Your Best Concert Ever for "${dailyPrompt}"?`,
-        html,
-      }));
+     const subject = market === 'MX' 
+  ? `🎺 ¿Cuál es Tu Mejor Concierto de la Historia para "${dailyPrompt}"?`
+  : `🎺 What's Your Best Concert Ever for "${dailyPrompt}"?`;
+
+const messages = emails.map((email) => ({
+  from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
+  to: [email],
+  subject,
+  html,
+}));
 
       const messageChunks = chunkArray(messages, 99);
 
