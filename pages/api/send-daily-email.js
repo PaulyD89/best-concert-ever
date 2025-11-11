@@ -1131,86 +1131,140 @@ export default async function handler(req, res) {
 
   const today = new Date();
   const cutoff = new Date("2025-05-01T00:00:00Z");
-  let dailyPrompt, yesterdayPrompt;
 
-  if (today >= cutoff) {
+  // Helper: Get prompts for a specific market
+  async function getPromptsForMarket(market) {
     const todayStr = today.toISOString().split("T")[0];
     const yesterday = new Date(today);
     yesterday.setUTCDate(yesterday.getUTCDate() - 1);
     const yesterdayStr = yesterday.toISOString().split("T")[0];
 
-    const { data: todayData } = await supabase.from("prompts").select("prompt").eq("prompt_date", todayStr).single();
-    const { data: yesterdayData } = await supabase.from("prompts").select("prompt").eq("prompt_date", yesterdayStr).single();
+    const tableName = market === 'MX' ? 'prompts_mx' : 'prompts';
+    const { data: todayData } = await supabase.from(tableName).select("prompt").eq("prompt_date", todayStr).single();
+    const { data: yesterdayData } = await supabase.from(tableName).select("prompt").eq("prompt_date", yesterdayStr).single();
 
-    dailyPrompt = todayData?.prompt || getDailyPrompt();
-    yesterdayPrompt = yesterdayData?.prompt || getYesterdayPrompt();
-  } else {
-    dailyPrompt = getDailyPrompt();
-    yesterdayPrompt = getYesterdayPrompt();
+    return {
+      dailyPrompt: todayData?.prompt || getDailyPrompt(),
+      yesterdayPrompt: yesterdayData?.prompt || getYesterdayPrompt()
+    };
   }
 
-  const { data, error } = await supabase
-    .from('lineups')
-    .select('headliner, opener, second_opener, votes')
-    .eq('prompt', yesterdayPrompt);
+  // Helper: Get winner for a specific market
+  async function getWinnerForMarket(market, yesterdayPrompt) {
+    const { data, error } = await supabase
+      .from('lineups')
+      .select('headliner, opener, second_opener, votes')
+      .eq('prompt', yesterdayPrompt)
+      .eq('market', market);
 
-  if (error || !data) {
-    console.error("Error fetching lineups:", error);
-    return res.status(500).json({ message: 'Failed to fetch yesterday’s lineup' });
+    if (error || !data || data.length === 0) {
+      return null;
+    }
+
+    const countMap = {};
+    data.forEach(({ headliner, opener, second_opener, votes }) => {
+      const key = `${headliner?.name}|||${opener?.name}|||${second_opener?.name}`;
+      countMap[key] = (countMap[key] || 0) + 1 + (votes || 0);
+    });
+
+    const maxCount = Math.max(...Object.values(countMap));
+    const topLineups = Object.entries(countMap).filter(([_, count]) => count === maxCount);
+    const [rawHeadliner, rawOpener, rawSecondOpener] = topLineups[Math.floor(Math.random() * topLineups.length)][0].split("|||");
+
+    return { rawHeadliner, rawOpener, rawSecondOpener };
   }
 
-  const countMap = {};
-  data.forEach(({ headliner, opener, second_opener, votes }) => {
-    const key = `${headliner?.name}|||${opener?.name}|||${second_opener?.name}`;
-    countMap[key] = (countMap[key] || 0) + 1 + (votes || 0);
-  });
+  // Get subscribers grouped by market
+  const { data: subscribersData } = await supabase
+    .from("subscribers")
+    .select("email, market");
 
-  const maxCount = Math.max(...Object.values(countMap));
-  const topLineups = Object.entries(countMap).filter(([_, count]) => count === maxCount);
-  const [rawHeadliner, rawOpener, rawSecondOpener] = topLineups[Math.floor(Math.random() * topLineups.length)][0].split("|||");
-
-  const [headlinerImg, openerImg, secondOpenerImg] = await Promise.all([
-    getSpotifyImageUrl(rawHeadliner),
-    getSpotifyImageUrl(rawOpener),
-    getSpotifyImageUrl(rawSecondOpener)
-  ]);
-
-  const recipients = testEmail
-    ? [testEmail]
-    : (await supabase.from("subscribers").select("email")).data.map((s) => s.email);
-
-  if (!recipients || recipients.length === 0) {
+  if (!subscribersData || subscribersData.length === 0) {
     console.error("No recipients found.");
     return res.status(500).json({ message: "No recipients found" });
   }
 
-  const playlistSlug = `${yesterdayPrompt.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, '-')}-playlist-ever`;
-  const playlistUrl = `https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=11fb7c92a53744e0/${playlistSlug}`;
-  const dailyTip = getDailyDidYouKnowTip();
+  // Group by market
+  let subscribersByMarket = subscribersData.reduce((acc, sub) => {
+    const market = sub.market || 'US';
+    if (!acc[market]) acc[market] = [];
+    acc[market].push(sub.email);
+    return acc;
+  }, {});
 
-  const html = buildNewsletterHtml({ dailyPrompt, yesterdayPrompt, headlinerImg, secondOpenerImg, openerImg, rawHeadliner, rawSecondOpener, rawOpener, playlistUrl, dailyTip });
-const messages = recipients.map((email) => ({
-    from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
-    to: [email],
-    subject: `🎺 What's Your Best Concert Ever for "${dailyPrompt}"?`,
-    html,
-  }));
+  // Override for testing
+  if (testEmail) {
+    subscribersByMarket = { US: [testEmail] };
+  }
 
   const chunkArray = (arr, size) =>
     arr.length > size
       ? [arr.slice(0, size), ...chunkArray(arr.slice(size), size)]
       : [arr];
 
-  const messageChunks = chunkArray(messages, 99);
-
   try {
-    for (const chunk of messageChunks) {
-      await resend.batch.send(chunk);
-      console.log(`✅ Sent batch of ${chunk.length} emails`);
+    // Loop through each market and send market-specific emails
+    for (const [market, emails] of Object.entries(subscribersByMarket)) {
+      console.log(`📧 Processing ${emails.length} emails for ${market} market`);
+
+      // Get market-specific prompts
+      const { dailyPrompt, yesterdayPrompt } = today >= cutoff 
+        ? await getPromptsForMarket(market)
+        : { dailyPrompt: getDailyPrompt(), yesterdayPrompt: getYesterdayPrompt() };
+
+      // Get market-specific winner
+      const winner = await getWinnerForMarket(market, yesterdayPrompt);
+      
+      if (!winner) {
+        console.log(`⚠️ No winner for ${market}, skipping...`);
+        continue;
+      }
+
+      const { rawHeadliner, rawOpener, rawSecondOpener } = winner;
+
+      // Fetch Spotify images
+      const [headlinerImg, openerImg, secondOpenerImg] = await Promise.all([
+        getSpotifyImageUrl(rawHeadliner),
+        getSpotifyImageUrl(rawOpener),
+        getSpotifyImageUrl(rawSecondOpener)
+      ]);
+
+      const playlistSlug = `${yesterdayPrompt.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, '-')}-playlist-ever`;
+      const playlistUrl = `https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=11fb7c92a53744e0/${playlistSlug}`;
+      const dailyTip = getDailyDidYouKnowTip();
+
+      // Build HTML (your existing template, unchanged)
+      const html = buildNewsletterHtml({ 
+        dailyPrompt, 
+        yesterdayPrompt, 
+        headlinerImg, 
+        secondOpenerImg, 
+        openerImg, 
+        rawHeadliner, 
+        rawSecondOpener, 
+        rawOpener, 
+        playlistUrl, 
+        dailyTip 
+      });
+
+      const messages = emails.map((email) => ({
+        from: 'Best Concert Ever <noreply@bestconcertevergame.com>',
+        to: [email],
+        subject: `🎺 What's Your Best Concert Ever for "${dailyPrompt}"?`,
+        html,
+      }));
+
+      const messageChunks = chunkArray(messages, 99);
+
+      for (const chunk of messageChunks) {
+        await resend.batch.send(chunk);
+        console.log(`✅ Sent ${chunk.length} ${market} emails`);
+      }
     }
-    return res.status(200).json({ message: "Emails sent" });
+
+    return res.status(200).json({ message: "Emails sent for all markets" });
   } catch (err) {
-    console.error("❌ Failed to send one or more batches:", err);
+    console.error("❌ Email send failed:", err);
     return res.status(500).json({ message: "Email send failed" });
-  }
+ }
 }
