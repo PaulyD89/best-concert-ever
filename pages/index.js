@@ -302,7 +302,7 @@ useEffect(() => {
   return () => clearTimeout(timeout);
 }, []);
 
-const fetchDeepCutLineup = async () => {
+const fetchDeepCutLineup = async (market, prompt) => {
   const now = new Date();
   const utcMidnight = new Date();
   utcMidnight.setUTCHours(0, 0, 0, 0);
@@ -314,7 +314,8 @@ const fetchDeepCutLineup = async () => {
   const { data, error } = await supabase
     .from("lineups")
     .select("id, headliner, opener, second_opener, votes")
-    .eq("prompt", dailyPrompt);
+    .eq("prompt", prompt)
+    .eq("market", market);
 
   if (error || !data) return;
 
@@ -759,7 +760,7 @@ useEffect(() => {
   };
 
   fetchRecentLineups();
-  fetchDeepCutLineup();
+  fetchDeepCutLineup(userMarket, dailyPrompt);
 }, [dailyPrompt, userMarket]);
 
 useEffect(() => {
