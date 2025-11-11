@@ -28,15 +28,15 @@ export default async function handler(req, res) {
     
     const subject = isSpanish 
       ? '🎸 ¡Ya estás inscrito!'
-      : '🎸 You're Signed Up!';
+      : '🎸 You\'re Signed Up!';
     
     const heading = isSpanish
       ? '¡Ya estás inscrito!'
-      : 'You're Signed Up!';
+      : 'You\'re Signed Up!';
     
     const bodyText = isSpanish
       ? 'Gracias por unirte a <strong>Best. Concert. Ever</strong>.<br />Recibirás una pregunta diaria + la alineación ganadora del día anterior.'
-      : 'Thanks for joining <strong>Best. Concert. Ever</strong>.<br />You'll get a daily prompt + the winning lineup from the day before.';
+      : 'Thanks for joining <strong>Best. Concert. Ever</strong>.<br />You\'ll get a daily prompt + the winning lineup from the day before.';
     
     const spotifyText = isSpanish
       ? '<a href="https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=a82160ddef1a4ec0" target="_blank" style="color: #1DB954; text-decoration: underline; font-weight: bold;">Sigue</a> la lista de reproducción de Spotify de <strong>Best. Concert. Ever.</strong> para escuchar sets diarios de cada alineación ganadora.'
