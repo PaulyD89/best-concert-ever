@@ -736,30 +736,31 @@ const handleFireVote = async (lineupId, voteType) => {
 };
 
 useEffect(() => {
-  if (dailyPrompt) {
-    performVote(dailyPrompt);
+  if (!dailyPrompt || !userMarket) return; // wait for both
+  
+  performVote(dailyPrompt);
 
-    const fetchRecentLineups = async () => {
-      const { data, error } = await supabase
-        .from("lineups")
-        .select("id, headliner, opener, second_opener, votes, created_at")
-        .eq("prompt", dailyPrompt)
-        .order("created_at", { ascending: false })
-        .limit(6);
+  const fetchRecentLineups = async () => {
+    const { data, error } = await supabase
+      .from("lineups")
+      .select("id, headliner, opener, second_opener, votes, created_at")
+      .eq("prompt", dailyPrompt)
+      .eq("market", userMarket)
+      .order("created_at", { ascending: false })
+      .limit(6);
 
-      if (error || !data) {
-        console.error("Error fetching recent lineups:", error);
-        setRecentLineups([]);
-        return;
-      }
+    if (error || !data) {
+      console.error("Error fetching recent lineups:", error);
+      setRecentLineups([]);
+      return;
+    }
 
-      setRecentLineups(data);
-    };
+    setRecentLineups(data);
+  };
 
-    fetchRecentLineups();
-    fetchDeepCutLineup();
-  }
-}, [dailyPrompt]);
+  fetchRecentLineups();
+  fetchDeepCutLineup();
+}, [dailyPrompt, userMarket]);
 
 useEffect(() => {
   async function updateYesterdayPrompt() {
