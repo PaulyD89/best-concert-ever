@@ -113,6 +113,7 @@ const LineupSlot = ({ artist, label }) => (
 
 export default function BestConcertEver() {
   const [dailyPrompt, setDailyPrompt] = useState(null);
+  const [userMarket, setUserMarket] = useState('US');
   const [lockedHeadliner, setLockedHeadliner] = useState(null);
   const [yesterdayPrompt, setYesterdayPrompt] = useState(null);
   const [weeklyTopPromoters, setWeeklyTopPromoters] = useState([]);
@@ -121,6 +122,66 @@ export default function BestConcertEver() {
   const [selectedPromoter, setSelectedPromoter] = useState(null);
   const [showPromoterModal, setShowPromoterModal] = useState(false);
   const [promoterDetails, setPromoterDetails] = useState(null);
+
+// ============================================
+// MARKET DETECTION
+// ============================================
+async function detectUserMarket() {
+  try {
+    // Check if we already detected the market
+    const storedMarket = localStorage.getItem('bce_market');
+    if (storedMarket) {
+      console.log('✅ Market from cache:', storedMarket);
+      return storedMarket;
+    }
+
+    console.log('🌍 Detecting user market...');
+    
+    // Use ipapi.co for geolocation (free: 1000 requests/day)
+    const response = await fetch('https://ipapi.co/json/');
+    const data = await response.json();
+    
+    console.log('📍 Location data:', data.country_code, data.country_name);
+    
+    // Determine market based on country code
+    const market = data.country_code === 'MX' ? 'MX' : 'US';
+    
+    // Store in localStorage to avoid repeated API calls
+    localStorage.setItem('bce_market', market);
+    
+    console.log('✅ Market detected:', market);
+    return market;
+  } catch (error) {
+    console.error('❌ Market detection failed:', error);
+    // Default to US if detection fails
+    localStorage.setItem('bce_market', 'US');
+    return 'US';
+  }
+}
+
+// Detect market on component mount
+useEffect(() => {
+  async function initMarket() {
+    const market = await detectUserMarket();
+    setUserMarket(market);
+    
+    // Optional: Track in analytics
+    if (typeof window !== "undefined" && window.plausible) {
+      window.plausible("Market Detected", { props: { market } });
+    }
+  }
+  
+  initMarket();
+}, []);
+
+// ============================================
+// END MARKET DETECTION
+// ============================================
+
+// Your existing useEffect with restore link starts here...
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  // ... rest of your existing code
 
 useEffect(() => {
   const params = new URLSearchParams(window.location.search);
@@ -1462,6 +1523,12 @@ setIsSubmitting(false);
 
   return (
     <div className="flex flex-col items-center justify-start min-h-screen py-10 px-4 bg-gradient-to-b from-[#0f0f0f] to-[#1e1e1e] text-white font-sans">
+
+{/* Market Indicator */}
+    <div className="fixed top-4 right-4 bg-black/50 px-3 py-1 rounded-full text-xs text-yellow-400 border border-yellow-400/30 backdrop-blur-sm z-50">
+      🌍 {userMarket === 'MX' ? 'México' : 'USA'}
+    </div>
+
 {showHowToPlay && (
         <div className="fixed inset-0 z-50 flex justify-center items-center transition-opacity duration-300 bg-black/40 backdrop-blur-sm">
           <div className="bg-[#fdf6e3] text-black p-6 rounded-2xl w-[90%] max-w-xl text-left relative shadow-2xl border-[6px] border-black border-double">
