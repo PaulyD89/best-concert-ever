@@ -25,21 +25,36 @@ export default async function handler(req, res) {
     // Get today's date
     const today = new Date().toISOString().split('T')[0];
 
-    // Check if this IP has already voted today
+    // Get the market from the lineup to enforce per-market rate limits
+    const { data: lineupData, error: lineupFetchError } = await supabase
+      .from('lineups')
+      .select('market')
+      .eq('id', lineupId)
+      .single();
+
+    if (lineupFetchError || !lineupData) {
+      console.error('Error fetching lineup for market check:', lineupFetchError);
+      return res.status(404).json({ error: 'Lineup not found' });
+    }
+
+    const market = lineupData.market || 'US';
+
+    // Check if this IP has already voted today IN THIS MARKET
     const { data: existingVotes, error: checkError } = await supabase
       .from('vote_attempts')
       .select('*')
       .eq('ip_address', userIP)
-      .eq('date', today);
+      .eq('date', today)
+      .eq('market', market);
 
     if (checkError) {
       console.error('Error checking vote attempts:', checkError);
       return res.status(500).json({ error: 'Database error checking votes' });
     }
 
-    // IP rate limit: 1 vote per IP per day
+    // IP rate limit: 1 vote per IP per market per day
     if (existingVotes && existingVotes.length >= 1) {
-      console.log('⛔ IP already voted today:', userIP);
+      console.log('⛔ IP already voted today in market:', userIP, market);
       return res.status(429).json({ 
         error: 'Daily vote limit reached. Come back tomorrow to vote again!' 
       });
@@ -76,7 +91,8 @@ export default async function handler(req, res) {
         ip_address: userIP,
         lineup_id: lineupId,
         prompt: prompt,
-        date: today
+        date: today,
+        market: market
       });
 
     if (recordError) {
