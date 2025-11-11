@@ -1852,8 +1852,13 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   {userMarket === 'MX' ? 'Cómo Jugar' : 'How to Play'}
 </div>
 
-<div className="mb-8 text-sm text-gray-300 underline cursor-pointer hover:text-white" onClick={() => setShowEmailSignup(true)}>
-  Sign Up for Daily Puzzles & Winners
+<div
+  className="mb-8 text-sm text-gray-300 underline cursor-pointer hover:text-white"
+  onClick={() => setShowEmailSignup(true)}
+>
+  {userMarket === 'MX'
+    ? 'Suscríbete para recibir el juego diario y los ganadores'
+    : 'Sign Up for Daily Puzzles & Winners'}
 </div>
 
 {ticketReady && lineupReady && (
