@@ -1124,8 +1124,12 @@ const fetchHighestDecibel = async () => {
 
     fetchUserStats();
     fetchHighestDecibel();
-    fetchWeeklyTopPromoters().then(promoters => setWeeklyTopPromoters(promoters));
-    fetchMonthlyTopPromoters().then(promoters => setMonthlyTopPromoters(promoters));
+    
+    // Only fetch leaderboards when userMarket is set
+    if (userMarket) {
+      fetchWeeklyTopPromoters().then(promoters => setWeeklyTopPromoters(promoters));
+      fetchMonthlyTopPromoters().then(promoters => setMonthlyTopPromoters(promoters));
+    }
 
     const fetchMostVotedLineup = async () => {
       const userId = localStorage.getItem("bce_user_id");
@@ -1159,7 +1163,7 @@ const normalize = (artist) => {
 };
 
   return () => clearTimeout(bounceTimeout);
-}, []);
+}, [userMarket]);
 
 useEffect(() => {
   if (!dailyPrompt) return; // wait for the correct prompt
