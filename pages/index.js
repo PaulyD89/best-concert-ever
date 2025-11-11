@@ -175,7 +175,20 @@ if (data.country_code === 'MX') {
 // Detect market on component mount
 useEffect(() => {
   async function initMarket() {
+    // First check if we need to clear user data due to market switch
+    const storedMarket = localStorage.getItem('bce_market');
+    
+    // Detect current market (this will use cached if available)
     const market = await detectUserMarket();
+    
+    // If market changed and user has an ID, clear user data for fresh start
+    const currentUserId = localStorage.getItem('bce_user_id');
+    if (storedMarket && storedMarket !== market && currentUserId) {
+      console.log(`📍 Market switched from ${storedMarket} to ${market} - clearing user data for fresh start`);
+      // Clear user ID for new market - fresh start
+      localStorage.removeItem('bce_user_id');
+    }
+    
     setUserMarket(market);
     
     // Optional: Track in analytics
@@ -761,21 +774,28 @@ useEffect(() => {
     const formattedYesterday = `${yyyy}-${mm}-${dd}`;
 
     if (today >= cutoff) {
+      // Use market-specific prompt table
+      const tableName = userMarket === 'MX' ? 'prompts_mx' : 'prompts';
+      
       const { data, error } = await supabase
-        .from("prompts")
+        .from(tableName)
         .select("prompt")
         .eq("prompt_date", formattedYesterday)
         .single();
 
       if (error || !data) {
-        console.error("Failed to fetch yesterday's prompt from database:", error);
+        console.error(`Failed to fetch yesterday's prompt from ${tableName}:`, error);
       } else {
         setYesterdayPrompt(data.prompt);
       }
     }
   }
-  updateYesterdayPrompt();
-}, []);
+  
+  // Only run when userMarket is set
+  if (userMarket) {
+    updateYesterdayPrompt();
+  }
+}, [userMarket]);
 
 useEffect(() => {
   const fetchPastWinners = async () => {
@@ -788,8 +808,11 @@ useEffect(() => {
     const startDate = new Date(endDate);
     startDate.setUTCDate(endDate.getUTCDate() - 6);
 
+    // Use market-specific prompt table
+    const tableName = userMarket === 'MX' ? 'prompts_mx' : 'prompts';
+    
     const { data: promptsData, error: promptError } = await supabase
-      .from("prompts")
+      .from(tableName)
       .select("prompt, prompt_date")
       .gte("prompt_date", startDate.toISOString().split("T")[0])
       .lte("prompt_date", endDate.toISOString().split("T")[0])
@@ -805,7 +828,8 @@ useEffect(() => {
       const { data: lineupsData, error: lineupsError } = await supabase
         .from("lineups")
         .select("headliner, opener, second_opener, votes, user_id")
-        .eq("prompt", p.prompt);
+        .eq("prompt", p.prompt)
+        .eq("market", userMarket);
 
       if (lineupsError || !lineupsData) continue;
 
@@ -835,10 +859,10 @@ const filteredResults = results.filter(r => r.prompt !== yesterdayPrompt);
 setPastWinners(filteredResults);
   };
 
-  if (yesterdayPrompt) {
+  if (yesterdayPrompt && userMarket) {
     fetchPastWinners();
   }
-}, [yesterdayPrompt]);
+}, [yesterdayPrompt, userMarket]);
 
   const [userStats, setUserStats] = useState(null);
   const [mostVotedLineup, setMostVotedLineup] = useState(null);
@@ -1194,13 +1218,14 @@ useEffect(() => {
 }, [dailyPrompt]);
 
 useEffect(() => {
-  if (!yesterdayPrompt) return; // don't run until it's ready
+  if (!yesterdayPrompt || !userMarket) return; // wait for both to be ready
 
   const fetchYesterdaysWinner = async () => {
     const { data, error } = await supabase
       .from("lineups")
       .select("headliner, opener, second_opener, votes, user_id")
-      .eq("prompt", yesterdayPrompt);
+      .eq("prompt", yesterdayPrompt)
+      .eq("market", userMarket);
 
     if (error || !data) return;
 
@@ -1247,7 +1272,7 @@ useEffect(() => {
   };
 
   fetchYesterdaysWinner();
-}, [yesterdayPrompt]); // <-- dependency on yesterdayPrompt 
+}, [yesterdayPrompt, userMarket]);
 
   const [headliner, setHeadliner] = useState(null);
   const [opener, setOpener] = useState(null);
