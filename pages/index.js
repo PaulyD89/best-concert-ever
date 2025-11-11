@@ -1764,10 +1764,10 @@ setIsSubmitting(false);
   {isSubmitting ? (
     <span className="flex items-center gap-2">
       <span className="animate-speaker-pulse">🔊</span>
-      Calculating Decibel Level...
+      {userMarket === 'MX' ? 'Calculando Nivel de Decibeles...' : 'Calculating Decibel Level...'}
     </span>
   ) : (
-    "Submit Lineup"
+    {userMarket === 'MX' ? 'Enviar Lineup' : 'Submit Lineup'}
   )}
 </button>
           <button
@@ -1835,7 +1835,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
                 : "text-gray-400 border-gray-500 cursor-not-allowed"
             }`}
           >
-            Download Lineup
+            {userMarket === 'MX' ? 'Descargar Lineup' : 'Download Lineup'}
           </button>
         </div>
       </div>
