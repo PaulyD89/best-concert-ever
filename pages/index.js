@@ -1588,18 +1588,38 @@ setIsSubmitting(false);
             >
               &times;
             </button>
-            <h2 className="text-2xl font-bold mb-4">HOW TO PLAY</h2>
-            <ul className="list-disc pl-5 space-y-2 text-sm">
-              <li>Time to flex those Music Promoter skills and show everyone you know how to assemble the ULTIMATE CONCERT LINE-UP!</li>
-              <li>CHECK THE DAILY PROMPT for the genre of the show you&apos;re promoting.</li>
-              <li>Use the drop-down menus to select THREE ARTISTS who fit the bill.</li>
-              <li>CHOOSE THE ORDER of your show - the OPENER, 2ND OPENER and HEADLINER.</li>
-              <li>Once you have made your selections, hit <b>SUBMIT LINEUP</b>. Click SHARE YOUR LINEUP to announce your show and get votes.</li>
-              <li>All lineups benefit from a <b>DECIBEL LEVEL</b> boost, granting bonus votes based on artists daily industry buzz.</li>
-              <li>Today&apos;s TOP 10 will be posted daily. <b>VOTE</b> for your favorite lineup from the Top 10 or Recent Drops by clicking the FIRE 🔥 EMOJI. Sometimes a player&apos;s DEEP CUT may appear as well.</li>
-              <li>Lineups with the MOST VOTES will win the day. Win points, unlock badges and promoter awards. Bragging rights, baby!</li>
-              <li>NEW GAMES and YESTERDAY&apos;S WINNERS are posted every single day at 5pm PST.</li>
-            </ul>
+                       {userMarket === 'MX' ? (
+              <div>
+                <h2 className="text-2xl font-bold mb-4">CÓMO JUGAR</h2>
+                <ul className="list-disc pl-5 space-y-2 text-sm">
+                  <li>Es hora de lucir tus habilidades como promotor musical y demostrar que sabes armar el MEJOR CARTEL.</li>
+                  <li><b>REVISA EL PROMPT DIARIO</b> para ver el género del show que vas a promover.</li>
+                  <li>Usa los menús desplegables para elegir <b>TRES ARTISTAS</b> que encajen con la temática.</li>
+                  <li><b>ELIGE EL ORDEN</b> del show: <b>Telonero</b>, <b>2º Telonero</b> y <b>Cabeza de cartel</b>.</li>
+                  <li>Cuando termines, pulsa <b>ENVIAR ALINEACIÓN</b> y luego <b>COMPARTIR ALINEACIÓN</b> para anunciar tu show y conseguir votos.</li>
+                  <li>Todas las alineaciones reciben un <b>NIVEL DE DECIBELIOS (dB)</b> que otorga <b>votos extra</b> según el impulso diario de tus artistas.</li>
+                  <li>El <b>TOP 10</b> del día se publica a diario. Vota tocando el <b>emoji de fuego 🔥</b> en las alineaciones que te encanten.</li>
+                  <li>Las alineaciones con <b>MÁS VOTOS</b> ganan el día: suben en los rankings, desbloquean insignias y premios de promotor. ¡Derechos de presumir incluidos!</li>
+                  <li><b>NUEVOS JUEGOS</b> y <b>GANADORES DE AYER</b> se publican todos los días a las 5pm PST.</li>
+                </ul>
+              </div>
+            ) : (
+              <div>
+                <h2 className="text-2xl font-bold mb-4">HOW TO PLAY</h2>
+                <ul className="list-disc pl-5 space-y-2 text-sm">
+                  <li>Time to flex those Music Promoter skills and show everyone you know how to assemble the ULTIMATE CONCERT LINE-UP!</li>
+                  <li>CHECK THE DAILY PROMPT for the genre of the show you&apos;re promoting.</li>
+                  <li>Use the drop-down menus to select THREE ARTISTS who fit the bill.</li>
+                  <li>CHOOSE THE ORDER of your show - the OPENER, 2ND OPENER and HEADLINER.</li>
+                  <li>Once you have made your selections, hit <b>SUBMIT LINEUP</b> and then click <b>SHARE YOUR LINEUP</b> to announce your show and get votes.</li>
+                  <li>All lineups benefit from a <b>DECIBEL LEVEL</b> score that can grant <b>bonus votes</b> based on artists&apos; daily industry buzz.</li>
+                  <li>Today&apos;s TOP 10 will be posted daily. <b>VOTE</b> by tapping the <b>FIRE EMOJI</b>. Sometimes a player&apos;s <b>DEEP CUT</b> may appear as well.</li>
+                  <li>Lineups with the MOST VOTES will win the day, rise in the rankings, unlock badges and promoter awards. Bragging rights, baby!</li>
+                  <li><b>NEW GAMES</b> and <b>YESTERDAY&apos;S WINNERS</b> are posted every single day at 5pm PST.</li>
+                </ul>
+              </div>
+            )}
+
             <div className="text-center mt-6">
               <button
                 onClick={() => setShowHowToPlay(false)}
@@ -1617,7 +1637,7 @@ setIsSubmitting(false);
     <div className="relative max-w-[90%] w-[420px] rounded-2xl shadow-2xl border-4 border-white overflow-hidden">
       <img
         src="/howtoplayinfographic.png"
-        alt="How to Play"
+        alt={userMarket === 'MX' ? 'Cómo jugar' : 'How to Play'}
         className="w-full h-auto object-contain"
       />
       <button
@@ -1829,8 +1849,9 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     }
   }}
 >
-  How to Play
+  {userMarket === 'MX' ? 'Cómo jugar' : 'How to Play'}
 </div>
+
 <div className="mb-8 text-sm text-gray-300 underline cursor-pointer hover:text-white" onClick={() => setShowEmailSignup(true)}>
   Sign Up for Daily Puzzles & Winners
 </div>
