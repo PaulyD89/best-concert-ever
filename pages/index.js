@@ -2199,14 +2199,18 @@ await navigator.share({
       >
         &times;
       </button>
-      <h2 className="text-2xl font-bold mb-4">Get Daily Prompts & Winners</h2>
+      <h2 className="text-2xl font-bold mb-4">
+  {userMarket === 'MX' ? 'Recibe el Juego Diario y los Ganadores' : 'Get Daily Prompts & Winners'}
+</h2>
       {emailSubmitted ? (
-        <p className="text-green-600 font-semibold">Thanks for subscribing! 🎉</p>
+        <p className="text-green-600 font-semibold">
+  {userMarket === 'MX' ? '¡Gracias por suscribirte! 🎉' : 'Thanks for subscribing! 🎉'}
+</p>
       ) : (
         <>
           <input
             type="email"
-            placeholder="Enter your email"
+            placeholder={userMarket === 'MX' ? 'Ingresa tu correo electrónico' : 'Enter your email'}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full px-4 py-2 border border-black rounded-md mb-4"
@@ -2215,17 +2219,32 @@ await navigator.share({
             onClick={handleEmailSignup}
             className="w-full bg-black text-yellow-300 py-2 rounded-full font-bold hover:bg-yellow-300 hover:text-black transition"
           >
-            Subscribe
+            {userMarket === 'MX' ? 'Suscribirse' : 'Subscribe'}
           </button>
           <p className="mt-3 text-[12px] leading-snug text-gray-600 text-center">
-  By signing up, you agree to our{" "}
-  <button
-    type="button"
-    onClick={() => setShowPrivacyPolicy(true)}
-    className="underline hover:text-black"
-  >
-    Privacy Policy
-  </button>.
+  {userMarket === 'MX' ? (
+    <>
+      Al registrarte, aceptas nuestra{" "}
+      <button
+        type="button"
+        onClick={() => setShowPrivacyPolicy(true)}
+        className="underline hover:text-black"
+      >
+        Política de Privacidad
+      </button>.
+    </>
+  ) : (
+    <>
+      By signing up, you agree to our{" "}
+      <button
+        type="button"
+        onClick={() => setShowPrivacyPolicy(true)}
+        className="underline hover:text-black"
+      >
+        Privacy Policy
+      </button>.
+    </>
+  )}
 </p>
         </>
       )}
@@ -2244,17 +2263,25 @@ await navigator.share({
         &times;
       </button>
 
-      <h2 className="text-2xl font-bold mb-3">Privacy Policy</h2>
+      <h2 className="text-2xl font-bold mb-3">
+  {userMarket === 'MX' ? 'Política de Privacidad' : 'Privacy Policy'}
+</h2>
 
       <p className="text-sm mb-3">
-        We only collect your email to send you the daily prompt and winners. We don’t sell or rent your data.
-      </p>
+  {userMarket === 'MX' 
+    ? 'Solo recopilamos tu correo electrónico para enviarte el juego diario y los ganadores. No vendemos ni alquilamos tus datos.'
+    : 'We only collect your email to send you the daily prompt and winners. We don\'t sell or rent your data.'}
+</p>
       <p className="text-sm mb-3">
-        You can unsubscribe anytime via the link in our emails.
-      </p>
+  {userMarket === 'MX'
+    ? 'Puedes cancelar tu suscripción en cualquier momento a través del enlace en nuestros correos.'
+    : 'You can unsubscribe anytime via the link in our emails.'}
+</p>
       <p className="text-sm">
-        Questions? <a href="mailto:support@bestconcertevergame.com" className="underline">support@bestconcertevergame.com</a>
-      </p>
+  {userMarket === 'MX' 
+    ? <>¿Preguntas? <a href="mailto:support@bestconcertevergame.com" className="underline">support@bestconcertevergame.com</a></>
+    : <>Questions? <a href="mailto:support@bestconcertevergame.com" className="underline">support@bestconcertevergame.com</a></>}
+</p>
 
       <div className="mt-5 text-center">
         <button
@@ -2262,7 +2289,7 @@ await navigator.share({
           onClick={() => setShowPrivacyPolicy(false)}
           className="inline-block bg-black text-yellow-300 px-5 py-2 rounded-full font-bold hover:bg-yellow-300 hover:text-black transition"
         >
-          Back to Sign Up
+          {userMarket === 'MX' ? 'Volver al Registro' : 'Back to Sign Up'}
         </button>
       </div>
     </div>
