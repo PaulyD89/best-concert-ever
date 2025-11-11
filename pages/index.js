@@ -1622,11 +1622,11 @@ setIsSubmitting(false);
 
             <div className="text-center mt-6">
               <button
-                onClick={() => setShowHowToPlay(false)}
-                className="inline-block bg-black text-white text-lg px-6 py-2 rounded-full border-2 border-black shadow-md hover:bg-yellow-300 hover:text-black"
-              >
-                Let&apos;s Play!
-              </button>
+  onClick={() => setShowHowToPlay(false)}
+  className="inline-block bg-black text-white text-lg px-6 py-2 rounded-full border-2 border-black shadow-md hover:bg-yellow-300 hover:text-black"
+>
+  {userMarket === 'MX' ? '¡A Jugar!' : "Let's Play!"}
+</button>
             </div>
           </div>
         </div>
@@ -1849,7 +1849,7 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     }
   }}
 >
-  {userMarket === 'MX' ? 'Cómo jugar' : 'How to Play'}
+  {userMarket === 'MX' ? 'Cómo Jugar' : 'How to Play'}
 </div>
 
 <div className="mb-8 text-sm text-gray-300 underline cursor-pointer hover:text-white" onClick={() => setShowEmailSignup(true)}>
