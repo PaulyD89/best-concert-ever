@@ -335,10 +335,11 @@ const fetchWeeklyTopPromoters = async () => {
     
     while (hasMore) {
       const { data: recentLineups, error: lineupsError } = await supabase
-        .from("lineups")
-        .select("user_id, votes, created_at")
-        .gte("created_at", dateString)
-        .range(from, from + pageSize - 1);
+  .from("lineups")
+  .select("user_id, votes, created_at")
+  .eq("market", userMarket)
+  .gte("created_at", dateString)
+  .range(from, from + pageSize - 1);
       
       if (lineupsError) {
         console.error("❌ Lineups error:", lineupsError);
@@ -454,9 +455,10 @@ const fetchMonthlyTopPromoters = async () => {
     
     while (hasMore) {
       const { data: recentLineups, error: lineupsError } = await supabase
-        .from("lineups")
-        .select("user_id, votes, created_at")
-        .gte("created_at", dateString)
+  .from("lineups")
+  .select("user_id, votes, created_at")
+  .eq("market", userMarket)
+  .gte("created_at", dateString)
         .range(from, from + pageSize - 1);
       
       if (lineupsError) {
@@ -1015,7 +1017,10 @@ const handleEmailSignup = async () => {
     const res = await fetch("/api/subscribe", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ 
+        email,
+        market: userMarket
+      })
     });
     if (res.ok) {
       setEmailSubmitted(true);

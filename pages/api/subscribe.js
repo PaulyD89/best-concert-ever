@@ -10,12 +10,16 @@ const supabase = createClient(
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ message: 'Method not allowed' });
 
-  const { email } = req.body;
-  if (!email || !email.includes('@')) return res.status(400).json({ message: 'Invalid email' });
+const { email, market } = req.body;
+if (!email || !email.includes('@')) return res.status(400).json({ message: 'Invalid email' });
 
   try {
     // Save email to Supabase
-    const { error: insertError } = await supabase.from('subscribers').insert([{ email }]);
+    // Save email to Supabase
+const { error: insertError } = await supabase.from('subscribers').insert([{ 
+  email,
+  market: market || 'US'  // Save market, default to US if not provided
+}]);
     if (insertError) {
       console.error('Insert error:', insertError);
     }
