@@ -120,7 +120,7 @@ const LineupSlot = ({ artist, label }) => (
 
 export default function BestConcertEver() {
   const [dailyPrompt, setDailyPrompt] = useState(null);
-  const [userMarket, setUserMarket] = useState('US');
+  const [userMarket, setUserMarket] = useState(null);
   const [lockedHeadliner, setLockedHeadliner] = useState(null);
   const [yesterdayPrompt, setYesterdayPrompt] = useState(null);
   const [weeklyTopPromoters, setWeeklyTopPromoters] = useState([]);
