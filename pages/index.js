@@ -144,7 +144,14 @@ async function detectUserMarket() {
     console.log('📍 Location data:', data.country_code, data.country_name);
     
     // Determine market based on country code
-    const market = data.country_code === 'MX' ? 'MX' : 'US';
+let market;
+if (data.country_code === 'MX') {
+  market = 'MX';
+} else if (data.country_code === 'US') {
+  market = 'US';
+} else {
+  market = 'GLOBAL';
+}
     
     // Store in localStorage to avoid repeated API calls
     localStorage.setItem('bce_market', market);
@@ -1521,8 +1528,8 @@ setIsSubmitting(false);
 
 {/* Market Indicator */}
     <div className="fixed top-4 right-4 bg-black/50 px-3 py-1 rounded-full text-xs text-yellow-400 border border-yellow-400/30 backdrop-blur-sm z-50">
-      🌍 {userMarket === 'MX' ? 'México' : 'USA'}
-    </div>
+  🌍 {userMarket === 'MX' ? 'México' : userMarket === 'US' ? 'USA' : 'Global'}
+</div>
 
 {showHowToPlay && (
         <div className="fixed inset-0 z-50 flex justify-center items-center transition-opacity duration-300 bg-black/40 backdrop-blur-sm">
