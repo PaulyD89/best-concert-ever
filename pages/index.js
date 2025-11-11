@@ -150,14 +150,13 @@ async function detectUserMarket() {
     
     console.log('📍 Location data:', data.country_code, data.country_name);
     
-    // Determine market based on country code
+ // Determine market based on country code
+// GLOBAL users are treated as US in backend but shown as "Global" in UI
 let market;
 if (data.country_code === 'MX') {
   market = 'MX';
-} else if (data.country_code === 'US') {
-  market = 'US';
 } else {
-  market = 'GLOBAL';
+  market = 'US';  // Everyone else (including GLOBAL) uses US backend
 }
     
     // Store in localStorage to avoid repeated API calls
@@ -1540,7 +1539,7 @@ setIsSubmitting(false);
 
 {/* Market Indicator */}
     <div className="fixed top-4 right-4 bg-black/50 px-3 py-1 rounded-full text-xs text-yellow-400 border border-yellow-400/30 backdrop-blur-sm z-50">
-  🌍 {userMarket === 'MX' ? 'México' : userMarket === 'US' ? 'USA' : 'Global'}
+  🌍 {userMarket === 'MX' ? 'México' : 'Global'}
 </div>
 
 {showHowToPlay && (
