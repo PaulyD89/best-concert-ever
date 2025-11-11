@@ -1767,7 +1767,7 @@ setIsSubmitting(false);
       {userMarket === 'MX' ? 'Calculando Nivel de Decibeles...' : 'Calculating Decibel Level...'}
     </span>
   ) : (
-    {userMarket === 'MX' ? 'Enviar Lineup' : 'Submit Lineup'}
+    userMarket === 'MX' ? 'Enviar Lineup' : 'Submit Lineup'
   )}
 </button>
           <button
