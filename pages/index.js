@@ -1167,13 +1167,14 @@ const normalize = (artist) => {
 }, [userMarket]);
 
 useEffect(() => {
-  if (!dailyPrompt) return; // wait for the correct prompt
+  if (!dailyPrompt || !userMarket) return; // wait for both
 
   const fetchTopLineups = async () => {
     const { data, error } = await supabase
       .from("lineups")
       .select("id, headliner, opener, second_opener, votes")
-      .eq("prompt", dailyPrompt);
+      .eq("prompt", dailyPrompt)
+      .eq("market", userMarket);
 
     if (!error && data) {
       const countMap = {};
@@ -1220,7 +1221,7 @@ useEffect(() => {
   };
 
   fetchTopLineups();
-}, [dailyPrompt]);
+}, [dailyPrompt, userMarket]);
 
 useEffect(() => {
   if (!yesterdayPrompt || !userMarket) return; // wait for both to be ready
