@@ -1455,7 +1455,8 @@ const response = await fetch('/api/submit-lineup', {
     secondOpener: enrichedSecondOpener,
     userId: userId,
     decibelScore: decibelLevel,
-    bonusVotes: bonusVotes
+    bonusVotes: bonusVotes,
+    market: userMarket
   })
 });
 

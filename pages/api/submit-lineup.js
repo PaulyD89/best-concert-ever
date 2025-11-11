@@ -8,14 +8,15 @@ export default async function handler(req, res) {
 
   try {
     const { 
-      prompt, 
-      headliner, 
-      opener, 
-      secondOpener, 
-      userId, 
-      decibelScore,
-      bonusVotes 
-    } = req.body;
+    prompt, 
+    headliner, 
+    opener, 
+    secondOpener, 
+    userId, 
+    decibelScore,
+    bonusVotes,
+    market
+} = req.body;
 
     // Validate input
     if (!prompt || !headliner || !opener || !secondOpener || !userId) {
@@ -55,19 +56,20 @@ export default async function handler(req, res) {
 
     // Insert the lineup with IP address
     const { data: inserted, error: insertError } = await supabase
-      .from('lineups')
-      .insert([{
-        prompt: prompt,
-        headliner: headliner,
-        opener: opener,
-        second_opener: secondOpener,
-        user_id: userId,
-        decibel_score: decibelScore,
-        votes: bonusVotes || 0,
-        ip_address: userIP
-      }])
-      .select('id')
-      .single();
+  .from('lineups')
+  .insert([{
+    prompt: prompt,
+    headliner: headliner,
+    opener: opener,
+    second_opener: secondOpener,
+    user_id: userId,
+    decibel_score: decibelScore,
+    votes: bonusVotes || 0,
+    ip_address: userIP,
+    market: market || 'US'  // ADD THIS LINE - defaults to US if not provided
+  }])
+  .select('id')
+  .single();
 
     if (insertError) {
       console.error('Error inserting lineup:', insertError);
