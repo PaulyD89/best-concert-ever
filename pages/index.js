@@ -178,11 +178,6 @@ useEffect(() => {
 // END MARKET DETECTION
 // ============================================
 
-// Your existing useEffect with restore link starts here...
-useEffect(() => {
-  const params = new URLSearchParams(window.location.search);
-  // ... rest of your existing code
-
 useEffect(() => {
   const params = new URLSearchParams(window.location.search);
   const restoreId = params.get("restore");
