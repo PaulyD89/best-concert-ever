@@ -1,24 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 
-async function fetchDatabasePrompt() {
+async function fetchDatabasePrompt(market = 'US') {
   const today = new Date();
   const yyyy = today.getUTCFullYear();
   const mm = String(today.getUTCMonth() + 1).padStart(2, "0");
   const dd = String(today.getUTCDate()).padStart(2, "0");
   const formattedDate = `${yyyy}-${mm}-${dd}`;
 
- const { data, error } = await supabase
-  .from("prompts")
-  .select("prompt, locked_headliner_data")
-  .eq("prompt_date", formattedDate)
-  .single();
+  // Determine which table to use based on market
+  // GLOBAL users get US prompts for now
+  const tableName = market === 'MX' ? 'prompts_mx' : 'prompts';
+  
+  console.log(`📅 Fetching prompt from ${tableName} for ${formattedDate}`);
+
+  const { data, error } = await supabase
+    .from(tableName)
+    .select("prompt, locked_headliner_data")
+    .eq("prompt_date", formattedDate)
+    .single();
 
   if (error || !data) {
-    console.error("Failed to fetch prompt from database:", error);
+    console.error(`Failed to fetch prompt from ${tableName}:`, error);
     return null;
   }
 
+  console.log(`✅ Prompt loaded: ${data.prompt}`);
   return { prompt: data.prompt, lockedHeadliner: data.locked_headliner_data || null };
 }
 
@@ -232,7 +239,8 @@ useEffect(() => {
     let promptToUse = "";
 
 if (today >= cutoff) {
-  const dbPromptData = await fetchDatabasePrompt();
+  // Pass userMarket to fetch the right prompt
+  const dbPromptData = await fetchDatabasePrompt(userMarket);
 if (dbPromptData) {
   console.log("✅ Prompt pulled from Supabase DB:", dbPromptData.prompt);
   promptToUse = dbPromptData.prompt;
@@ -251,8 +259,11 @@ if (dbPromptData) {
 setDailyPrompt(promptToUse);
   }
 
-  initializePromptAndLineups();
-}, []);
+  // Only initialize once market is detected
+  if (userMarket) {
+    initializePromptAndLineups();
+  }
+}, [userMarket]);
 
 useEffect(() => {
   const todayDate = new Date().toISOString().split('T')[0];
