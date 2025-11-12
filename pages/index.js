@@ -1937,7 +1937,7 @@ await navigator.share({
       
       className="flex items-center space-x-2 bg-black text-cyan-400 font-bold px-6 py-3 rounded-full border-2 border-cyan-400 hover:text-white hover:border-white hover:shadow-lg transition-all duration-300 shadow-[0_0_15px_rgba(0,255,255,0.7)] uppercase tracking-widest"
 >
-  <span>🎟️ Share Lineup / Get Votes</span>
+  <span>{userMarket === 'MX' ? '🎟️ Compartir Lineup / Conseguir Votos' : '🎟️ Share Lineup / Get Votes'}</span>
 </button>
   </div>
 )}
@@ -2092,7 +2092,7 @@ await navigator.share({
 {winningPromoter && (
   <div className="mt-2">
     <span className="inline-block bg-red-500 text-white px-4 py-1 rounded-full text-xs font-bold tracking-wide shadow-md">
-  WINNING PROMOTER: {winningPromoter}
+  {userMarket === 'MX' ? 'PROMOTOR GANADOR:' : 'WINNING PROMOTER:'} {winningPromoter}
 </span>
   </div>
 )}
@@ -2393,7 +2393,7 @@ if (!error) {
                       : "bg-gray-800 text-yellow-400 hover:bg-gray-700"
                   }`}
                 >
-                  Weekly
+                  {userMarket === 'MX' ? 'Semanal' : 'Weekly'}
                 </button>
                 <button
                   onClick={() => {
@@ -2410,15 +2410,15 @@ if (!error) {
                       : "bg-gray-800 text-yellow-400 hover:bg-gray-700"
                   }`}
                 >
-                  Monthly
+                  {userMarket === 'MX' ? 'Mensual' : 'Monthly'}
                 </button>
               </div>
               
               <p className="text-xs text-yellow-300 mb-4 italic">
-                {showMonthlyLeaderboard 
-                  ? "Top 10 Promoters by Votes (Last 30 Days)"
-                  : "Top 10 Promoters by Votes (Last 7 Days)"}
-              </p>
+  {showMonthlyLeaderboard 
+    ? (userMarket === 'MX' ? "Top 10 Promotores por Votos (Últimos 30 Días)" : "Top 10 Promoters by Votes (Last 30 Days)")
+    : (userMarket === 'MX' ? "Top 10 Promotores por Votos (Últimos 7 Días)" : "Top 10 Promoters by Votes (Last 7 Days)")}
+</p>
               
               <ol className="flex flex-col gap-2 text-white">
                 {(showMonthlyLeaderboard ? monthlyTopPromoters : weeklyTopPromoters).map((promoter, index) => (
@@ -2440,17 +2440,17 @@ if (!error) {
                       {promoter.nickname}
                     </span>
                     <span className="text-yellow-400 font-bold">
-                      {promoter.totalPoints} votes
+                      {promoter.totalPoints} {userMarket === 'MX' ? 'votos' : 'votes'}
                     </span>
                   </li>
                 ))}
               </ol>
               
               <p className="mt-4 text-[10px] text-yellow-300">
-                {showMonthlyLeaderboard 
-                  ? "Rolling 30-day leaderboard • Set your nickname to compete"
-                  : "Rolling 7-day leaderboard • Set your nickname to compete"}
-              </p>
+  {showMonthlyLeaderboard 
+    ? (userMarket === 'MX' ? "Tabla de clasificación de 30 días • Establece tu apodo para competir" : "Rolling 30-day leaderboard • Set your nickname to compete")
+    : (userMarket === 'MX' ? "Tabla de clasificación de 7 días • Establece tu apodo para competir" : "Rolling 7-day leaderboard • Set your nickname to compete")}
+</p>
             </div>
           </div>
         </div>
