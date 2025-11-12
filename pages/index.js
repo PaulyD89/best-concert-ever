@@ -2476,20 +2476,20 @@ if (!error) {
       onClick={() => setShowNicknameModal(true)}
       className="bg-green-500 text-black font-bold px-4 py-1 rounded-full text-xs tracking-wide border border-green-300 hover:bg-green-300 transition"
     >
-      Choose Promoter Nickname
+      {userMarket === 'MX' ? 'Elegir Apodo de Promotor' : 'Choose Promoter Nickname'}
     </button>
   </div>
 )}
             <ul className="flex flex-col gap-4 items-center text-white">
-  <li className="text-sm">🎤 Promoted Lineups (So Far): <span className="font-bold">{userStats?.total_lineups_submitted ?? "--"}</span></li>
-  <li className="text-sm">🏆 All-Time Top 10 Hits: <span className="font-bold">{userStats?.total_top_10s ?? "--"}</span></li>
-  <li className="text-sm">🥇 Winning Lineups: <span className="font-bold">{userStats?.total_wins ?? "--"}</span></li>
-  <li className="text-sm">🔊 Highest dB Level: <span className="font-bold">{highestDecibel ?? "--"}</span></li>
-  <li className="text-sm">🔥 Current Streak: <span className="font-bold">{userStats?.current_streak ?? "--"}</span></li>
-  <li className="text-sm">📆 Longest Daily Streak: <span className="font-bold">{userStats?.longest_streak ?? "--"}</span></li>
-  <li className="text-sm">🌍 Global Rank: <span className="font-bold">
-    {userStats?.global_rank ? `#${userStats.global_rank}` : "Not Ranked Yet"}
-  </span></li>
+  <li className="text-sm">{userMarket === 'MX' ? '🎤 Lineups Promocionadas (Hasta Ahora)' : '🎤 Promoted Lineups (So Far)'}: <span className="font-bold">{userStats?.total_lineups_submitted ?? "--"}</span></li>
+  <li className="text-sm">{userMarket === 'MX' ? '🏆 Top 10 Históricos' : '🏆 All-Time Top 10 Hits'}: <span className="font-bold">{userStats?.total_top_10s ?? "--"}</span></li>
+  <li className="text-sm">{userMarket === 'MX' ? '🥇 Lineups Ganadoras' : '🥇 Winning Lineups'}: <span className="font-bold">{userStats?.total_wins ?? "--"}</span></li>
+  <li className="text-sm">{userMarket === 'MX' ? '🔊 Nivel dB Más Alto' : '🔊 Highest dB Level'}: <span className="font-bold">{highestDecibel ?? "--"}</span></li>
+  <li className="text-sm">{userMarket === 'MX' ? '🔥 Racha Actual' : '🔥 Current Streak'}: <span className="font-bold">{userStats?.current_streak ?? "--"}</span></li>
+  <li className="text-sm">{userMarket === 'MX' ? '📆 Racha Diaria Más Larga' : '📆 Longest Daily Streak'}: <span className="font-bold">{userStats?.longest_streak ?? "--"}</span></li>
+  <li className="text-sm">{userMarket === 'MX' ? '🌍 Clasificación Global' : '🌍 Global Rank'}: <span className="font-bold">
+  {userStats?.global_rank ? `#${userStats.global_rank}` : (userMarket === 'MX' ? "Aún Sin Clasificar" : "Not Ranked Yet")}
+</span></li>
 
   {typeof userStats?.global_rank === "number" && (
   <li>
@@ -2500,19 +2500,19 @@ if (!error) {
           ? "bg-yellow-300 text-black animate-pulse"
           : "bg-green-900 text-green-300"}
       `}
-      title="Click to download your badge!"
+      title={userMarket === 'MX' ? "¡Haz clic para descargar tu insignia!" : "Click to download your badge!"}
     >
       {userStats.global_rank <= 10
-        ? "🏆 Elite Promoter"
-        : userStats.global_rank <= 50
-        ? "🌟 Star Booker"
-        : userStats.global_rank <= 100
-        ? "🔥 Fan Favorite"
-        : userStats.global_rank <= 250
-        ? "🎶 Up-And-Comer"
-        : userStats.global_rank <= 500
-        ? "🎤 Opening Act"
-        : null}
+  ? (userMarket === 'MX' ? "🏆 Promotor Élite" : "🏆 Elite Promoter")
+  : userStats.global_rank <= 50
+  ? (userMarket === 'MX' ? "🌟 Contratador Estrella" : "🌟 Star Booker")
+  : userStats.global_rank <= 100
+  ? (userMarket === 'MX' ? "🔥 Favorito de los Fans" : "🔥 Fan Favorite")
+  : userStats.global_rank <= 250
+  ? (userMarket === 'MX' ? "🎶 Talento Emergente" : "🎶 Up-And-Comer")
+  : userStats.global_rank <= 500
+  ? (userMarket === 'MX' ? "🎤 Acto de Apertura" : "🎤 Opening Act")
+  : null}
     </span>
   </li>
 )}
@@ -2552,10 +2552,10 @@ if (!error) {
 />
 <div className="mt-2 text-xs text-white text-center opacity-80 group-hover:opacity-100 transition">
   {type === "streaker"
-    ? "Streaker"
+    ? (userMarket === 'MX' ? "Racha" : "Streaker")
     : type === "hitmaker"
-    ? "Hit Maker"
-    : "Chart Topper"}
+    ? (userMarket === 'MX' ? "Creador de Éxitos" : "Hit Maker")
+    : (userMarket === 'MX' ? "Líder de Listas" : "Chart Topper")}
 </div>
 <div className="w-full h-1 mt-2 bg-gray-800 rounded-full overflow-hidden">
   <div
@@ -2574,7 +2574,7 @@ if (!error) {
 </div>
 
             <div className="mt-6">
-  <h3 className="text-green-300 font-bold mb-2 text-lg">🔥 Most Voted Lineup</h3>
+  <h3 className="text-green-300 font-bold mb-2 text-lg">{userMarket === 'MX' ? '🔥 Lineup Más Votada' : '🔥 Most Voted Lineup'}</h3>
   {mostVotedLineup ? (
     <>
       <div className="flex justify-center gap-4">
@@ -2591,13 +2591,13 @@ if (!error) {
           </div>
         ))}
       </div>
-      <p className="mt-2 text-sm text-green-400">🔥 <span className="font-bold">{mostVotedLineup.votes ?? 0}</span> votes</p>
+      <p className="mt-2 text-sm text-green-400">🔥 <span className="font-bold">{mostVotedLineup.votes ?? 0}</span> {userMarket === 'MX' ? 'votos' : 'votes'}</p>
     </>
   ) : (
-    <p className="text-sm text-green-400">No votes yet.</p>
+    <p className="text-sm text-green-400">{userMarket === 'MX' ? 'Aún sin votos.' : 'No votes yet.'}</p>
   )}
   <p className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-[10px] text-green-300">
-  Stats updated daily at 6:30 PM PST</p>
+  {userMarket === 'MX' ? 'Estadísticas actualizadas diariamente a las 6:30 PM PST' : 'Stats updated daily at 6:30 PM PST'}</p>
 </div>
       </div>
       </div>
