@@ -2119,7 +2119,9 @@ await navigator.share({
   onClick={() => setShowPastWinners(!showPastWinners)}
   className="text-sm text-red-300 underline hover:text-white mb-3"
 >
-  {showPastWinners ? "▲ Hide Last Week's Winners" : "▼ Last Week's Winners"}
+  {showPastWinners 
+  ? (userMarket === 'MX' ? "▲ Ocultar Ganadores de la Semana Pasada" : "▲ Hide Last Week's Winners")
+  : (userMarket === 'MX' ? "▼ Ganadores de la Semana Pasada" : "▼ Last Week's Winners")}
 </button>
 
     <div
