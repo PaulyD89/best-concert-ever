@@ -2673,35 +2673,35 @@ if (!error) {
               <h2 className="text-2xl font-bold text-yellow-400 mb-2">
                 {selectedPromoter?.nickname || "Promoter"}
               </h2>
-              <p className="text-sm text-gray-400">Promoter Profile</p>
+              <p className="text-sm text-gray-400">{userMarket === 'MX' ? 'Perfil de Promotor' : 'Promoter Profile'}</p>
             </div>
             
             {promoterDetails ? (
               <>
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="bg-black/50 rounded-lg p-3 border border-yellow-400/30">
-                    <div className="text-yellow-400 text-xs uppercase mb-1">Global Rank</div>
+                    <div className="text-yellow-400 text-xs uppercase mb-1">{userMarket === 'MX' ? 'Clasificación Global' : 'Global Rank'}</div>
                     <div className="text-white text-2xl font-bold">
                       #{promoterDetails.global_rank || "N/A"}
                     </div>
                   </div>
                   
                   <div className="bg-black/50 rounded-lg p-3 border border-green-400/30">
-                    <div className="text-green-400 text-xs uppercase mb-1">Total Wins</div>
+                    <div className="text-green-400 text-xs uppercase mb-1">{userMarket === 'MX' ? 'Victorias Totales' : 'Total Wins'}</div>
                     <div className="text-white text-2xl font-bold">
                       🥇 {promoterDetails.total_wins || 0}
                     </div>
                   </div>
                   
                   <div className="bg-black/50 rounded-lg p-3 border border-purple-400/30">
-                    <div className="text-purple-400 text-xs uppercase mb-1">Top 10 Hits</div>
+                    <div className="text-purple-400 text-xs uppercase mb-1">{userMarket === 'MX' ? 'Top 10 Éxitos' : 'Top 10 Hits'}</div>
                     <div className="text-white text-2xl font-bold">
                       🏆 {promoterDetails.total_top_10s || 0}
                     </div>
                   </div>
                   
                   <div className="bg-black/50 rounded-lg p-3 border border-orange-400/30">
-                    <div className="text-orange-400 text-xs uppercase mb-1">Longest Streak</div>
+                    <div className="text-orange-400 text-xs uppercase mb-1">{userMarket === 'MX' ? 'Racha Más Larga' : 'Longest Streak'}</div>
                     <div className="text-white text-2xl font-bold">
                       🔥 {promoterDetails.longest_streak || 0}
                     </div>
@@ -2709,7 +2709,7 @@ if (!error) {
                 </div>
                 
                 <div className="mb-6">
-                  <h3 className="text-white font-bold mb-3 text-center">Badges Earned</h3>
+                  <h3 className="text-white font-bold mb-3 text-center">{userMarket === 'MX' ? 'Insignias Ganadas' : 'Badges Earned'}</h3>
                   <div className="flex justify-center gap-3">
                     {["streaker", "hitmaker", "charttopper", "dblevel"].map((type) => {
                       const val =
@@ -2756,7 +2756,13 @@ if (!error) {
                             className="w-16 h-16 rounded-md object-contain"
                           />
                           <div className="text-xs text-gray-400 mt-1">
-                            {type === "streaker" ? "Streaker" : type === "hitmaker" ? "Hit Maker" : type === "charttopper" ? "Chart Topper" : "dB Level"}
+                            {type === "streaker" 
+  ? (userMarket === 'MX' ? "Racha" : "Streaker")
+  : type === "hitmaker" 
+  ? (userMarket === 'MX' ? "Ganador" : "Hit Maker")
+  : type === "charttopper" 
+  ? (userMarket === 'MX' ? "Líder de Listas" : "Chart Topper")
+  : (userMarket === 'MX' ? "Nivel dB" : "dB Level")}
                           </div>
                         </div>
                       );
@@ -2771,7 +2777,7 @@ if (!error) {
                       onClick={handleSharePromoterCard}
                       className="bg-yellow-400 hover:bg-yellow-300 text-black font-bold py-3 px-6 rounded-full transition-all hover:scale-105 shadow-lg"
                     >
-                      📤 Share My Promoter Card
+                      {userMarket === 'MX' ? '📤 Compartir Mi Tarjeta de Promotor' : '📤 Share My Promoter Card'}
                     </button>
                   </div>
                 )}
@@ -2779,7 +2785,7 @@ if (!error) {
                 {promoterDetails.topLineup && (
                   <div className="bg-black/50 rounded-lg p-4 border border-yellow-400/30">
                     <h3 className="text-yellow-400 font-bold mb-3 text-center">
-                      🔥 Most Voted Lineup
+                      {userMarket === 'MX' ? '🔥 Lineup Más Votada' : '🔥 Most Voted Lineup'}
                     </h3>
                     <div className="flex justify-center gap-3 mb-2">
                       {[promoterDetails.topLineup.opener, promoterDetails.topLineup.second_opener, promoterDetails.topLineup.headliner].map((artist, idx) => (
@@ -2796,7 +2802,7 @@ if (!error) {
                       ))}
                     </div>
                     <p className="text-center text-sm text-yellow-400">
-                      {promoterDetails.topLineup.votes || 0} votes
+                      {promoterDetails.topLineup.votes || 0} {userMarket === 'MX' ? 'votos' : 'votes'}
                     </p>
                     <p className="text-center text-xs text-gray-400 mt-1">
                       {promoterDetails.topLineup.prompt}
@@ -2806,7 +2812,7 @@ if (!error) {
               </>
             ) : (
               <div className="text-center text-gray-400 py-8">
-                Loading stats...
+                {userMarket === 'MX' ? 'Cargando estadísticas...' : 'Loading stats...'}
               </div>
             )}
           </div>
