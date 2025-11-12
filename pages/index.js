@@ -2554,7 +2554,7 @@ if (!error) {
   {type === "streaker"
     ? (userMarket === 'MX' ? "Racha" : "Streaker")
     : type === "hitmaker"
-    ? (userMarket === 'MX' ? "Creador de Éxitos" : "Hit Maker")
+    ? (userMarket === 'MX' ? "Ganador" : "Hit Maker")
     : (userMarket === 'MX' ? "Líder de Listas" : "Chart Topper")}
 </div>
 <div className="w-full h-1 mt-2 bg-gray-800 rounded-full overflow-hidden">
@@ -2597,7 +2597,7 @@ if (!error) {
     <p className="text-sm text-green-400">{userMarket === 'MX' ? 'Aún sin votos.' : 'No votes yet.'}</p>
   )}
   <p className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-[10px] text-green-300">
-  {userMarket === 'MX' ? 'Estadísticas actualizadas diariamente a las 6:30 PM PST' : 'Stats updated daily at 6:30 PM PST'}</p>
+  {userMarket === 'MX' ? 'Estadísticas actualizadas diario a las 6:30 PM PST' : 'Stats updated daily at 6:30 PM PST'}</p>
 </div>
       </div>
       </div>
@@ -2609,13 +2609,13 @@ if (!error) {
     className="px-3 py-1.5 rounded-full font-semibold text-xs bg-green-500 text-black shadow-md hover:bg-green-400 hover:scale-105 transition-transform"
     title="Copy a special link you can open on another device to restore your account"
   >
-    Copy Account Link For Other Devices
+    {userMarket === 'MX' ? 'Copiar Enlace de Cuenta Para Otros Dispositivos' : 'Copy Account Link For Other Devices'}
   </button>
 </div>
 
 <div className="mt-8 mb-4 text-center text-xs text-gray-400 flex flex-col items-center">
 
-    <p className="mb-1 tracking-wide text-green-400">Powered by</p>
+    <p className="mb-1 tracking-wide text-green-400">{userMarket === 'MX' ? 'Impulsado por' : 'Powered by'}</p>
     <a
       href="https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=bc22a0a934e44b2e"
       target="_blank"
