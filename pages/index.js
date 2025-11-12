@@ -1914,7 +1914,9 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
 
 const tinyUrl = voteUrl;
 
-const shareText = `Here’s my lineup for “${dailyPrompt}” 🎶🔥 Vote for it: ${tinyUrl} or submit your own! #bestconcertever`;
+const shareText = userMarket === 'MX' 
+  ? `Aquí está mi lineup para "${dailyPrompt}" 🎶🔥 Vota por ella: ${tinyUrl} o envía la tuya! #bestconcertever`
+  : `Here's my lineup for "${dailyPrompt}" 🎶🔥 Vote for it: ${tinyUrl} or submit your own! #bestconcertever`;
 
 await navigator.share({
   title: "Best Concert Ever",
@@ -1923,7 +1925,7 @@ await navigator.share({
 });
         } catch (err) {
           console.error("Share failed:", err);
-          alert("Sharing was cancelled or failed.");
+          alert(userMarket === 'MX' ? "Se canceló o falló al compartir." : "Sharing was cancelled or failed.");
         }
       } else {
         const link = document.createElement("a");
