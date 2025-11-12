@@ -118,6 +118,19 @@ const LineupSlot = ({ artist, label }) => (
   </div>
 );
 
+// Add this function after the LineupSlot component (around line 121)
+const translateLabel = (label, userMarket) => {
+  if (userMarket !== 'MX') return label;
+  
+  const translations = {
+    'Opener': 'Telonero',
+    '2nd Opener': '2º Telonero',
+    'Headliner': 'Cabeza de Cartel'
+  };
+  
+  return translations[label] || label;
+};
+
 export default function BestConcertEver() {
   const [dailyPrompt, setDailyPrompt] = useState(null);
   const [userMarket, setUserMarket] = useState(null);
@@ -1731,24 +1744,24 @@ setIsSubmitting(false);
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-4">
-          <ArtistSearch label="Opener" onSelect={setOpener} disabled={submitted} />
-          <ArtistSearch label="2nd Opener" onSelect={setSecondOpener} disabled={submitted} />
+          <ArtistSearch label={translateLabel("Opener", userMarket)} onSelect={setOpener} disabled={submitted} />
+          <ArtistSearch label={translateLabel("2nd Opener", userMarket)} onSelect={setSecondOpener} disabled={submitted} />
         </div>
 
         <ArtistSearch
-  label="Headliner"
+  label={translateLabel("Headliner", userMarket)}
   onSelect={setHeadliner}
   disabled={submitted || lockedHeadliner !== null}
   locked={lockedHeadliner !== null}
 />
 
         <div className="mt-8 grid grid-cols-2 gap-4 items-start justify-center">
-          <LineupSlot artist={opener} label="Opener" />
-          <LineupSlot artist={secondOpener} label="2nd Opener" />
+          <LineupSlot artist={opener} label={translateLabel("Opener", userMarket)} />
+          <LineupSlot artist={secondOpener} label={translateLabel("2nd Opener", userMarket)} />
         </div>
 
         <div className="mt-4">
-          <LineupSlot artist={headliner} label="Headliner" />
+          <LineupSlot artist={headliner} label={translateLabel("Headliner", userMarket)} />
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
