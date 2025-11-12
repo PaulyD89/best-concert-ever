@@ -1957,7 +1957,7 @@ await navigator.share({
           <div className="absolute inset-0 rounded-xl border-2 border-yellow-400 animate-pulse pointer-events-none"></div>
           <div className="relative bg-black rounded-xl p-6 border-2 border-yellow-400">
             <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-yellow-400 drop-shadow-[0_0_12px_yellow]">
-              {userMarket === 'MX' ? 'Los 10 Mejores de Hoy' : "Today&apos;s Top 10"}
+              {userMarket === 'MX' ? 'Los 10 Mejores de Hoy' : "Today's Top 10"}
             </h2>
             <ul className="flex flex-col gap-4 items-center">
   {lineups.map((lineup, idx) => {
@@ -2064,7 +2064,7 @@ await navigator.share({
 
             <div className="relative bg-black rounded-xl p-6 border-2 border-red-400">
               <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-red-400 drop-shadow-[0_0_12px_red]">
-                {userMarket === 'MX' ? 'Lineup Ganadora de Ayer' : "Yesterday&apos;s Winning Lineup"}
+                {userMarket === 'MX' ? 'Lineup Ganadora de Ayer' : "Yesterday's Winning Lineup"}
               </h2>
               <div className="mb-6 text-base font-extrabold uppercase tracking-widest text-red-400 inline-block px-4 py-1 border-2 border-red-400 rotate-[-2deg] bg-black shadow-md font-mono">
                 {yesterdayPrompt}
