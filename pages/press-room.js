@@ -37,11 +37,108 @@ export default function PressRoom() {
 
         {/* Press Releases Section */}
         <div className="space-y-8">
-          {/* Latest Press Release - November 5, 2025 */}
+          {/* Latest Press Release - November 18, 2025 - Mexico Launch */}
           <div className="bg-gradient-to-br from-gray-900/80 to-black/80 border-2 border-yellow-400/30 rounded-xl p-8 backdrop-blur-sm">
             <div className="border-b border-yellow-400/30 pb-4 mb-6">
               <h2 className="text-3xl font-bold text-yellow-400 mb-2">
                 Latest Press Release
+              </h2>
+              <p className="text-sm text-gray-400">
+                November 18, 2025
+              </p>
+            </div>
+            
+            <div className="prose prose-invert max-w-none">
+              <p className="text-xs text-gray-400 uppercase tracking-wide mb-4">For Immediate Release</p>
+              
+              <h3 className="text-2xl font-bold text-white mb-4">
+                Best. Concert. Ever. Launches Beta Version in Mexico, Expanding Global Music Gaming Platform with Localized Experience
+              </h3>
+              
+              <p className="text-sm text-gray-400 mb-6">
+                <strong>Los Angeles, CA / Ciudad de México - November 18, 2025</strong>
+              </p>
+              
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                Best. Concert. Ever., the daily fantasy concert game where music fans become promoters by building dream lineups and competing for votes, today announced the launch of its beta version in Mexico. The expansion delivers a fully localized Spanish-language experience to one of the world&apos;s most passionate music markets, complete with Mexican-specific daily prompts, leaderboards, and the game&apos;s signature Decibel Level™ scoring system powered by Soundcharts.
+              </p>
+              
+              <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-6">
+                A Native Experience for Mexican Music Fans
+              </h4>
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                The Mexico beta features complete Spanish localization across every aspect of gameplay - from daily prompts and artist selection to voting, sharing, and leaderboard competition. Mexican players will receive unique daily challenges tailored to regional music culture, allowing them to showcase their knowledge of everything from Latin rock legends to contemporary regional Mexican artists alongside global superstars.
+              </p>
+              
+              <p className="text-gray-300 mb-4 leading-relaxed italic">
+                &quot;Mexico has one of the most vibrant and diverse music cultures in the world,&quot; said <strong>Paul Davidson, CEO and Co-Creator of Best. Concert. Ever.</strong> &quot;Our fans there deserve an experience that speaks directly to them - not just in language, but in the artists they&apos;re passionate about and the concerts they dream of promoting. This beta is our commitment to building a truly global community of music lovers who can compete, share, and celebrate the universal language of live music.&quot;
+              </p>
+              
+              <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-6">
+                Soundcharts Partnership Expands to Mexico
+              </h4>
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                Best. Concert. Ever.&apos;s partnership with global music intelligence platform Soundcharts now extends to the Mexican market, ensuring that the Decibel Level™ feature - which awards bonus votes based on real-time streaming data, radio airplay, social media momentum, and playlist performance - accurately reflects music trends across Mexico&apos;s dynamic landscape.
+              </p>
+              
+              <p className="text-gray-300 mb-4 leading-relaxed italic">
+                &quot;The expansion into Mexico represents an exciting evolution for Best. Concert. Ever.,&quot; said <strong>Ben Raab, President and Co-Creator of Best. Concert. Ever.</strong> &quot;Now, Mexican music lovers can compete on their own leaderboards, build lineups that reflect their unique musical perspective, and use the Decibel Level to maximize their chances of winning. The future of music gaming is global, and Mexico is an integral part of that vision.&quot;
+              </p>
+              
+              <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-6">
+                Features Available in Mexico Beta:
+              </h4>
+              <ul className="text-gray-300 space-y-2 mb-4 list-disc pl-6">
+                <li><strong>Fully Localized Spanish Interface</strong> - Every button, message, and instruction in native Spanish</li>
+                <li><strong>Mexican Daily Prompts</strong> - Region-specific themed challenges celebrating Mexican and Latin music culture</li>
+                <li><strong>Decibel Level™ Scoring</strong> - Soundcharts-powered data analytics tracking Mexican music trends</li>
+                <li><strong>Dedicated Leaderboards</strong> - Weekly and Monthly rankings for Mexican Promoters</li>
+                <li><strong>Badge & Reward System</strong> - Unlock achievements for winning lineups and maintaining streaks</li>
+                <li><strong>Social Sharing</strong> - Share lineups and compete with friends across social platforms</li>
+              </ul>
+              
+              <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-6">
+                About the Game
+              </h4>
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                Players select an Opener, 2nd Opener, and Headliner from any artist on Spotify to match daily themed prompts. Each lineup receives a Decibel Level score (1-100) that grants bonus votes based on current industry buzz. The most-voted lineups win the day, earning players badges, climbing global rankings, and cementing their status as elite music Promoters.
+              </p>
+              
+              <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-6">
+                Availability
+              </h4>
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                The Mexico beta is now live at <strong>www.bestconcertevergame.com</strong>. The game automatically detects player location and delivers the appropriate market experience. Mexican players can start building lineups, earning Decibel scores, and competing immediately.
+              </p>
+              
+              <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-8">
+                About Best. Concert. Ever.
+              </h4>
+              <p className="text-gray-300 mb-6 leading-relaxed">
+                Best. Concert. Ever. is the daily fantasy concert game that gamifies music fandom. Each day, players step into the role of concert promoters, building dream lineups of an Opener, 2nd Opener, and Headliner around a themed challenge. Powered by Spotify and integrated with real-time music data from Soundcharts, the game lets fans discover artists, compete for votes, and climb the leaderboards to have their lineup crowned the day&apos;s Best. Concert. Ever. Co-created by Paul Davidson and Ben Raab, the platform has partnered with major labels including Sony Music and Ultra Records to promote new releases and live events while sourcing valuable insights from the global music fan community. By blending data, creativity, and competition, Best. Concert. Ever. is redefining how fans engage with the artists they love.
+              </p>
+              
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                Play daily at:{" "}
+                <a href="https://www.bestconcertevergame.com" target="_blank" rel="noopener noreferrer" className="text-yellow-400 hover:text-yellow-300 transition-colors">
+                  www.bestconcertevergame.com
+                </a>
+              </p>
+              
+              <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-6">
+                About Soundcharts
+              </h4>
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                Soundcharts is a global music intelligence platform used by music industry businesses to track artists and releases in real time. Through a developer-friendly API and web tools, Soundcharts aggregates metrics across streaming and social platforms, playlist placements, and radio airplay to surface what&apos;s trending and why. Teams rely on Soundcharts to monitor momentum, benchmark performance, and power products and experiences with music data - like the Decibel Level™ in Best. Concert. Ever. Learn more at soundcharts.com.
+              </p>
+            </div>
+          </div>
+
+          {/* Previous Press Release - November 5, 2025 */}
+          <div className="bg-gradient-to-br from-gray-900/80 to-black/80 border-2 border-yellow-400/30 rounded-xl p-8 backdrop-blur-sm">
+            <div className="border-b border-yellow-400/30 pb-4 mb-6">
+              <h2 className="text-3xl font-bold text-yellow-400 mb-2">
+                Previous Press Release
               </h2>
               <p className="text-sm text-gray-400">
                 November 5, 2025
@@ -122,7 +219,7 @@ export default function PressRoom() {
             <p className="text-xs text-gray-400 uppercase tracking-wide mb-4">For Immediate Release</p>
             
             <h3 className="text-2xl font-bold text-white mb-4">
-              Best. Concert. Ever. Partners with Soundcharts to Launch &quot;Decibel Level™,&quot; a Data-Driven Evolution of the Fantasy Concert Game
+              Best. Concert. Ever. Partners with Soundcharts to Launch "Decibel Level™," a Data-Driven Evolution of the Fantasy Concert Game
             </h3>
             
             <p className="text-sm text-gray-400 mb-6">
