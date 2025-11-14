@@ -235,7 +235,7 @@ useEffect(() => {
       window.history.replaceState({}, "", window.location.pathname);
 
       // Optional: give quick feedback before reload
-      alert("✅ Your progress has been restored! The page will reload.");
+      alert(userMarket === 'MX' ? "✅ ¡Tu progreso ha sido restaurado! La página se recargará." : "✅ Your progress has been restored! The page will reload.");
 
       // Reload to re-fetch stats with the restored ID
       window.location.reload();
@@ -687,11 +687,11 @@ const performVote = async (prompt) => {
       });
     }
 
-    alert("🔥 Your vote has been counted! Now submit your own.");
+    alert(userMarket === 'MX' ? "🔥 ¡Tu voto ha sido contado! Ahora envía el tuyo." : "🔥 Your vote has been counted! Now submit your own.");
     
   } catch (err) {
     console.error("Vote execution error:", err);
-    alert("⚠️ There was an error recording your vote. Please try again.");
+    alert(userMarket === 'MX' ? "⚠️ Hubo un error al registrar tu voto. Por favor intenta de nuevo." : "⚠️ There was an error recording your vote. Please try again.");
   }
 };
 
@@ -699,7 +699,7 @@ const handleFireVote = async (lineupId, voteType) => {
   // Check localStorage first for UX
   const alreadyVoted = localStorage.getItem(`bce-voted-${dailyPrompt}`);
   if (alreadyVoted) {
-    alert("You've already voted today!");
+    alert(userMarket === 'MX' ? "¡Ya votaste hoy!" : "You've already voted today!");
     return;
   }
 
@@ -726,7 +726,7 @@ const handleFireVote = async (lineupId, voteType) => {
         // IP rate limit hit
         alert(result.error);
       } else {
-        alert("Oops, there was an issue recording your vote.");
+        alert(userMarket === 'MX' ? "Ups, hubo un problema al registrar tu voto." : "Oops, there was an issue recording your vote.");
       }
       return;
     }
@@ -740,12 +740,12 @@ const handleFireVote = async (lineupId, voteType) => {
       window.plausible("Any Vote Cast");
     }
 
-    alert("🔥 Your vote has been counted!");
+    alert(userMarket === 'MX' ? "🔥 ¡Tu voto ha sido contado!" : "🔥 Your vote has been counted!");
     window.location.reload();
     
   } catch (err) {
     console.error("Vote execution error:", err);
-    alert("⚠️ There was an error recording your vote. Please try again.");
+    alert(userMarket === 'MX' ? "⚠️ Hubo un error al registrar tu voto. Por favor intenta de nuevo." : "⚠️ There was an error recording your vote. Please try again.");
   }
 };
 
@@ -919,7 +919,7 @@ const copyRestoreLink = () => {
 
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(link).then(() => {
-        alert("✅ Account link copied! Open it on your other device to restore your account.");
+        alert(userMarket === 'MX' ? "✅ ¡Enlace de cuenta copiado! Ábrelo en tu otro dispositivo para restaurar tu cuenta." : "✅ Account link copied! Open it on your other device to restore your account.");
         if (typeof window !== "undefined" && window.plausible) {
           window.plausible("Restore Link Copied");
         }
@@ -932,7 +932,7 @@ const copyRestoreLink = () => {
         ta.select();
         document.execCommand("copy");
         document.body.removeChild(ta);
-        alert("✅ Restore link copied! Open it on your other device to restore your account.");
+        alert(userMarket === 'MX' ? "✅ ¡Enlace de restauración copiado! Ábrelo en tu otro dispositivo para restaurar tu cuenta." : "✅ Restore link copied! Open it on your other device to restore your account.");
       });
     } else {
       const ta = document.createElement("textarea");
@@ -944,14 +944,14 @@ const copyRestoreLink = () => {
       const ok = document.execCommand("copy");
       document.body.removeChild(ta);
       if (ok) {
-        alert("✅ Restore link copied! Open it on your other device to restore your account.");
+        alert(userMarket === 'MX' ? "✅ ¡Enlace de restauración copiado! Ábrelo en tu otro dispositivo para restaurar tu cuenta." : "✅ Restore link copied! Open it on your other device to restore your account.");
       } else {
-        alert(`Your restore link:\n${link}\n(Please copy it manually)`);
+        alert(userMarket === 'MX' ? `Tu enlace de restauración:\n${link}\n(Por favor cópialo manualmente)` : `Your restore link:\n${link}\n(Please copy it manually)`);
       }
     }
   } catch (e) {
     console.error("Copy failed:", e);
-    alert("Couldn’t copy automatically. We’ll show the link next time.");
+    alert(userMarket === 'MX' ? "No se pudo copiar automáticamente. Mostraremos el enlace la próxima vez." : "Couldn't copy automatically. We'll show the link next time.");
   }
 };
 
@@ -1009,7 +1009,17 @@ const handleSharePromoterCard = async () => {
   const rank = leaderboard.findIndex(p => p.userId === selectedPromoter.userId) + 1;
   const rankEmoji = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : `#${rank}`;
   
-  const shareText = `🔥 I'm ${rankEmoji} on Best Concert Ever ${timeframe}!
+  const shareText = userMarket === 'MX' 
+  ? `🔥 ¡Estoy ${rankEmoji} en Best Concert Ever ${timeframe === "this month" ? "este mes" : "esta semana"}!
+
+📊 Mis Estadísticas:
+- ${selectedPromoter.totalPoints} votos ${timeframe === "this month" ? "este mes" : "esta semana"}
+- Rango Global: ${promoterDetails.global_rank ? `#${promoterDetails.global_rank}` : "¡Escalando!"}
+- ${promoterDetails.total_wins || 0} victorias totales
+- Racha actual de ${promoterDetails.current_streak || 0} días
+
+¿Puedes ganarme?`
+  : `🔥 I'm ${rankEmoji} on Best Concert Ever ${timeframe}!
 
 📊 My Stats:
 - ${selectedPromoter.totalPoints} votes ${timeframe}
@@ -1020,7 +1030,7 @@ const handleSharePromoterCard = async () => {
 Can you beat me?`;
 
   const shareData = {
-    title: "Best Concert Ever - My Promoter Card",
+    title: userMarket === 'MX' ? "Best Concert Ever - Mi Tarjeta de Promotor" : "Best Concert Ever - My Promoter Card",
     text: shareText,
     url: "https://bestconcertevergame.com"
   };
@@ -1036,14 +1046,14 @@ Can you beat me?`;
     } else {
       // Fallback: Copy to clipboard if share not available
       await navigator.clipboard.writeText(shareText + "\n\nhttps://bestconcertevergame.com");
-      alert("✅ Copied to clipboard! Paste it anywhere to share! 🎸");
+      alert(userMarket === 'MX' ? "✅ ¡Copiado al portapapeles! ¡Pégalo donde quieras para compartir! 🎸" : "✅ Copied to clipboard! Paste it anywhere to share! 🎸");
     }
   } catch (err) {
     // If user cancels or error occurs, try clipboard as fallback
     if (err.name !== "AbortError") {
       try {
         await navigator.clipboard.writeText(shareText + "\n\nhttps://bestconcertevergame.com");
-        alert("✅ Copied to clipboard! Paste it anywhere to share! 🎸");
+        alert(userMarket === 'MX' ? "✅ ¡Copiado al portapapeles! ¡Pégalo donde quieras para compartir! 🎸" : "✅ Copied to clipboard! Paste it anywhere to share! 🎸");
       } catch (clipErr) {
         console.error("Share failed:", err);
       }
@@ -1064,7 +1074,7 @@ const handleEmailSignup = async () => {
     if (res.ok) {
       setEmailSubmitted(true);
     } else {
-      alert("There was a problem signing up. Try again later.");
+      alert(userMarket === 'MX' ? "Hubo un problema al registrarte. Intenta más tarde." : "There was a problem signing up. Try again later.");
     }
   } catch (err) {
     console.error("Email signup error:", err);
@@ -1463,7 +1473,7 @@ const name3 = normalize(enrichedSecondOpener);
 const uniqueNames = new Set([name1, name2, name3]);
 
 if (uniqueNames.size < 3) {
-  alert("You can't use the same artist more than once!");
+  alert(userMarket === 'MX' ? "¡No puedes usar el mismo artista más de una vez!" : "You can't use the same artist more than once!");
   return;
 }
 
@@ -1480,13 +1490,13 @@ const { data: existing, error: checkError } = await supabase
 
 if (checkError) {
   console.error("Error checking existing submission:", checkError);
-  alert("There was an error checking your previous submission.");
+  alert(userMarket === 'MX' ? "Hubo un error al verificar tu envío anterior." : "There was an error checking your previous submission.");
   setIsSubmitting(false); 
   return;
 }
 
 if (existing.length > 0) {
-  alert("You've already submitted a lineup for today's prompt!");
+  alert(userMarket === 'MX' ? "¡Ya enviaste un lineup para el prompt de hoy!" : "You've already submitted a lineup for today's prompt!");
   setIsSubmitting(false); 
   return;
 }
@@ -1518,7 +1528,7 @@ if (!response.ok) {
     // IP rate limit hit
     alert(result.error);
   } else {
-    alert("There was an error submitting your lineup.");
+    alert(userMarket === 'MX' ? "Hubo un error al enviar tu lineup." : "There was an error submitting your lineup.");
   }
   setIsSubmitting(false); 
   return;
@@ -1988,7 +1998,7 @@ await navigator.share({
   <button
     onClick={() => {
       if (!lineup.id) {
-        alert("Oops, could not find lineup to vote for.");
+        alert(userMarket === 'MX' ? "Ups, no se pudo encontrar el lineup para votar." : "Oops, could not find lineup to vote for.");
         return;
       }
       handleFireVote(lineup.id, "Top 10");
@@ -2015,7 +2025,7 @@ await navigator.share({
   <button
     onClick={() => {
       if (!deepCutLineup.id) {
-        alert("Oops, could not find Deep Cut lineup to vote for.");
+        alert(userMarket === 'MX' ? "Ups, no se pudo encontrar el lineup Deep Cut para votar." : "Oops, could not find Deep Cut lineup to vote for.");
         return;
       }
       handleFireVote(deepCutLineup.id, "Deep Cut");
@@ -2052,7 +2062,7 @@ await navigator.share({
   <button
     onClick={() => {
       if (!lineup.id) {
-        alert("Oops, could not find lineup to vote for.");
+        alert(userMarket === 'MX' ? "Ups, no se pudo encontrar el lineup para votar." : "Oops, could not find lineup to vote for.");
         return;
       }
       handleFireVote(lineup.id, "Recent Drop");
@@ -2351,7 +2361,7 @@ const { data: existing, error: checkError } = await supabase
   .neq("user_id", userId); // exclude current user in case they're retrying
 
 if (existing && existing.length > 0) {
-  alert("That nickname is already taken. Please choose another.");
+  alert(userMarket === 'MX' ? "Ese apodo ya está en uso. Por favor elige otro." : "That nickname is already taken. Please choose another.");
   return;
 }
 
@@ -2372,7 +2382,7 @@ if (!error) {
   setNicknameSaved(true);
   setShowNicknameModal(false);
 } else {
-  alert("Something went wrong saving your nickname.");
+  alert(userMarket === 'MX' ? "Algo salió mal al guardar tu apodo." : "Something went wrong saving your nickname.");
 }
         }}
         className="bg-black text-white px-4 py-2 rounded-full font-bold hover:bg-yellow-300 hover:text-black transition"
