@@ -1659,10 +1659,10 @@ setIsSubmitting(false);
   <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/70 backdrop-blur-sm">
     <div className="relative max-w-[90%] w-[420px] rounded-2xl shadow-2xl border-4 border-white overflow-hidden">
       <img
-        src="/howtoplayinfographic.png"
-        alt={userMarket === 'MX' ? 'Cómo jugar' : 'How to Play'}
-        className="w-full h-auto object-contain"
-      />
+  src={userMarket === 'MX' ? '/howtoplayinfographicmx.png' : '/howtoplayinfographic.png'}
+  alt={userMarket === 'MX' ? 'Cómo jugar' : 'How to Play'}
+  className="w-full h-auto object-contain"
+/>
       <button
         onClick={() => setShowHowToPlayInfographic(false)}
         className="absolute top-2 right-2 bg-black text-white text-xl font-bold rounded-full px-3 py-1 hover:bg-red-600 transition"
@@ -1682,7 +1682,7 @@ setIsSubmitting(false);
       >
         &times;
       </button>
-<h2 className="text-2xl font-bold mb-4">🎉 Lineup Submitted!</h2>
+<h2 className="text-2xl font-bold mb-4">{userMarket === 'MX' ? '🎉 ¡Lineup Enviado!' : '🎉 Lineup Submitted!'}</h2>
 
 {/* Decibel Score Display */}
 <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-400 rounded-lg p-4 mb-4 shadow-md">
@@ -1694,36 +1694,36 @@ setIsSubmitting(false);
         <span className="text-lg text-gray-500">/100</span>
       </div>
       <div className="text-xs text-gray-600 uppercase tracking-wide font-bold">
-        Decibel Level
-      </div>
+  {userMarket === 'MX' ? 'Nivel de Decibelios' : 'Decibel Level'}
+</div>
     </div>
   </div>
   
   {lastBonusVotes > 0 && (
     <div className="mt-3 pt-3 border-t-2 border-yellow-300">
       <p className="text-sm font-bold text-green-700">
-        🎁 +{lastBonusVotes} Bonus Votes Earned!
-      </p>
+  {userMarket === 'MX' ? `🎁 +${lastBonusVotes} Votos Extra Ganados!` : `🎁 +${lastBonusVotes} Bonus Votes Earned!`}
+</p>
       <p className="text-xs text-gray-700 mt-1 font-semibold">
-        {lastDecibelScore >= 90 ? "🌟 Superstar lineup!" :
-         lastDecibelScore >= 80 ? "💎 Elite lineup!" :
-         lastDecibelScore >= 70 ? "💪 Strong lineup!" :
-         lastDecibelScore >= 60 ? "👍 Good lineup!" :
-         lastDecibelScore >= 50 ? "✨ Solid lineup!" :
-         lastDecibelScore >= 40 ? "👌 Decent lineup!" :
-         "🎵 Nice work!"}
+        {lastDecibelScore >= 90 ? (userMarket === 'MX' ? "🌟 ¡Lineup de superestrella!" : "🌟 Superstar lineup!") :
+ lastDecibelScore >= 80 ? (userMarket === 'MX' ? "💎 ¡Lineup de élite!" : "💎 Elite lineup!") :
+ lastDecibelScore >= 70 ? (userMarket === 'MX' ? "💪 ¡Lineup fuerte!" : "💪 Strong lineup!") :
+ lastDecibelScore >= 60 ? (userMarket === 'MX' ? "👍 ¡Buen lineup!" : "👍 Good lineup!") :
+ lastDecibelScore >= 50 ? (userMarket === 'MX' ? "✨ ¡Lineup sólido!" : "✨ Solid lineup!") :
+ lastDecibelScore >= 40 ? (userMarket === 'MX' ? "👌 ¡Lineup decente!" : "👌 Decent lineup!") :
+ (userMarket === 'MX' ? "🎵 ¡Buen trabajo!" : "🎵 Nice work!")}
       </p>
     </div>
   )}
   
   {lastBonusVotes === 0 && (
     <p className="text-xs text-gray-600 mt-2 italic">
-      Pick artists with more buzz next time for bonus votes!
-    </p>
+  {userMarket === 'MX' ? '¡Elige artistas con más impulso la próxima vez para votos extra!' : 'Pick artists with more buzz next time for bonus votes!'}
+</p>
   )}
 </div>
 
-<p className="text-sm mb-6 font-semibold">Now complete today&apos;s game by voting for your favorite lineup by clicking on the 🔥!</p>
+<p className="text-sm mb-6 font-semibold">{userMarket === 'MX' ? '¡Ahora completa el juego de hoy votando por tu lineup favorito haciendo clic en el 🔥!' : "Now complete today's game by voting for your favorite lineup by clicking on the 🔥!"}</p>
       <button
         onClick={() => {
           setShowVotePrompt(false);
@@ -1733,9 +1733,9 @@ setIsSubmitting(false);
           }
         }}
         className="bg-black text-yellow-300 font-bold py-2 px-6 rounded-full hover:bg-yellow-300 hover:text-black transition uppercase text-sm"
-      >
-        Browse Top 10 & Vote 🔥
-      </button>
+>
+  {userMarket === 'MX' ? 'Ver Top 10 y Votar 🔥' : 'Browse Top 10 & Vote 🔥'}
+</button>
     </div>
   </div>
 )}
@@ -2332,14 +2332,14 @@ await navigator.share({
       >
         &times;
       </button>
-      <h2 className="text-xl font-bold mb-4">Enter Your Promoter Nickname</h2>
+      <h2 className="text-xl font-bold mb-4">{userMarket === 'MX' ? 'Ingresa Tu Apodo de Promotor' : 'Enter Your Promoter Nickname'}</h2>
       <input
         type="text"
         value={nickname}
         onChange={(e) => setNickname(e.target.value.toUpperCase())}
         maxLength={24}
         className="w-full px-4 py-2 border border-black rounded-md mb-4 uppercase"
-        placeholder="ALL CAPS SCREENNAME"
+        placeholder={userMarket === 'MX' ? 'APODO EN MAYÚSCULAS' : 'ALL CAPS SCREENNAME'}
       />
       <button
         onClick={async () => {
@@ -2386,9 +2386,9 @@ if (!error) {
 }
         }}
         className="bg-black text-white px-4 py-2 rounded-full font-bold hover:bg-yellow-300 hover:text-black transition"
-      >
-        Save Nickname
-      </button>
+>
+  {userMarket === 'MX' ? 'Guardar Apodo' : 'Save Nickname'}
+</button>
     </div>
   </div>
 )}
