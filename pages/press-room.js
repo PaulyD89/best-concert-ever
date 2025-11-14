@@ -60,7 +60,7 @@ export default function PressRoom() {
               </p>
               
               <p className="text-gray-300 mb-4 leading-relaxed">
-                Best. Concert. Ever., the daily fantasy concert game where music fans become promoters by building dream lineups and competing for votes, today announced the launch of its beta version in Mexico. The expansion delivers a fully localized Spanish-language experience to one of the world's most passionate music markets, complete with Mexican-specific daily prompts, leaderboards, and the game's signature Decibel Level™ scoring system powered by Soundcharts.
+                Best. Concert. Ever., the daily fantasy concert game where music fans become promoters by building dream lineups and competing for votes, today announced the launch of its beta version in Mexico. The expansion delivers a fully localized Spanish-language experience to one of the world&apos;s most passionate music markets, complete with Mexican-specific daily prompts, leaderboards, and the game&apos;s signature Decibel Level™ scoring system powered by Soundcharts.
               </p>
               
               <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-6">
@@ -192,7 +192,7 @@ export default function PressRoom() {
                 About Best Concert Ever™
               </h4>
               <p className="text-gray-300 mb-6 leading-relaxed">
-                Best Concert Ever™ is a free daily fantasy concert game where music fans become promoters, building dream lineups of three artists around each day's creative prompt. Players vote, share, and compete to climb the charts - earning badges, streaks, and bragging rights along the way. Powered by real music data and a global fanbase, Best Concert Ever™ is changing the way fans play with music.
+                Best Concert Ever™ is a free daily fantasy concert game where music fans become promoters, building dream lineups of three artists around each day&apos;s creative prompt. Players vote, share, and compete to climb the charts - earning badges, streaks, and bragging rights along the way. Powered by real music data and a global fanbase, Best Concert Ever™ is changing the way fans play with music.
               </p>
               
               <p className="text-gray-300 mb-4 leading-relaxed">
@@ -219,7 +219,7 @@ export default function PressRoom() {
             <p className="text-xs text-gray-400 uppercase tracking-wide mb-4">For Immediate Release</p>
             
             <h3 className="text-2xl font-bold text-white mb-4">
-              Best. Concert. Ever. Partners with Soundcharts to Launch "Decibel Level™," a Data-Driven Evolution of the Fantasy Concert Game
+              Best. Concert. Ever. Partners with Soundcharts to Launch &quot;Decibel Level™,&quot; a Data-Driven Evolution of the Fantasy Concert Game
             </h3>
             
             <p className="text-sm text-gray-400 mb-6">
@@ -227,11 +227,11 @@ export default function PressRoom() {
             </p>
             
             <p className="text-gray-300 mb-4 leading-relaxed">
-              Best. Concert. Ever., the daily fantasy concert game that lets fans play promoter by building dream lineups around themed challenges, has announced a new partnership with global music intelligence platform Soundcharts. Leveraging their robust music industry data, Best. Concert. Ever. has developed The Decibel Level™ - a groundbreaking new feature that uses real-time music industry data to give each lineup an official "buzz score."
+              Best. Concert. Ever., the daily fantasy concert game that lets fans play promoter by building dream lineups around themed challenges, has announced a new partnership with global music intelligence platform Soundcharts. Leveraging their robust music industry data, Best. Concert. Ever. has developed The Decibel Level™ - a groundbreaking new feature that uses real-time music industry data to give each lineup an official &quot;buzz score.&quot;
             </p>
             
             <p className="text-gray-300 mb-4 leading-relaxed">
-              The Decibel Level analyzes a range of verified music industry metrics, including an artist's streaming and social media followers, trending track growth, streaming music platform popularity, radio airplay and more. Such trending global data is combined with a proprietary algorithm to create Best. Concert. Ever.'s Decibel Level™ score benefitting each and every player's daily concert lineup across their Opener, 2nd Opener, and Headliner.
+              The Decibel Level analyzes a range of verified music industry metrics, including an artist&apos;s streaming and social media followers, trending track growth, streaming music platform popularity, radio airplay and more. Such trending global data is combined with a proprietary algorithm to create Best. Concert. Ever.&apos;s Decibel Level™ score benefitting each and every player&apos;s daily concert lineup across their Opener, 2nd Opener, and Headliner.
             </p>
             
             <p className="text-gray-300 mb-4 leading-relaxed italic">
