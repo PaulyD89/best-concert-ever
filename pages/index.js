@@ -2619,6 +2619,7 @@ if (!error) {
         ))}
       </div>
       <p className="mt-2 text-sm text-green-400">🔥 <span className="font-bold">{mostVotedLineup.votes ?? 0}</span> {userMarket === 'MX' ? 'votos' : 'votes'}</p>
+      <p className="text-sm text-gray-400 mt-1">{mostVotedLineup.lineup?.name}</p>
     </>
   ) : (
     <p className="text-sm text-green-400">{userMarket === 'MX' ? 'Aún sin votos.' : 'No votes yet.'}</p>
