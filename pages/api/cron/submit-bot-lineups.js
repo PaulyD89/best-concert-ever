@@ -30,9 +30,6 @@ const BOT_USER_IDS = [
   '648b533f-78ca-43c9-9f2c-eb05113e8cb9'
 ];
 
-// Track submitted lineups to avoid duplicates
-let submittedLineups = [];
-
 async function getTodaysMexicoPrompt() {
   const today = new Date().toISOString().split('T')[0];
   
@@ -111,12 +108,12 @@ function transformSpotifyArtist(spotifyArtist) {
   };
 }
 
-async function getAIArtistSuggestions(promptText, previousLineups = []) {
+async function getAIArtistSuggestions(promptText, botNumber, previousLineups = []) {
   let previousLineupsText = '';
   if (previousLineups.length > 0) {
-    previousLineupsText = '\n\nPreviously submitted lineups (do NOT repeat these artists or combinations):\n' + 
+    previousLineupsText = '\n\nPreviously submitted lineups (do NOT repeat these exact combinations):\n' + 
       previousLineups.map((lineup, i) => 
-        `${i + 1}. Opener: ${lineup.opener}, Second: ${lineup.secondOpener}, Headliner: ${lineup.headliner}`
+        `${i + 1}. ${lineup.opener} → ${lineup.secondOpener} → ${lineup.headliner}`
       ).join('\n');
   }
 
@@ -136,6 +133,8 @@ Suggest 3 DIFFERENT Mexican or Latin American artists that would be perfect for 
 
 These must be real, well-known artists that exist on Spotify. Use their most common/official name.${previousLineupsText}
 
+Important: This is lineup #${botNumber}. Create a unique combination that's different from the previous ones listed above.
+
 Respond with ONLY a valid JSON object, no other text:
 {"opener": "Artist Name", "secondOpener": "Artist Name", "headliner": "Artist Name"}`
         }]
@@ -146,7 +145,7 @@ Respond with ONLY a valid JSON object, no other text:
       return JSON.parse(cleanedResponse);
     } catch (error) {
       if (attempt < 3 && error.status === 529) {
-        console.log(`API overloaded, waiting 10 seconds before retry ${attempt}/3...`);
+        console.log(`Bot ${botNumber}: API overloaded, waiting 10 seconds before retry ${attempt}/3...`);
         await new Promise(resolve => setTimeout(resolve, 10000));
       } else {
         throw error;
@@ -179,38 +178,38 @@ async function submitBotLineup(userId, promptText, openerData, secondOpenerData,
   return data;
 }
 
-async function runBotSubmissions() {
-  console.log('🤖 Starting bot lineup submissions...');
+// Check if lineup is duplicate
+function isLineupDuplicate(newLineup, existingLineups) {
+  const newKey = `${newLineup.opener}|${newLineup.secondOpener}|${newLineup.headliner}`.toLowerCase();
+  return existingLineups.some(lineup => {
+    const existingKey = `${lineup.opener}|${lineup.secondOpener}|${lineup.headliner}`.toLowerCase();
+    return existingKey === newKey;
+  });
+}
+
+// Process a single bot submission with duplicate checking
+async function processSingleBot(botUserId, promptText, botNumber, submittedLineups) {
+  const maxRetries = 3;
   
-  // Reset submitted lineups for this run
-  submittedLineups = [];
-  
-  const results = {
-    success: [],
-    failed: []
-  };
-  
-  // Get today's prompt
-  const prompt = await getTodaysMexicoPrompt();
-  if (!prompt || !prompt.prompt) {
-    throw new Error('No prompt found for today');
-  }
-  
-  console.log(`📋 Prompt: ${prompt.prompt}`);
-  
-  // Submit 15 lineups (without delays - run all at once for serverless)
-  for (let i = 0; i < 15; i++) {
-    const botUserId = BOT_USER_IDS[i];
-    
+  for (let retry = 0; retry < maxRetries; retry++) {
     try {
-      console.log(`🎤 Bot ${i + 1}: Asking Claude for artist suggestions...`);
-      const suggestions = await getAIArtistSuggestions(prompt.prompt, submittedLineups);
-      console.log(`   Suggestions: ${suggestions.opener} / ${suggestions.secondOpener} / ${suggestions.headliner}`);
+      console.log(`🎤 Bot ${botNumber}: Asking Claude for artist suggestions... (attempt ${retry + 1})`);
+      const suggestions = await getAIArtistSuggestions(promptText, botNumber, submittedLineups);
       
-      console.log(`   🔍 Searching Spotify for artists...`);
-      const openerSpotify = await searchSpotifyForArtist(suggestions.opener);
-      const secondOpenerSpotify = await searchSpotifyForArtist(suggestions.secondOpener);
-      const headlinerSpotify = await searchSpotifyForArtist(suggestions.headliner);
+      // Check if this lineup combo was already submitted
+      if (isLineupDuplicate(suggestions, submittedLineups)) {
+        console.log(`   ⚠️  Bot ${botNumber}: Duplicate lineup detected, retrying...`);
+        continue; // Try again
+      }
+      
+      console.log(`   Bot ${botNumber} suggestions: ${suggestions.opener} / ${suggestions.secondOpener} / ${suggestions.headliner}`);
+      
+      console.log(`   🔍 Bot ${botNumber}: Searching Spotify for artists...`);
+      const [openerSpotify, secondOpenerSpotify, headlinerSpotify] = await Promise.all([
+        searchSpotifyForArtist(suggestions.opener),
+        searchSpotifyForArtist(suggestions.secondOpener),
+        searchSpotifyForArtist(suggestions.headliner)
+      ]);
       
       if (!openerSpotify || !secondOpenerSpotify || !headlinerSpotify) {
         throw new Error(`Could not find all artists on Spotify`);
@@ -220,38 +219,105 @@ async function runBotSubmissions() {
       const secondOpenerData = transformSpotifyArtist(secondOpenerSpotify);
       const headlinerData = transformSpotifyArtist(headlinerSpotify);
       
-      console.log(`   ✓ Found: ${openerData.name} / ${secondOpenerData.name} / ${headlinerData.name}`);
+      // Double-check with actual Spotify names
+      const finalLineup = {
+        opener: openerData.name,
+        secondOpener: secondOpenerData.name,
+        headliner: headlinerData.name
+      };
+      
+      if (isLineupDuplicate(finalLineup, submittedLineups)) {
+        console.log(`   ⚠️  Bot ${botNumber}: Duplicate lineup after Spotify lookup, retrying...`);
+        continue;
+      }
+      
+      console.log(`   ✓ Bot ${botNumber} found: ${openerData.name} / ${secondOpenerData.name} / ${headlinerData.name}`);
       
       const submittedLineup = await submitBotLineup(
         botUserId,
-        prompt.prompt,
+        promptText,
         openerData,
         secondOpenerData,
         headlinerData
       );
       
-      submittedLineups.push({
-        opener: openerData.name,
-        secondOpener: secondOpenerData.name,
-        headliner: headlinerData.name
-      });
+      console.log(`✅ Bot ${botNumber} submitted successfully!`);
       
-      results.success.push({
-        bot: i + 1,
+      return {
+        success: true,
+        bot: botNumber,
         lineup: `${openerData.name} → ${secondOpenerData.name} → ${headlinerData.name}`,
-        lineupId: submittedLineup.id
-      });
-      
-      console.log(`✅ Bot ${i + 1} submitted successfully!`);
+        lineupId: submittedLineup.id,
+        lineupData: finalLineup
+      };
       
     } catch (error) {
-      console.error(`❌ Error with bot ${i + 1}:`, error.message);
-      results.failed.push({
-        bot: i + 1,
-        error: error.message
-      });
+      if (retry === maxRetries - 1) {
+        console.error(`❌ Error with bot ${botNumber} after ${maxRetries} attempts:`, error.message);
+        return {
+          success: false,
+          bot: botNumber,
+          error: error.message
+        };
+      }
     }
   }
+}
+
+async function runBotSubmissions() {
+  console.log('🤖 Starting bot lineup submissions (BATCH MODE WITH DUPLICATE CHECKING)...');
+  
+  // Get today's prompt
+  const prompt = await getTodaysMexicoPrompt();
+  if (!prompt || !prompt.prompt) {
+    throw new Error('No prompt found for today');
+  }
+  
+  console.log(`📋 Prompt: ${prompt.prompt}`);
+  
+  const results = {
+    success: [],
+    failed: []
+  };
+  
+  const submittedLineups = [];
+  
+  // Process in batches of 5 to balance speed and uniqueness
+  const BATCH_SIZE = 5;
+  const batches = [];
+  for (let i = 0; i < BOT_USER_IDS.length; i += BATCH_SIZE) {
+    batches.push(BOT_USER_IDS.slice(i, i + BATCH_SIZE));
+  }
+  
+  for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+    const batch = batches[batchIndex];
+    console.log(`\n📦 Processing batch ${batchIndex + 1}/${batches.length} (${batch.length} bots)...`);
+    
+    const batchPromises = batch.map((botUserId, indexInBatch) => {
+      const overallIndex = batchIndex * BATCH_SIZE + indexInBatch;
+      return processSingleBot(botUserId, prompt.prompt, overallIndex + 1, submittedLineups);
+    });
+    
+    const batchResults = await Promise.allSettled(batchPromises);
+    
+    batchResults.forEach((result) => {
+      if (result.status === 'fulfilled' && result.value.success) {
+        results.success.push(result.value);
+        submittedLineups.push(result.value.lineupData);
+      } else if (result.status === 'fulfilled' && !result.value.success) {
+        results.failed.push(result.value);
+      } else if (result.status === 'rejected') {
+        results.failed.push({
+          bot: '?',
+          error: result.reason?.message || 'Unknown error'
+        });
+      }
+    });
+  }
+  
+  console.log(`\n📊 FINAL RESULTS:`);
+  console.log(`✅ Successful: ${results.success.length}/15`);
+  console.log(`❌ Failed: ${results.failed.length}/15`);
   
   return results;
 }
@@ -269,7 +335,7 @@ export default async function handler(req, res) {
     
     res.status(200).json({
       success: true,
-      message: `Bot submissions complete`,
+      message: `Bot submissions complete: ${results.success.length} succeeded, ${results.failed.length} failed`,
       results
     });
   } catch (error) {
