@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.70.1",
     "@supabase/supabase-js": "^2.49.4",
+    "dotenv": "^17.2.3",
     "html-to-image": "^1.11.13",
     "next": "15.2.4",
     "react": "^19.0.0",
