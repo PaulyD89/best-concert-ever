@@ -256,8 +256,8 @@ async function runBotSubmissions() {
   return results;
 }
 
-// API route handler
-module.exports = async function handler(req, res) {
+// API route handler - MUST use default export for Next.js/Vercel
+export default async function handler(req, res) {
   // Verify this is coming from Vercel Cron
   const authHeader = req.headers.authorization;
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -279,4 +279,4 @@ module.exports = async function handler(req, res) {
       error: error.message
     });
   }
-};
+}
