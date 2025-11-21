@@ -1,9 +1,12 @@
 {
-    "crons": [
-      {
-        "path": "/api/send-daily-email",
-        "schedule": "0 8 * * *"
-      }
-    ]
-  }
-  
+  "crons": [
+    {
+      "path": "/api/send-daily-email",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/cron/submit-bot-lineups",
+      "schedule": "5 0 * * *"
+    }
+  ]
+}
