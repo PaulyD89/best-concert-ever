@@ -1,5 +1,5 @@
-import Anthropic from '@anthropic-ai/sdk';
-import { createClient } from '@supabase/supabase-js';
+const Anthropic = require('@anthropic-ai/sdk').default;
+const { createClient } = require('@supabase/supabase-js');
 
 // Initialize clients
 const anthropic = new Anthropic({ 
@@ -257,7 +257,7 @@ async function runBotSubmissions() {
 }
 
 // API route handler
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Verify this is coming from Vercel Cron
   const authHeader = req.headers.authorization;
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -279,9 +279,4 @@ export default async function handler(req, res) {
       error: error.message
     });
   }
-}
-
-// For local testing
-if (process.env.NODE_ENV !== 'production') {
-  export { runBotSubmissions };
-}
+};
