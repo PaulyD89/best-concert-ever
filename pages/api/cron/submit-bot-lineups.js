@@ -35,7 +35,7 @@ async function getTodaysMexicoPrompt() {
   
   const { data, error } = await supabase
     .from('prompts_mx')
-    .select('*')
+    .select('prompt, locked_headliner_data')
     .eq('prompt_date', today)
     .single();
   
@@ -108,7 +108,7 @@ function transformSpotifyArtist(spotifyArtist) {
   };
 }
 
-async function getAIArtistSuggestions(promptText, botNumber, previousLineups = []) {
+async function getAIArtistSuggestions(promptText, botNumber, previousLineups = [], lockedHeadliner = null) {
   let previousLineupsText = '';
   if (previousLineups.length > 0) {
     previousLineupsText = '\n\nPreviously submitted lineups (do NOT repeat these exact combinations):\n' + 
@@ -117,6 +117,12 @@ async function getAIArtistSuggestions(promptText, botNumber, previousLineups = [
       ).join('\n');
   }
 
+  // If headliner is locked, only ask for opener and second opener
+  const isLocked = !!lockedHeadliner;
+  const lockedText = isLocked 
+    ? `\n\nIMPORTANT: The headliner is LOCKED as "${lockedHeadliner.name}". Do NOT suggest a different headliner. Only suggest opener and secondOpener.`
+    : '';
+
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
       const message = await anthropic.messages.create({
@@ -124,25 +130,34 @@ async function getAIArtistSuggestions(promptText, botNumber, previousLineups = [
         max_tokens: 1024,
         messages: [{
           role: "user",
-          content: `Given this concert lineup prompt for Mexico: "${promptText}"
+          content: `Given this concert lineup prompt for Mexico: "${promptText}"${lockedText}
 
-Suggest 3 DIFFERENT Mexican or Latin American artists that would be perfect for this theme:
+Suggest ${isLocked ? '2' : '3'} DIFFERENT Mexican or Latin American artists that would be perfect for this theme:
 - opener: A good opening act
-- secondOpener: A strong second act  
-- headliner: The main headliner (most famous/appropriate)
+- secondOpener: A strong second act${isLocked ? '' : '\n- headliner: The main headliner (most famous/appropriate)'}
 
 These must be real, well-known artists that exist on Spotify. Use their most common/official name.${previousLineupsText}
 
 Important: This is lineup #${botNumber}. Create a unique combination that's different from the previous ones listed above.
 
 Respond with ONLY a valid JSON object, no other text:
-{"opener": "Artist Name", "secondOpener": "Artist Name", "headliner": "Artist Name"}`
+${isLocked 
+  ? `{"opener": "Artist Name", "secondOpener": "Artist Name", "headliner": "${lockedHeadliner.name}"}`
+  : `{"opener": "Artist Name", "secondOpener": "Artist Name", "headliner": "Artist Name"}`
+}`
         }]
       });
       
       const response = message.content[0].text.trim();
       const cleanedResponse = response.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-      return JSON.parse(cleanedResponse);
+      const parsed = JSON.parse(cleanedResponse);
+      
+      // If locked, force the headliner to be the locked one
+      if (isLocked) {
+        parsed.headliner = lockedHeadliner.name;
+      }
+      
+      return parsed;
     } catch (error) {
       if (attempt < 3 && error.status === 529) {
         console.log(`Bot ${botNumber}: API overloaded, waiting 10 seconds before retry ${attempt}/3...`);
@@ -188,13 +203,13 @@ function isLineupDuplicate(newLineup, existingLineups) {
 }
 
 // Process a single bot submission with duplicate checking
-async function processSingleBot(botUserId, promptText, botNumber, submittedLineups) {
+async function processSingleBot(botUserId, promptText, botNumber, submittedLineups, lockedHeadliner = null) {
   const maxRetries = 3;
   
   for (let retry = 0; retry < maxRetries; retry++) {
     try {
       console.log(`🎤 Bot ${botNumber}: Asking Claude for artist suggestions... (attempt ${retry + 1})`);
-      const suggestions = await getAIArtistSuggestions(promptText, botNumber, submittedLineups);
+      const suggestions = await getAIArtistSuggestions(promptText, botNumber, submittedLineups, lockedHeadliner);
       
       // Check if this lineup combo was already submitted
       if (isLineupDuplicate(suggestions, submittedLineups)) {
@@ -205,19 +220,31 @@ async function processSingleBot(botUserId, promptText, botNumber, submittedLineu
       console.log(`   Bot ${botNumber} suggestions: ${suggestions.opener} / ${suggestions.secondOpener} / ${suggestions.headliner}`);
       
       console.log(`   🔍 Bot ${botNumber}: Searching Spotify for artists...`);
-      const [openerSpotify, secondOpenerSpotify, headlinerSpotify] = await Promise.all([
+      
+      // If headliner is locked, use the locked data instead of searching Spotify
+      let headlinerData;
+      if (lockedHeadliner) {
+        console.log(`   🔒 Using locked headliner: ${lockedHeadliner.name}`);
+        headlinerData = lockedHeadliner;
+      } else {
+        const headlinerSpotify = await searchSpotifyForArtist(suggestions.headliner);
+        if (!headlinerSpotify) {
+          throw new Error(`Could not find headliner on Spotify`);
+        }
+        headlinerData = transformSpotifyArtist(headlinerSpotify);
+      }
+      
+      const [openerSpotify, secondOpenerSpotify] = await Promise.all([
         searchSpotifyForArtist(suggestions.opener),
-        searchSpotifyForArtist(suggestions.secondOpener),
-        searchSpotifyForArtist(suggestions.headliner)
+        searchSpotifyForArtist(suggestions.secondOpener)
       ]);
       
-      if (!openerSpotify || !secondOpenerSpotify || !headlinerSpotify) {
+      if (!openerSpotify || !secondOpenerSpotify) {
         throw new Error(`Could not find all artists on Spotify`);
       }
       
       const openerData = transformSpotifyArtist(openerSpotify);
       const secondOpenerData = transformSpotifyArtist(secondOpenerSpotify);
-      const headlinerData = transformSpotifyArtist(headlinerSpotify);
       
       // Double-check with actual Spotify names
       const finalLineup = {
@@ -275,6 +302,12 @@ async function runBotSubmissions() {
   
   console.log(`📋 Prompt: ${prompt.prompt}`);
   
+  // Check if headliner is locked
+  const lockedHeadliner = prompt.locked_headliner_data || null;
+  if (lockedHeadliner) {
+    console.log(`🔒 LOCKED & LOADED: Headliner is ${lockedHeadliner.name}`);
+  }
+  
   const results = {
     success: [],
     failed: []
@@ -298,7 +331,7 @@ async function runBotSubmissions() {
       const botUserId = batch[indexInBatch];
       const overallIndex = batchIndex * BATCH_SIZE + indexInBatch;
       
-      const result = await processSingleBot(botUserId, prompt.prompt, overallIndex + 1, submittedLineups);
+      const result = await processSingleBot(botUserId, prompt.prompt, overallIndex + 1, submittedLineups, lockedHeadliner);
       
       if (result.success) {
         results.success.push(result);
