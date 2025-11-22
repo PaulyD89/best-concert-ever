@@ -59,7 +59,7 @@ export default function SpotifyCallback() {
         },
         body: JSON.stringify({
           name: playlistName,
-          description: `${lineup.opener.name} → ${lineup.second_opener.name} → ${lineup.headliner.name}`,
+          description: `${lineup.opener.name} > ${lineup.second_opener.name} > ${lineup.headliner.name}`,
           public: false
         })
       });
