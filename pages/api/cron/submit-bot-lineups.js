@@ -293,26 +293,20 @@ async function runBotSubmissions() {
     const batch = batches[batchIndex];
     console.log(`\n📦 Processing batch ${batchIndex + 1}/${batches.length} (${batch.length} bots)...`);
     
-    const batchPromises = batch.map((botUserId, indexInBatch) => {
+    // Process bots SEQUENTIALLY within batch to avoid duplicate checking race conditions
+    for (let indexInBatch = 0; indexInBatch < batch.length; indexInBatch++) {
+      const botUserId = batch[indexInBatch];
       const overallIndex = batchIndex * BATCH_SIZE + indexInBatch;
-      return processSingleBot(botUserId, prompt.prompt, overallIndex + 1, submittedLineups);
-    });
-    
-    const batchResults = await Promise.allSettled(batchPromises);
-    
-    batchResults.forEach((result) => {
-      if (result.status === 'fulfilled' && result.value.success) {
-        results.success.push(result.value);
-        submittedLineups.push(result.value.lineupData);
-      } else if (result.status === 'fulfilled' && !result.value.success) {
-        results.failed.push(result.value);
-      } else if (result.status === 'rejected') {
-        results.failed.push({
-          bot: '?',
-          error: result.reason?.message || 'Unknown error'
-        });
+      
+      const result = await processSingleBot(botUserId, prompt.prompt, overallIndex + 1, submittedLineups);
+      
+      if (result.success) {
+        results.success.push(result);
+        submittedLineups.push(result.lineupData);
+      } else {
+        results.failed.push(result);
       }
-    });
+    }
   }
   
   console.log(`\n📊 FINAL RESULTS:`);
