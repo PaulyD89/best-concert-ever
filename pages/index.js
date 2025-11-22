@@ -1061,6 +1061,129 @@ Can you beat me?`;
   }
 };
 
+// Spotify Playlist Creation
+async function handleCreateSpotifyPlaylist(lineup) {
+  try {
+    // Check if we already have a Spotify access token
+    let accessToken = localStorage.getItem('spotify_access_token');
+    const tokenExpiry = localStorage.getItem('spotify_token_expiry');
+    
+    // If no token or token expired, start OAuth flow
+    if (!accessToken || !tokenExpiry || Date.now() > parseInt(tokenExpiry)) {
+      // Store lineup data to create playlist after OAuth
+      localStorage.setItem('pending_playlist_lineup', JSON.stringify(lineup));
+      
+      // Start Spotify OAuth
+      const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
+      const redirectUri = encodeURIComponent(window.location.origin + '/spotify-callback');
+      const scopes = encodeURIComponent('playlist-modify-public playlist-modify-private');
+      
+      const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&redirect_uri=${redirectUri}&scope=${scopes}`;
+      
+      window.location.href = authUrl;
+      return;
+    }
+    
+    // If we have a token, create the playlist
+    await createPlaylistWithToken(accessToken, lineup);
+    
+  } catch (error) {
+    console.error('Error creating Spotify playlist:', error);
+    alert(userMarket === 'MX' 
+      ? 'Error al crear playlist. Por favor intenta de nuevo.' 
+      : 'Error creating playlist. Please try again.');
+  }
+}
+
+async function createPlaylistWithToken(accessToken, lineup) {
+  try {
+    // Get user's Spotify ID
+    const userResponse = await fetch('https://api.spotify.com/v1/me', {
+      headers: { 'Authorization': `Bearer ${accessToken}` }
+    });
+    const userData = await userResponse.json();
+    
+    // Create playlist
+    const playlistName = `${lineup.prompt} - Best Concert Ever`;
+    const playlistResponse = await fetch(`https://api.spotify.com/v1/users/${userData.id}/playlists`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: playlistName,
+        description: `${lineup.opener.name} → ${lineup.second_opener.name} → ${lineup.headliner.name}`,
+        public: false
+      })
+    });
+    const playlistData = await playlistResponse.json();
+    
+    // Get tracks for each artist in concert order
+    let trackUris = [];
+    
+    // OPENER: 3 songs (least popular to most popular)
+    const openerTracksResponse = await fetch(
+      `https://api.spotify.com/v1/artists/${lineup.opener.spotifyId}/top-tracks?market=US`,
+      { headers: { 'Authorization': `Bearer ${accessToken}` } }
+    );
+    const openerTracksData = await openerTracksResponse.json();
+    const openerTracks = openerTracksData.tracks
+      .slice(0, 3)
+      .reverse() // Reverse so least popular plays first, most popular plays last
+      .map(t => t.uri);
+    trackUris = trackUris.concat(openerTracks);
+    
+    // SECOND OPENER: 4 songs (least popular to most popular)
+    const secondOpenerTracksResponse = await fetch(
+      `https://api.spotify.com/v1/artists/${lineup.second_opener.spotifyId}/top-tracks?market=US`,
+      { headers: { 'Authorization': `Bearer ${accessToken}` } }
+    );
+    const secondOpenerTracksData = await secondOpenerTracksResponse.json();
+    const secondOpenerTracks = secondOpenerTracksData.tracks
+      .slice(0, 4)
+      .reverse() // Reverse so least popular plays first, most popular plays last
+      .map(t => t.uri);
+    trackUris = trackUris.concat(secondOpenerTracks);
+    
+    // HEADLINER: 5 songs (least popular to most popular)
+    const headlinerTracksResponse = await fetch(
+      `https://api.spotify.com/v1/artists/${lineup.headliner.spotifyId}/top-tracks?market=US`,
+      { headers: { 'Authorization': `Bearer ${accessToken}` } }
+    );
+    const headlinerTracksData = await headlinerTracksResponse.json();
+    const headlinerTracks = headlinerTracksData.tracks
+      .slice(0, 5)
+      .reverse() // Reverse so least popular plays first, most popular plays last
+      .map(t => t.uri);
+    trackUris = trackUris.concat(headlinerTracks);
+    
+    // Add tracks to playlist
+    if (trackUris.length > 0) {
+      await fetch(`https://api.spotify.com/v1/playlists/${playlistData.id}/tracks`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ uris: trackUris })
+      });
+    }
+    
+    // Success!
+    alert(userMarket === 'MX' 
+      ? `✅ ¡Playlist creada con 12 canciones! Abriendo Spotify...` 
+      : `✅ Playlist created with 12 songs! Opening Spotify...`);
+    
+    // Open playlist in Spotify
+    window.open(playlistData.external_urls.spotify, '_blank');
+    
+  } catch (error) {
+    console.error('Error creating playlist:', error);
+    throw error;
+  }
+}
+
 const handleEmailSignup = async () => {
   try {
     const res = await fetch("/api/subscribe", {
@@ -2793,32 +2916,41 @@ if (!error) {
                 )}
                 
                 {promoterDetails.topLineup && (
-                  <div className="bg-black/50 rounded-lg p-4 border border-yellow-400/30">
-                    <h3 className="text-yellow-400 font-bold mb-3 text-center">
-                      {userMarket === 'MX' ? '🔥 Lineup Más Votada' : '🔥 Most Voted Lineup'}
-                    </h3>
-                    <div className="flex justify-center gap-3 mb-2">
-                      {[promoterDetails.topLineup.opener, promoterDetails.topLineup.second_opener, promoterDetails.topLineup.headliner].map((artist, idx) => (
-                        <div key={idx} className="flex flex-col items-center">
-                          <img
-                            src={artist?.image || "/placeholder.jpg"}
-                            alt={artist?.name || "Artist"}
-                            className="w-14 h-14 rounded-md object-cover border border-yellow-400"
-                          />
-                          <span className="text-[10px] text-white font-bold text-center max-w-[4rem] break-words mt-1">
-                            {artist?.name || "Artist"}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                    <p className="text-center text-sm text-yellow-400">
-                      {promoterDetails.topLineup.votes || 0} {userMarket === 'MX' ? 'votos' : 'votes'}
-                    </p>
-                    <p className="text-center text-xs text-gray-400 mt-1">
-                      {promoterDetails.topLineup.prompt}
-                    </p>
-                  </div>
-                )}
+  <div className="bg-black/50 rounded-lg p-4 border border-yellow-400/30">
+    <h3 className="text-yellow-400 font-bold mb-3 text-center">
+      {userMarket === 'MX' ? '🔥 Lineup Más Votada' : '🔥 Most Voted Lineup'}
+    </h3>
+    <div className="flex justify-center gap-3 mb-2">
+      {[promoterDetails.topLineup.opener, promoterDetails.topLineup.second_opener, promoterDetails.topLineup.headliner].map((artist, idx) => (
+        <div key={idx} className="flex flex-col items-center">
+          <img
+            src={artist?.image || "/placeholder.jpg"}
+            alt={artist?.name || "Artist"}
+            className="w-14 h-14 rounded-md object-cover border border-yellow-400"
+          />
+          <span className="text-[10px] text-white font-bold text-center max-w-[4rem] break-words mt-1">
+            {artist?.name || "Artist"}
+          </span>
+        </div>
+      ))}
+    </div>
+    <p className="text-center text-sm text-yellow-400 flex items-center justify-center gap-2">
+      🔥 {promoterDetails.topLineup.votes || 0} {userMarket === 'MX' ? 'votos' : 'votes'}
+      <button
+        onClick={() => handleCreateSpotifyPlaylist(promoterDetails.topLineup)}
+        className="ml-1 hover:scale-110 transition-transform"
+        title={userMarket === 'MX' ? 'Crear playlist en Spotify' : 'Create Spotify playlist'}
+      >
+        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="#1DB954">
+          <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+        </svg>
+      </button>
+    </p>
+    <p className="text-center text-xs text-gray-400 mt-1">
+      {promoterDetails.topLineup.prompt}
+    </p>
+  </div>
+)}
               </>
             ) : (
               <div className="text-center text-gray-400 py-8">
