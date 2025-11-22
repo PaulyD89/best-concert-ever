@@ -134,7 +134,7 @@ export default function SpotifyCallback() {
           </svg>
         </div>
         <h2 className="text-2xl font-bold text-white mb-2">Creating Your Playlist...</h2>
-        <p className="text-gray-400">Hang tight! We're building your concert lineup.</p>
+        <p className="text-gray-400">Hang tight! We&apos;re building your concert lineup.</p>
       </div>
     </div>
   );
