@@ -1273,9 +1273,11 @@ export default async function handler(req, res) {
   }, {});
 
   // Override for testing
-  if (testEmail) {
-    subscribersByMarket = { US: [testEmail] };
-  }
+const testMarket = req.query.testMarket || req.body?.testMarket || 'US';
+
+if (testEmail) {
+  subscribersByMarket = { [testMarket]: [testEmail] };
+}
 
   const chunkArray = (arr, size) =>
     arr.length > size
