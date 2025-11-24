@@ -103,7 +103,9 @@ const didYouKnowTips = [
   "Your votes help unlock more than just wins — badges count too.",
   "Click any artist featured in a winning lineup to hear them on Spotify.",
   "If your lineup lands in the Top 10 list at the end of the day, that counts for points towards your badges.",
-  "Don’t clear your browser cache or else you’ll lose all your anonymous stats and badge unlocks!"
+  "Don't clear your browser cache or else you'll lose all your anonymous stats and badge unlocks!",
+  "Your Decibel Level is calculated by an artist's radio plays, social media followers, streams and more.",
+  "Nail a Decibel Level above 90 and you'll get 10 votes added to your lineup."
 ];
 
 const didYouKnowTipsMX = [
@@ -182,7 +184,9 @@ const didYouKnowTipsMX = [
   "Tus votos ayudan a desbloquear más que victorias — las insignias también cuentan.",
   "Haz clic en cualquier artista destacado en una alineación ganadora para escucharlo en Spotify.",
   "Si tu alineación llega a la lista Top 10 al final del día, eso cuenta para puntos hacia tus insignias.",
-  "¡No borres la caché de tu navegador o perderás todas tus estadísticas anónimas y desbloqueos de insignias!"
+  "¡No borres la caché de tu navegador o perderás todas tus estadísticas anónimas y desbloqueos de insignias!",
+  "Tu Nivel de Decibeles se calcula según las reproducciones en radio, seguidores en redes sociales, streams y más de un artista.",
+  "Consigue un Nivel de Decibeles superior a 90 y obtendrás 10 votos agregados a tu alineación."
 ];
 
 function getDailyDidYouKnowTip(market = 'US') {
