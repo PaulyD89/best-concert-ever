@@ -106,13 +106,93 @@ const didYouKnowTips = [
   "Don’t clear your browser cache or else you’ll lose all your anonymous stats and badge unlocks!"
 ];
 
-function getDailyDidYouKnowTip() {
+const didYouKnowTipsMX = [
+  "¡Puedes ganar aunque no seas el primero en enviar — los votos también cuentan!",
+  "Si alguien gana con una alineación que enviaste después, obtienes crédito con una Asistencia Ganadora.",
+  "Solo tienes un voto por día — ¡hazlo valer!",
+  "La Alineación Más Votada y el Ganador no siempre son lo mismo.",
+  "¡Gana 25 días seguidos para desbloquear la insignia Racha!",
+  "Las rachas se reinician si pierdes un día — ¡no rompas tu racha!",
+  "Los envíos tempranos tienen más probabilidades de obtener más votos.",
+  "Algunas insignias se desbloquean solo con obtener 10+ votos totales.",
+  "Una alineación se convierte en Deep Cut cuando los tres artistas tienen menos de 250,000 seguidores combinados en Spotify.",
+  "Las prompts se reinician exactamente a la medianoche UTC.",
+  "Al hacer clic en tu Rango de Promotor se revela un gráfico especial que puedes compartir.",
+  "Si varias personas envían la alineación ganadora, todos obtienen crédito de victoria — pero solo el primero obtiene el reconocimiento público.",
+  "Hay una tabla de clasificación \"Top 10 Lineups\" actualizada en tiempo real.",
+  "Las alineaciones ganadoras aparecen en el correo del día siguiente.",
+  "Desbloqueas la insignia Líder de Listas después de llegar al Top 10 veinticinco veces.",
+  "Llega al Top 10 diez veces para desbloquear tu primera insignia Líder de Listas.",
+  "Una vez que hayas tenido cinco alineaciones ganadoras, desbloquearás la insignia Ganador.",
+  "Tu archivo Greatest Hits almacena tus mejores alineaciones y estadísticas.",
+  "Los votos son anónimos — nadie sabe quién votó por qué.",
+  "Puedes enviar alineaciones desde móvil o escritorio — es totalmente responsive.",
+  "Solo puedes votar por tu propia alineación después de enviarla.",
+  "Usa artistas de nicho para potencial Deep Cut.",
+  "Después de enviar 2 alineaciones, puedes elegir tu propio apodo de Promotor.",
+  "Ganar el día te da 100 puntos para tu Ranking Global.",
+  "¡Algunas prompts tienen \"Headliners Bloqueados\" — estate atento!",
+  "Obtienes una insignia al llegar a 10 victorias totales.",
+  "¿Quieres mejores estadísticas? Envía alineaciones todos los días.",
+  "Tu Greatest Hits siempre mostrará tu alineación más votada.",
+  "¡Comparte tu alineación para obtener más votos — cada emoji de fuego ayuda!",
+  "No olvides compartir tu alineación en redes sociales — tu alineación obtiene votos adicionales por cada persona que haga clic en ella.",
+  "Fuego = amor. El ícono 🔥 impulsa todo el juego.",
+  "Haz clic en el logo de Spotify para abrir la playlist diaria basada en la alineación ganadora.",
+  "Si tu alineación se convierte en la playlist del día — eso es legendario.",
+  "Los votos totales, victorias, asistencias y envíos se suman para los hitos.",
+  "Verás un popup especial cuando desbloquees algo grande.",
+  "¿Perdiste un día? No borra tus estadísticas — pero rompe tu racha.",
+  "Las tablas de clasificación se actualizan instantáneamente con cada voto.",
+  "La \"Alineación Más Votada\" no siempre es la ganadora — el tiempo importa.",
+  "Solo puedes enviar una alineación por día.",
+  "Las prompts nunca se repiten — cada día es completamente nuevo.",
+  "Colocar una alineación en el Top 10 te da 10 puntos para tu Rango Global.",
+  "Compartir tu alineación aumenta tu visibilidad ante otros votantes.",
+  "¿Ganaste? ¡Comparte tu gráfico Greatest Hits en redes sociales!",
+  "Tu tarjeta Greatest Hits se actualiza cada noche a las 6:30pm PST.",
+  "Si tu alineación se coloca en el Top 10 cinco días seguidos — ¡hora de insignia!",
+  "No necesitas registrarte — puedes jugar instantáneamente.",
+  "Los envíos tempranos tienen más probabilidades de acumular votos de fuego.",
+  "Haz clic en cualquiera de los artistas de la alineación ganadora para escucharlos en Spotify.",
+  "Puedes reutilizar una alineación de un día anterior — pero no hay garantía de que gane de nuevo.",
+  "Las victorias repetidas con el mismo trío te ganan respeto (pero ninguna insignia extra).",
+  "No hay alineación \"incorrecta\" — solo gustos diferentes.",
+  "A los votantes les encantan las mezclas extrañas — no tengas miedo de mezclar géneros.",
+  "Las mejores alineaciones a menudo combinan sorpresa con nostalgia.",
+  "No subestimes a los 2nd Openers — a menudo son los que obtienen votos clave.",
+  "Puedes ver al ganador de ayer en la página de inicio.",
+  "Las Asistencias Ganadoras solo cuentan si alguien más gana con tu alineación exacta.",
+  "Los votos totales + orden de envío se usan para desempatar.",
+  "Las alineaciones que ganan múltiples días son raras — y legendarias.",
+  "¿Quieres volverte viral? Prueba una alineación que genere debate.",
+  "Las mejores alineaciones son inteligentes, nostálgicas y sorprendentes.",
+  "Intenta mezclar un clásico, uno de nicho y una estrella emergente.",
+  "Las alineaciones temáticas a menudo se destacan: todos hermanos, todos dúos, todos bateristas.",
+  "Los artistas no tienen que estar vivos para ser elegidos — las leyendas son bienvenidas.",
+  "¿Reuniones de bandas? Adelante. No tienen que estar juntos ahora.",
+  "Llega al Top 10 del Ranking Global y serás un Promotor de Élite.",
+  "Best Concert Ever está hecho para obsesivos de la música, nerds y superfans.",
+  "Si ganas en tu primer día jugando — eres una leyenda.",
+  "¿Quieres ser la alineación Deep Cut? Envía artistas subestimados.",
+  "Estate atento a prompts especiales vinculadas a días festivos o historia musical.",
+  "Algunas prompts son curadas secretamente por artistas o tastemakers.",
+  "No olvides votar — solo enviar no ayuda a tu ranking.",
+  "Algunas prompts tienen un Headliner Bloqueado — no se puede cambiar.",
+  "Tus votos ayudan a desbloquear más que victorias — las insignias también cuentan.",
+  "Haz clic en cualquier artista destacado en una alineación ganadora para escucharlo en Spotify.",
+  "Si tu alineación llega a la lista Top 10 al final del día, eso cuenta para puntos hacia tus insignias.",
+  "¡No borres la caché de tu navegador o perderás todas tus estadísticas anónimas y desbloqueos de insignias!"
+];
+
+function getDailyDidYouKnowTip(market = 'US') {
+  const tips = market === 'MX' ? didYouKnowTipsMX : didYouKnowTips;
   const today = new Date().toISOString().split("T")[0];
   let hash = 0;
   for (let i = 0; i < today.length; i++) {
     hash = today.charCodeAt(i) + ((hash << 5) - hash);
   }
-  return didYouKnowTips[Math.abs(hash) % didYouKnowTips.length];
+  return tips[Math.abs(hash) % tips.length];
 }
 
 async function getSpotifyImageUrl(artistName) {
@@ -151,7 +231,8 @@ function buildNewsletterHtml({
   rawSecondOpener,
   rawOpener,
   playlistUrl,
-  dailyTip
+  dailyTip,
+  market = 'US'
 }) {
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="ltr" lang="en">
@@ -855,8 +936,7 @@ function buildNewsletterHtml({
                         margin: 16px 0;
                       "
                     >
-                      Think you have what it takes to be the ultimate Music
-                      Promoter?
+                      ${market === 'MX' ? '¿Crees que tienes lo necesario para ser el Promotor Musical definitivo?' : 'Think you have what it takes to be the ultimate Music Promoter?'}
                     </p>
                     <a
                       href="https://bestconcertevergame.com"
@@ -921,7 +1001,7 @@ function buildNewsletterHtml({
                         <tr>
                           <td>
                             <img
-                              src="https://best-concert-ever.vercel.app/email-assets/didyouknow.png?v=20250806"
+                              src="${market === 'MX' ? 'https://best-concert-ever.vercel.app/email-assets/sabiasque.png?v=20250806' : 'https://best-concert-ever.vercel.app/email-assets/didyouknow.png?v=20250806'}"
                               style="
                                 height: 11.25rem;
                                 margin-left: auto;
@@ -1002,7 +1082,7 @@ function buildNewsletterHtml({
                         margin: 16px 0;
                       "
                     >
-                      Follow us on social:
+                      ${market === 'MX' ? 'Síguenos en redes sociales:' : 'Follow us on social:'}
                     </p>
                     <!-- Follow us on social: -->
 <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
@@ -1090,7 +1170,7 @@ function buildNewsletterHtml({
               <tbody>
                 <tr>
                   <td>
-                    <p
+                   <p
                       style="
                         color: rgb(64, 64, 64);
                         font-weight: 600;
@@ -1100,12 +1180,12 @@ function buildNewsletterHtml({
                         margin: 16px 0;
                       "
                     >
-                      Don&#x27;t want to receive these emails?<!-- -->
+                      ${market === 'MX' ? '¿No quieres recibir estos correos?' : "Don&#x27;t want to receive these emails?"}<!-- -->
                       <a
                         href="https://bestconcertevergame.com/unsubscribe"
                         style="color: #067df7; text-decoration-line: none"
                         target="_blank"
-                         href="https://bestconcertevergame.com/unsubscribe">Unsubscribe</a
+                         href="https://bestconcertevergame.com/unsubscribe">${market === 'MX' ? 'Cancelar suscripción' : 'Unsubscribe'}</a
                       >
                     </p>
                   </td>
@@ -1231,7 +1311,7 @@ export default async function handler(req, res) {
 
       const playlistSlug = `${yesterdayPrompt.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, '-')}-playlist-ever`;
       const playlistUrl = `https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=11fb7c92a53744e0/${playlistSlug}`;
-      const dailyTip = getDailyDidYouKnowTip();
+      const dailyTip = getDailyDidYouKnowTip(market);
 
       // Build HTML (your existing template, unchanged)
       const html = buildNewsletterHtml({ 
@@ -1244,7 +1324,8 @@ export default async function handler(req, res) {
         rawSecondOpener, 
         rawOpener, 
         playlistUrl, 
-        dailyTip 
+        dailyTip,
+        market 
       });
 
      const subject = market === 'MX' 
