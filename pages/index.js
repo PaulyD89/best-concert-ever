@@ -2886,7 +2886,7 @@ if (!error) {
   )}
   <p className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-[10px] text-green-300">
   {userMarket === 'MX' ? 'Actualizado 6:30 PM PST' : userMarket === 'BR' ? 'Atualizado 18:30 PST' : 'Updated 6:30 PM PST'}
-</div>
+</p>
       </div>
       </div>
     </div>
