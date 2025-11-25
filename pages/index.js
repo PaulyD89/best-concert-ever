@@ -10,7 +10,9 @@ async function fetchDatabasePrompt(market = 'US') {
 
   // Determine which table to use based on market
   // GLOBAL users get US prompts for now
-  const tableName = market === 'MX' ? 'prompts_mx' : 'prompts';
+  const tableName = market === 'MX' ? 'prompts_mx' 
+                : market === 'BR' ? 'prompts_br'
+                : 'prompts';
   
   console.log(`📅 Fetching prompt from ${tableName} for ${formattedDate}`);
 
@@ -98,8 +100,8 @@ const LineupSlot = ({ artist, label }) => (
   <div className="flex flex-col items-center">
  <div
   className={`${
-    (label === "Headliner" || label === "Cabeza de Cartel") ? "w-51 h-51 shadow-[0_0_15px_4px_rgba(253,224,71,0.8)]" : "w-32 h-32"
-  } bg-gray-200 border-2 border-black rounded-md overflow-hidden flex items-center justify-center`}
+  (label === "Headliner" || label === "Cabeza de Cartel" || label === "Atração Principal") ? "w-51 h-51 shadow-[0_0_15px_4px_rgba(253,224,71,0.8)]" : "w-32 h-32"
+} bg-gray-200 border-2 border-black rounded-md overflow-hidden flex items-center justify-center`}
 >
   {artist?.image ? (
     <img
@@ -120,15 +122,25 @@ const LineupSlot = ({ artist, label }) => (
 
 // Add this function after the LineupSlot component (around line 121)
 const translateLabel = (label, userMarket) => {
-  if (userMarket !== 'MX') return label;
+  if (userMarket === 'MX') {
+    const translations = {
+      'Opener': 'Telonero',
+      '2nd Opener': '2º Telonero',
+      'Headliner': 'Cabeza de Cartel'
+    };
+    return translations[label] || label;
+  }
   
-  const translations = {
-    'Opener': 'Telonero',
-    '2nd Opener': '2º Telonero',
-    'Headliner': 'Cabeza de Cartel'
-  };
+  if (userMarket === 'BR') {
+    const translations = {
+      'Opener': 'Abertura',
+      '2nd Opener': '2ª Abertura',
+      'Headliner': 'Atração Principal'
+    };
+    return translations[label] || label;
+  }
   
-  return translations[label] || label;
+  return label;
 };
 
 export default function BestConcertEver() {
@@ -168,6 +180,8 @@ async function detectUserMarket() {
 let market;
 if (data.country_code === 'MX') {
   market = 'MX';
+} else if (data.country_code === 'BR') {
+  market = 'BR';
 } else {
   market = 'US';  // Everyone else (including GLOBAL) uses US backend
 }
@@ -235,7 +249,9 @@ useEffect(() => {
       window.history.replaceState({}, "", window.location.pathname);
 
       // Optional: give quick feedback before reload
-      alert(userMarket === 'MX' ? "✅ ¡Tu progreso ha sido restaurado! La página se recargará." : "✅ Your progress has been restored! The page will reload.");
+      alert(userMarket === 'MX' ? "✅ ¡Tu progreso ha sido restaurado! La página se recargará." 
+    : userMarket === 'BR' ? "✅ Seu progresso foi restaurado! A página será recarregada."
+    : "✅ Your progress has been restored! The page will reload.");
 
       // Reload to re-fetch stats with the restored ID
       window.location.reload();
@@ -687,11 +703,15 @@ const performVote = async (prompt) => {
       });
     }
 
-    alert(userMarket === 'MX' ? "🔥 ¡Tu voto ha sido contado! Ahora envía el tuyo." : "🔥 Your vote has been counted! Now submit your own.");
+    alert(userMarket === 'MX' ? "🔥 ¡Tu voto ha sido contado! Ahora envía el tuyo." 
+    : userMarket === 'BR' ? "🔥 Seu voto foi contado! Agora envie o seu."
+    : "🔥 Your vote has been counted! Now submit your own.");
     
   } catch (err) {
     console.error("Vote execution error:", err);
-    alert(userMarket === 'MX' ? "⚠️ Hubo un error al registrar tu voto. Por favor intenta de nuevo." : "⚠️ There was an error recording your vote. Please try again.");
+    alert(userMarket === 'MX' ? "⚠️ Hubo un error al registrar tu voto. Por favor intenta de nuevo." 
+    : userMarket === 'BR' ? "⚠️ Houve um erro ao registrar seu voto. Por favor, tente novamente."
+    : "⚠️ There was an error recording your vote. Please try again.");
   }
 };
 
@@ -699,7 +719,9 @@ const handleFireVote = async (lineupId, voteType) => {
   // Check localStorage first for UX
   const alreadyVoted = localStorage.getItem(`bce-voted-${dailyPrompt}`);
   if (alreadyVoted) {
-    alert(userMarket === 'MX' ? "¡Ya votaste hoy!" : "You've already voted today!");
+    alert(userMarket === 'MX' ? "¡Ya votaste hoy!" 
+    : userMarket === 'BR' ? "Você já votou hoje!"
+    : "You've already voted today!");
     return;
   }
 
@@ -726,7 +748,9 @@ const handleFireVote = async (lineupId, voteType) => {
         // IP rate limit hit
         alert(result.error);
       } else {
-        alert(userMarket === 'MX' ? "Ups, hubo un problema al registrar tu voto." : "Oops, there was an issue recording your vote.");
+        alert(userMarket === 'MX' ? "Ups, hubo un problema al registrar tu voto." 
+    : userMarket === 'BR' ? "Ops, houve um problema ao registrar seu voto."
+    : "Oops, there was an issue recording your vote.");
       }
       return;
     }
@@ -740,12 +764,16 @@ const handleFireVote = async (lineupId, voteType) => {
       window.plausible("Any Vote Cast");
     }
 
-    alert(userMarket === 'MX' ? "🔥 ¡Tu voto ha sido contado!" : "🔥 Your vote has been counted!");
+    alert(userMarket === 'MX' ? "🔥 ¡Tu voto ha sido contado!" 
+    : userMarket === 'BR' ? "🔥 Seu voto foi contado!"
+    : "🔥 Your vote has been counted!");
     window.location.reload();
     
   } catch (err) {
     console.error("Vote execution error:", err);
-    alert(userMarket === 'MX' ? "⚠️ Hubo un error al registrar tu voto. Por favor intenta de nuevo." : "⚠️ There was an error recording your vote. Please try again.");
+    alert(userMarket === 'MX' ? "⚠️ Hubo un error al registrar tu voto. Por favor intenta de nuevo." 
+    : userMarket === 'BR' ? "⚠️ Houve um erro ao registrar seu voto. Por favor, tente novamente."
+    : "⚠️ There was an error recording your vote. Please try again.");
   }
 };
 
@@ -790,7 +818,9 @@ useEffect(() => {
 
     if (today >= cutoff) {
       // Use market-specific prompt table
-      const tableName = userMarket === 'MX' ? 'prompts_mx' : 'prompts';
+      const tableName = userMarket === 'MX' ? 'prompts_mx' 
+                : userMarket === 'BR' ? 'prompts_br'
+                : 'prompts';
       
       const { data, error } = await supabase
         .from(tableName)
@@ -824,7 +854,9 @@ useEffect(() => {
     startDate.setUTCDate(endDate.getUTCDate() - 6);
 
     // Use market-specific prompt table
-    const tableName = userMarket === 'MX' ? 'prompts_mx' : 'prompts';
+    const tableName = userMarket === 'MX' ? 'prompts_mx' 
+                : userMarket === 'BR' ? 'prompts_br'
+                : 'prompts';
     
     const { data: promptsData, error: promptError } = await supabase
       .from(tableName)
@@ -919,7 +951,9 @@ const copyRestoreLink = () => {
 
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(link).then(() => {
-        alert(userMarket === 'MX' ? "✅ ¡Enlace de cuenta copiado! Ábrelo en tu otro dispositivo para restaurar tu cuenta." : "✅ Account link copied! Open it on your other device to restore your account.");
+        alert(userMarket === 'MX' ? "✅ ¡Enlace de cuenta copiado! Ábrelo en tu otro dispositivo para restaurar tu cuenta." 
+    : userMarket === 'BR' ? "✅ Link da conta copiado! Abra-o em seu outro dispositivo para restaurar sua conta."
+    : "✅ Account link copied! Open it on your other device to restore your account.");
         if (typeof window !== "undefined" && window.plausible) {
           window.plausible("Restore Link Copied");
         }
@@ -932,7 +966,9 @@ const copyRestoreLink = () => {
         ta.select();
         document.execCommand("copy");
         document.body.removeChild(ta);
-        alert(userMarket === 'MX' ? "✅ ¡Enlace de restauración copiado! Ábrelo en tu otro dispositivo para restaurar tu cuenta." : "✅ Restore link copied! Open it on your other device to restore your account.");
+        alert(userMarket === 'MX' ? "✅ ¡Enlace de restauración copiado! Ábrelo en tu otro dispositivo para restaurar tu cuenta." 
+    : userMarket === 'BR' ? "✅ Link de restauração copiado! Abra-o em seu outro dispositivo para restaurar sua conta."
+    : "✅ Restore link copied! Open it on your other device to restore your account.");
       });
     } else {
       const ta = document.createElement("textarea");
@@ -944,14 +980,20 @@ const copyRestoreLink = () => {
       const ok = document.execCommand("copy");
       document.body.removeChild(ta);
       if (ok) {
-        alert(userMarket === 'MX' ? "✅ ¡Enlace de restauración copiado! Ábrelo en tu otro dispositivo para restaurar tu cuenta." : "✅ Restore link copied! Open it on your other device to restore your account.");
+        alert(userMarket === 'MX' ? "✅ ¡Enlace de restauración copiado! Ábrelo en tu otro dispositivo para restaurar tu cuenta." 
+    : userMarket === 'BR' ? "✅ Link de restauração copiado! Abra-o em seu outro dispositivo para restaurar sua conta."
+    : "✅ Restore link copied! Open it on your other device to restore your account.");
       } else {
-        alert(userMarket === 'MX' ? `Tu enlace de restauración:\n${link}\n(Por favor cópialo manualmente)` : `Your restore link:\n${link}\n(Please copy it manually)`);
+        alert(userMarket === 'MX' ? `Tu enlace de restauración:\n${link}\n(Por favor cópialo manualmente)` 
+    : userMarket === 'BR' ? `Seu link de restauração:\n${link}\n(Por favor, copie-o manualmente)`
+    : `Your restore link:\n${link}\n(Please copy it manually)`);
       }
     }
   } catch (e) {
     console.error("Copy failed:", e);
-    alert(userMarket === 'MX' ? "No se pudo copiar automáticamente. Mostraremos el enlace la próxima vez." : "Couldn't copy automatically. We'll show the link next time.");
+    alert(userMarket === 'MX' ? "No se pudo copiar automáticamente. Mostraremos el enlace la próxima vez." 
+    : userMarket === 'BR' ? "Não foi possível copiar automaticamente. Mostraremos o link na próxima vez."
+    : "Couldn't copy automatically. We'll show the link next time.");
   }
 };
 
@@ -1019,6 +1061,16 @@ const handleSharePromoterCard = async () => {
 - Racha actual de ${promoterDetails.current_streak || 0} días
 
 ¿Puedes ganarme?`
+  : userMarket === 'BR'
+  ? `🔥 Estou ${rankEmoji} no Best Concert Ever ${timeframe === "this month" ? "este mês" : "esta semana"}!
+
+📊 Minhas Estatísticas:
+- ${selectedPromoter.totalPoints} votos ${timeframe === "this month" ? "este mês" : "esta semana"}
+- Classificação Global: ${promoterDetails.global_rank ? `#${promoterDetails.global_rank}` : "Subindo!"}
+- ${promoterDetails.total_wins || 0} vitórias totais
+- Sequência atual de ${promoterDetails.current_streak || 0} dias
+
+Consegue me vencer?`
   : `🔥 I'm ${rankEmoji} on Best Concert Ever ${timeframe}!
 
 📊 My Stats:
@@ -1030,7 +1082,9 @@ const handleSharePromoterCard = async () => {
 Can you beat me?`;
 
   const shareData = {
-    title: userMarket === 'MX' ? "Best Concert Ever - Mi Tarjeta de Promotor" : "Best Concert Ever - My Promoter Card",
+    title: userMarket === 'MX' ? "Best Concert Ever - Mi Tarjeta de Promotor" 
+    : userMarket === 'BR' ? "Best Concert Ever - Meu Cartão de Promotor"
+    : "Best Concert Ever - My Promoter Card",
     text: shareText,
     url: "https://bestconcertevergame.com"
   };
@@ -1046,14 +1100,18 @@ Can you beat me?`;
     } else {
       // Fallback: Copy to clipboard if share not available
       await navigator.clipboard.writeText(shareText + "\n\nhttps://bestconcertevergame.com");
-      alert(userMarket === 'MX' ? "✅ ¡Copiado al portapapeles! ¡Pégalo donde quieras para compartir! 🎸" : "✅ Copied to clipboard! Paste it anywhere to share! 🎸");
+      alert(userMarket === 'MX' ? "✅ ¡Copiado al portapapeles! ¡Pégalo donde quieras para compartir! 🎸" 
+    : userMarket === 'BR' ? "✅ Copiado para a área de transferência! Cole em qualquer lugar para compartilhar! 🎸"
+    : "✅ Copied to clipboard! Paste it anywhere to share! 🎸");
     }
   } catch (err) {
     // If user cancels or error occurs, try clipboard as fallback
     if (err.name !== "AbortError") {
       try {
         await navigator.clipboard.writeText(shareText + "\n\nhttps://bestconcertevergame.com");
-        alert(userMarket === 'MX' ? "✅ ¡Copiado al portapapeles! ¡Pégalo donde quieras para compartir! 🎸" : "✅ Copied to clipboard! Paste it anywhere to share! 🎸");
+        alert(userMarket === 'MX' ? "✅ ¡Copiado al portapapeles! ¡Pégalo donde quieras para compartir! 🎸" 
+    : userMarket === 'BR' ? "✅ Copiado para a área de transferência! Cole em qualquer lugar para compartilhar! 🎸"
+    : "✅ Copied to clipboard! Paste it anywhere to share! 🎸");
       } catch (clipErr) {
         console.error("Share failed:", err);
       }
@@ -1090,8 +1148,10 @@ async function handleCreateSpotifyPlaylist(lineup) {
   } catch (error) {
     console.error('Error creating Spotify playlist:', error);
     alert(userMarket === 'MX' 
-      ? 'Error al crear playlist. Por favor intenta de nuevo.' 
-      : 'Error creating playlist. Please try again.');
+  ? 'Error al crear playlist. Por favor intenta de nuevo.' 
+  : userMarket === 'BR'
+  ? 'Erro ao criar playlist. Por favor, tente novamente.'
+  : 'Error creating playlist. Please try again.');
   }
 }
 
@@ -1172,8 +1232,10 @@ async function createPlaylistWithToken(accessToken, lineup) {
     
     // Success!
     alert(userMarket === 'MX' 
-      ? `✅ ¡Playlist creada con 12 canciones! Abriendo Spotify...` 
-      : `✅ Playlist created with 12 songs! Opening Spotify...`);
+  ? `✅ ¡Playlist creada con 12 canciones! Abriendo Spotify...` 
+  : userMarket === 'BR'
+  ? `✅ Playlist criada com 12 músicas! Abrindo Spotify...`
+  : `✅ Playlist created with 12 songs! Opening Spotify...`);
     
     // Open playlist in Spotify
     window.open(playlistData.external_urls.spotify, '_blank');
@@ -1197,7 +1259,7 @@ const handleEmailSignup = async () => {
     if (res.ok) {
       setEmailSubmitted(true);
     } else {
-      alert(userMarket === 'MX' ? "Hubo un problema al registrarte. Intenta más tarde." : "There was a problem signing up. Try again later.");
+      alert(userMarket === 'MX' ? "Hubo un problema al registrarte. Intenta más tarde." : userMarket === 'BR' ? "Houve um problema ao se inscrever. Tente mais tarde." : "There was a problem signing up. Try again later.");
     }
   } catch (err) {
     console.error("Email signup error:", err);
@@ -1596,7 +1658,7 @@ const name3 = normalize(enrichedSecondOpener);
 const uniqueNames = new Set([name1, name2, name3]);
 
 if (uniqueNames.size < 3) {
-  alert(userMarket === 'MX' ? "¡No puedes usar el mismo artista más de una vez!" : "You can't use the same artist more than once!");
+  alert(userMarket === 'MX' ? "¡No puedes usar el mismo artista más de una vez!" : userMarket === 'BR' ? "Você não pode usar o mesmo artista mais de uma vez!" : "You can't use the same artist more than once!");
   return;
 }
 
@@ -1613,13 +1675,13 @@ const { data: existing, error: checkError } = await supabase
 
 if (checkError) {
   console.error("Error checking existing submission:", checkError);
-  alert(userMarket === 'MX' ? "Hubo un error al verificar tu envío anterior." : "There was an error checking your previous submission.");
+  alert(userMarket === 'MX' ? "Hubo un error al verificar tu envío anterior." : userMarket === 'BR' ? "Houve um erro ao verificar seu envio anterior." : "There was an error checking your previous submission.");
   setIsSubmitting(false); 
   return;
 }
 
 if (existing.length > 0) {
-  alert(userMarket === 'MX' ? "¡Ya enviaste un lineup para el prompt de hoy!" : "You've already submitted a lineup for today's prompt!");
+  alert(userMarket === 'MX' ? "¡Ya enviaste un lineup para el prompt de hoy!" : userMarket === 'BR' ? "Você já enviou um lineup para o desafio de hoje!" : "You've already submitted a lineup for today's prompt!");
   setIsSubmitting(false); 
   return;
 }
@@ -1651,7 +1713,7 @@ if (!response.ok) {
     // IP rate limit hit
     alert(result.error);
   } else {
-    alert(userMarket === 'MX' ? "Hubo un error al enviar tu lineup." : "There was an error submitting your lineup.");
+    alert(userMarket === 'MX' ? "Hubo un error al enviar tu lineup." : userMarket === 'BR' ? "Houve um erro ao enviar seu lineup." : "There was an error submitting your lineup.");
   }
   setIsSubmitting(false); 
   return;
@@ -1722,7 +1784,7 @@ setIsSubmitting(false);
 
 {/* Market Indicator */}
     <div className="fixed top-4 right-4 bg-black/50 px-3 py-1 rounded-full text-xs text-yellow-400 border border-yellow-400/30 backdrop-blur-sm z-50">
-  🌍 {userMarket === 'MX' ? 'México' : 'Global'}
+  🌍 🌍 {userMarket === 'MX' ? 'México' : userMarket === 'BR' ? 'Brasil' : 'Global'}
 </div>
 
 {showHowToPlay && (
@@ -1735,43 +1797,58 @@ setIsSubmitting(false);
               &times;
             </button>
                        {userMarket === 'MX' ? (
-              <div>
-                <h2 className="text-2xl font-bold mb-4">CÓMO JUGAR</h2>
-                <ul className="list-disc pl-5 space-y-2 text-sm">
-                  <li>Es hora de lucir tus habilidades como promotor musical y demostrar que sabes armar el MEJOR CARTEL.</li>
-                  <li><b>REVISA EL PROMPT DIARIO</b> para ver el género del show que vas a promover.</li>
-                  <li>Usa los menús desplegables para elegir <b>TRES ARTISTAS</b> que encajen con la temática.</li>
-                  <li><b>ELIGE EL ORDEN</b> del show: <b>Telonero</b>, <b>2º Telonero</b> y <b>Cabeza de cartel</b>.</li>
-                  <li>Cuando termines, pulsa <b>ENVIAR ALINEACIÓN</b> y luego <b>COMPARTIR ALINEACIÓN</b> para anunciar tu show y conseguir votos.</li>
-                  <li>Todas las alineaciones reciben un <b>NIVEL DE DECIBELIOS (dB)</b> que otorga <b>votos extra</b> según el impulso diario de tus artistas.</li>
-                  <li>El <b>TOP 10</b> del día se publica a diario. Vota tocando el <b>emoji de fuego 🔥</b> en las alineaciones que te encanten.</li>
-                  <li>Las alineaciones con <b>MÁS VOTOS</b> ganan el día: suben en los rankings, desbloquean insignias y premios de promotor. ¡Derechos de presumir incluidos!</li>
-                  <li><b>NUEVOS JUEGOS</b> y <b>GANADORES DE AYER</b> se publican todos los días a las 5pm PST.</li>
-                </ul>
-              </div>
-            ) : (
-              <div>
-                <h2 className="text-2xl font-bold mb-4">HOW TO PLAY</h2>
-                <ul className="list-disc pl-5 space-y-2 text-sm">
-                  <li>Time to flex those Music Promoter skills and show everyone you know how to assemble the ULTIMATE CONCERT LINE-UP!</li>
-                  <li>CHECK THE DAILY PROMPT for the genre of the show you&apos;re promoting.</li>
-                  <li>Use the drop-down menus to select THREE ARTISTS who fit the bill.</li>
-                  <li>CHOOSE THE ORDER of your show - the OPENER, 2ND OPENER and HEADLINER.</li>
-                  <li>Once you have made your selections, hit <b>SUBMIT LINEUP</b> and then click <b>SHARE YOUR LINEUP</b> to announce your show and get votes.</li>
-                  <li>All lineups benefit from a <b>DECIBEL LEVEL</b> score that can grant <b>bonus votes</b> based on artists&apos; daily industry buzz.</li>
-                  <li>Today&apos;s TOP 10 will be posted daily. <b>VOTE</b> by tapping the <b>FIRE EMOJI</b>. Sometimes a player&apos;s <b>DEEP CUT</b> may appear as well.</li>
-                  <li>Lineups with the MOST VOTES will win the day, rise in the rankings, unlock badges and promoter awards. Bragging rights, baby!</li>
-                  <li><b>NEW GAMES</b> and <b>YESTERDAY&apos;S WINNERS</b> are posted every single day at 5pm PST.</li>
-                </ul>
-              </div>
-            )}
+  <div>
+    <h2 className="text-2xl font-bold mb-4">CÓMO JUGAR</h2>
+    <ul className="list-disc pl-5 space-y-2 text-sm">
+      <li>Es hora de lucir tus habilidades como promotor musical y demostrar que sabes armar el MEJOR CARTEL.</li>
+      <li><b>REVISA EL PROMPT DIARIO</b> para ver el género del show que vas a promover.</li>
+      <li>Usa los menús desplegables para elegir <b>TRES ARTISTAS</b> que encajen con la temática.</li>
+      <li><b>ELIGE EL ORDEN</b> del show: <b>Telonero</b>, <b>2º Telonero</b> y <b>Cabeza de cartel</b>.</li>
+      <li>Cuando termines, pulsa <b>ENVIAR ALINEACIÓN</b> y luego <b>COMPARTIR ALINEACIÓN</b> para anunciar tu show y conseguir votos.</li>
+      <li>Todas las alineaciones reciben un <b>NIVEL DE DECIBELIOS (dB)</b> que otorga <b>votos extra</b> según el impulso diario de tus artistas.</li>
+      <li>El <b>TOP 10</b> del día se publica a diario. Vota tocando el <b>emoji de fuego 🔥</b> en las alineaciones que te encanten.</li>
+      <li>Las alineaciones con <b>MÁS VOTOS</b> ganan el día: suben en los rankings, desbloquean insignias y premios de promotor. ¡Derechos de presumir incluidos!</li>
+      <li><b>NUEVOS JUEGOS</b> y <b>GANADORES DE AYER</b> se publican todos los días a las 5pm PST.</li>
+    </ul>
+  </div>
+) : userMarket === 'BR' ? (
+  <div>
+    <h2 className="text-2xl font-bold mb-4">COMO JOGAR</h2>
+    <ul className="list-disc pl-5 space-y-2 text-sm">
+      <li>Hora de mostrar suas habilidades como promotor musical e demonstrar que você sabe montar o MELHOR LINE-UP DE SHOW!</li>
+      <li><b>CONFIRA O DESAFIO DIÁRIO</b> para ver o gênero do show que você está promovendo.</li>
+      <li>Use os menus suspensos para selecionar <b>TRÊS ARTISTAS</b> que se encaixem no tema.</li>
+      <li><b>ESCOLHA A ORDEM</b> do seu show: <b>Abertura</b>, <b>2ª Abertura</b> e <b>Atração Principal</b>.</li>
+      <li>Quando terminar, clique em <b>ENVIAR LINEUP</b> e depois <b>COMPARTILHAR LINEUP</b> para anunciar seu show e conseguir votos.</li>
+      <li>Todos os lineups recebem um <b>NÍVEL DE DECIBÉIS (dB)</b> que concede <b>votos bônus</b> baseado no buzz diário dos artistas.</li>
+      <li>O <b>TOP 10</b> do dia é publicado diariamente. <b>VOTE</b> tocando no <b>EMOJI DE FOGO 🔥</b> nos lineups que você adorar.</li>
+      <li>Lineups com <b>MAIS VOTOS</b> ganham o dia: sobem no ranking, desbloqueiam distintivos e prêmios de promotor. Direitos de se gabar incluídos!</li>
+      <li><b>NOVOS JOGOS</b> e <b>VENCEDORES DE ONTEM</b> são publicados todos os dias às 17h PST.</li>
+    </ul>
+  </div>
+) : (
+  <div>
+    <h2 className="text-2xl font-bold mb-4">HOW TO PLAY</h2>
+    <ul className="list-disc pl-5 space-y-2 text-sm">
+      <li>Time to flex those Music Promoter skills and show everyone you know how to assemble the ULTIMATE CONCERT LINE-UP!</li>
+      <li>CHECK THE DAILY PROMPT for the genre of the show you&apos;re promoting.</li>
+      <li>Use the drop-down menus to select THREE ARTISTS who fit the bill.</li>
+      <li>CHOOSE THE ORDER of your show - the OPENER, 2ND OPENER and HEADLINER.</li>
+      <li>Once you have made your selections, hit <b>SUBMIT LINEUP</b> and then click <b>SHARE YOUR LINEUP</b> to announce your show and get votes.</li>
+      <li>All lineups benefit from a <b>DECIBEL LEVEL</b> score that can grant <b>bonus votes</b> based on artists&apos; daily industry buzz.</li>
+      <li>Today&apos;s TOP 10 will be posted daily. <b>VOTE</b> by tapping the <b>FIRE EMOJI</b>. Sometimes a player&apos;s <b>DEEP CUT</b> may appear as well.</li>
+      <li>Lineups with the MOST VOTES will win the day, rise in the rankings, unlock badges and promoter awards. Bragging rights, baby!</li>
+      <li><b>NEW GAMES</b> and <b>YESTERDAY&apos;S WINNERS</b> are posted every single day at 5pm PST.</li>
+    </ul>
+  </div>
+)}
 
             <div className="text-center mt-6">
               <button
   onClick={() => setShowHowToPlay(false)}
   className="inline-block bg-black text-white text-lg px-6 py-2 rounded-full border-2 border-black shadow-md hover:bg-yellow-300 hover:text-black"
 >
-  {userMarket === 'MX' ? '¡A Jugar!' : "Let's Play!"}
+  {userMarket === 'MX' ? '¡A Jugar!' : userMarket === 'BR' ? 'Vamos Jogar!' : "Let's Play!"}
 </button>
             </div>
           </div>
@@ -1782,8 +1859,12 @@ setIsSubmitting(false);
   <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/70 backdrop-blur-sm">
     <div className="relative max-w-[90%] w-[420px] rounded-2xl shadow-2xl border-4 border-white overflow-hidden">
       <img
-  src={userMarket === 'MX' ? '/howtoplayinfographicmx.png' : '/howtoplayinfographic.png'}
-  alt={userMarket === 'MX' ? 'Cómo jugar' : 'How to Play'}
+  src={userMarket === 'MX' ? '/howtoplayinfographicmx.png' 
+   : userMarket === 'BR' ? '/howtoplayinfographicbr.png'
+   : '/howtoplayinfographic.png'}
+alt={userMarket === 'MX' ? 'Cómo jugar' 
+   : userMarket === 'BR' ? 'Como Jogar'
+   : 'How to Play'}
   className="w-full h-auto object-contain"
 />
       <button
@@ -1805,7 +1886,11 @@ setIsSubmitting(false);
       >
         &times;
       </button>
-<h2 className="text-2xl font-bold mb-4">{userMarket === 'MX' ? '🎉 ¡Lineup Enviado!' : '🎉 Lineup Submitted!'}</h2>
+<h2 className="text-2xl font-bold mb-4">
+  {userMarket === 'MX' ? '🎉 ¡Lineup Enviado!' 
+ : userMarket === 'BR' ? '🎉 Lineup Enviada!'
+ : '🎉 Lineup Submitted!'}
+</h2>
 
 {/* Decibel Score Display */}
 <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-400 rounded-lg p-4 mb-4 shadow-md">
@@ -1817,7 +1902,7 @@ setIsSubmitting(false);
         <span className="text-lg text-gray-500">/100</span>
       </div>
       <div className="text-xs text-gray-600 uppercase tracking-wide font-bold">
-  {userMarket === 'MX' ? 'Nivel de Decibelios' : 'Decibel Level'}
+  {userMarket === 'MX' ? 'Nivel de Decibelios' : userMarket === 'BR' ? 'Nível de Decibéis' : 'Decibel Level'}
 </div>
     </div>
   </div>
@@ -1825,28 +1910,36 @@ setIsSubmitting(false);
   {lastBonusVotes > 0 && (
     <div className="mt-3 pt-3 border-t-2 border-yellow-300">
       <p className="text-sm font-bold text-green-700">
-  {userMarket === 'MX' ? `🎁 +${lastBonusVotes} Votos Extra Ganados!` : `🎁 +${lastBonusVotes} Bonus Votes Earned!`}
+  {userMarket === 'MX' ? `🎁 +${lastBonusVotes} Votos Extra Ganados!` 
+: userMarket === 'BR' ? `🎁 +${lastBonusVotes} Votos Bônus Ganhos!`
+: `🎁 +${lastBonusVotes} Bonus Votes Earned!`}
 </p>
       <p className="text-xs text-gray-700 mt-1 font-semibold">
-        {lastDecibelScore >= 90 ? (userMarket === 'MX' ? "🌟 ¡Lineup de superestrella!" : "🌟 Superstar lineup!") :
- lastDecibelScore >= 80 ? (userMarket === 'MX' ? "💎 ¡Lineup de élite!" : "💎 Elite lineup!") :
- lastDecibelScore >= 70 ? (userMarket === 'MX' ? "💪 ¡Lineup fuerte!" : "💪 Strong lineup!") :
- lastDecibelScore >= 60 ? (userMarket === 'MX' ? "👍 ¡Buen lineup!" : "👍 Good lineup!") :
- lastDecibelScore >= 50 ? (userMarket === 'MX' ? "✨ ¡Lineup sólido!" : "✨ Solid lineup!") :
- lastDecibelScore >= 40 ? (userMarket === 'MX' ? "👌 ¡Lineup decente!" : "👌 Decent lineup!") :
- (userMarket === 'MX' ? "🎵 ¡Buen trabajo!" : "🎵 Nice work!")}
+        {lastDecibelScore >= 90 ? (userMarket === 'MX' ? "🌟 ¡Lineup de superestrella!" : userMarket === 'BR' ? "🌟 Lineup de superestrela!" : "🌟 Superstar lineup!") :
+lastDecibelScore >= 80 ? (userMarket === 'MX' ? "💎 ¡Lineup de élite!" : userMarket === 'BR' ? "💎 Lineup de elite!" : "💎 Elite lineup!") :
+lastDecibelScore >= 70 ? (userMarket === 'MX' ? "💪 ¡Lineup fuerte!" : userMarket === 'BR' ? "💪 Lineup forte!" : "💪 Strong lineup!") :
+lastDecibelScore >= 60 ? (userMarket === 'MX' ? "👍 ¡Buen lineup!" : userMarket === 'BR' ? "👍 Boa lineup!" : "👍 Good lineup!") :
+lastDecibelScore >= 50 ? (userMarket === 'MX' ? "✨ ¡Lineup sólido!" : userMarket === 'BR' ? "✨ Lineup sólida!" : "✨ Solid lineup!") :
+lastDecibelScore >= 40 ? (userMarket === 'MX' ? "👌 ¡Lineup decente!" : userMarket === 'BR' ? "👌 Lineup decente!" : "👌 Decent lineup!") :
+(userMarket === 'MX' ? "🎵 ¡Buen trabajo!" : userMarket === 'BR' ? "🎵 Bom trabalho!" : "🎵 Nice work!")}
       </p>
     </div>
   )}
   
   {lastBonusVotes === 0 && (
     <p className="text-xs text-gray-600 mt-2 italic">
-  {userMarket === 'MX' ? '¡Elige artistas con más impulso la próxima vez para votos extra!' : 'Pick artists with more buzz next time for bonus votes!'}
+  {userMarket === 'MX' ? '¡Elige artistas con más impulso la próxima vez para votos extra!' 
+: userMarket === 'BR' ? 'Escolha artistas com mais buzz da próxima vez para votos bônus!'
+: 'Pick artists with more buzz next time for bonus votes!'}
 </p>
   )}
 </div>
 
-<p className="text-sm mb-6 font-semibold">{userMarket === 'MX' ? '¡Ahora completa el juego de hoy votando por tu lineup favorito haciendo clic en el 🔥!' : "Now complete today's game by voting for your favorite lineup by clicking on the 🔥!"}</p>
+<p className="text-sm mb-6 font-semibold">
+  {userMarket === 'MX' ? '¡Ahora completa el juego de hoy votando por tu lineup favorito haciendo clic en el 🔥!' 
+ : userMarket === 'BR' ? 'Agora complete o jogo de hoje votando na sua lineup favorita clicando no 🔥!'
+ : "Now complete today's game by voting for your favorite lineup by clicking on the 🔥!"}
+</p>
       <button
         onClick={() => {
           setShowVotePrompt(false);
@@ -1857,7 +1950,9 @@ setIsSubmitting(false);
         }}
         className="bg-black text-yellow-300 font-bold py-2 px-6 rounded-full hover:bg-yellow-300 hover:text-black transition uppercase text-sm"
 >
-  {userMarket === 'MX' ? 'Ver Top 10 y Votar 🔥' : 'Browse Top 10 & Vote 🔥'}
+  {userMarket === 'MX' ? 'Ver Top 10 y Votar 🔥' 
+: userMarket === 'BR' ? 'Ver Top 10 e Votar 🔥'
+: 'Browse Top 10 & Vote 🔥'}
 </button>
     </div>
   </div>
@@ -1910,10 +2005,14 @@ setIsSubmitting(false);
   {isSubmitting ? (
     <span className="flex items-center gap-2">
       <span className="animate-speaker-pulse">🔊</span>
-      {userMarket === 'MX' ? 'Calculando Nivel de Decibeles...' : 'Calculating Decibel Level...'}
+      {userMarket === 'MX' ? 'Calculando Nivel de Decibeles...' 
+: userMarket === 'BR' ? 'Calculando Nível de Decibéis...'
+: 'Calculating Decibel Level...'}
     </span>
   ) : (
-    userMarket === 'MX' ? 'Enviar Lineup' : 'Submit Lineup'
+    userMarket === 'MX' ? 'Enviar Lineup' 
+: userMarket === 'BR' ? 'Enviar Lineup'
+: 'Submit Lineup'
   )}
 </button>
           <button
@@ -1981,7 +2080,9 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
                 : "text-gray-400 border-gray-500 cursor-not-allowed"
             }`}
           >
-            {userMarket === 'MX' ? 'Descargar Lineup' : 'Download Lineup'}
+            {userMarket === 'MX' ? 'Descargar Lineup' 
+: userMarket === 'BR' ? 'Baixar Lineup'
+: 'Download Lineup'}
           </button>
         </div>
       </div>
@@ -1995,7 +2096,9 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
     }
   }}
 >
-  {userMarket === 'MX' ? 'Cómo Jugar' : 'How to Play'}
+  {userMarket === 'MX' ? 'Cómo Jugar' 
+: userMarket === 'BR' ? 'Como Jogar'
+: 'How to Play'}
 </div>
 
 <div
@@ -2003,8 +2106,10 @@ ctx.fillText(secondOpener?.name || "", WIDTH / 2 + 140, HEIGHT - 160);
   onClick={() => setShowEmailSignup(true)}
 >
   {userMarket === 'MX'
-    ? 'Suscríbete para recibir el juego diario y los ganadores'
-    : 'Sign Up for Daily Puzzles & Winners'}
+  ? 'Suscríbete para recibir el juego diario y los ganadores'
+  : userMarket === 'BR'
+  ? 'Inscreva-se para receber desafios diários e vencedores'
+  : 'Sign Up for Daily Puzzles & Winners'}
 </div>
 
 {ticketReady && lineupReady && (
@@ -2062,6 +2167,8 @@ const tinyUrl = voteUrl;
 
 const shareText = userMarket === 'MX' 
   ? `Aquí está mi lineup para "${dailyPrompt}" 🎶🔥 Vota por ella: ${tinyUrl} o envía la tuya! #bestconcertever`
+  : userMarket === 'BR'
+  ? `Aqui está minha lineup para "${dailyPrompt}" 🎶🔥 Vote nela: ${tinyUrl} ou envie a sua! #bestconcertever`
   : `Here's my lineup for "${dailyPrompt}" 🎶🔥 Vote for it: ${tinyUrl} or submit your own! #bestconcertever`;
 
 await navigator.share({
@@ -2071,7 +2178,7 @@ await navigator.share({
 });
         } catch (err) {
           console.error("Share failed:", err);
-          alert(userMarket === 'MX' ? "Se canceló o falló al compartir." : "Sharing was cancelled or failed.");
+          alert(userMarket === 'MX' ? "Se canceló o falló al compartir." : userMarket === 'BR' ? "Compartilhamento cancelado ou falhou." : "Sharing was cancelled or failed.");
         }
       } else {
         const link = document.createElement("a");
@@ -2085,7 +2192,9 @@ await navigator.share({
       
       className="flex items-center space-x-2 bg-black text-cyan-400 font-bold px-6 py-3 rounded-full border-2 border-cyan-400 hover:text-white hover:border-white hover:shadow-lg transition-all duration-300 shadow-[0_0_15px_rgba(0,255,255,0.7)] uppercase tracking-widest"
 >
-  <span>{userMarket === 'MX' ? '🎟️ Compartir Lineup / Conseguir Votos' : '🎟️ Share Lineup / Get Votes'}</span>
+  <span>{userMarket === 'MX' ? '🎟️ Compartir Lineup / Conseguir Votos' 
+: userMarket === 'BR' ? '🎟️ Compartilhar Lineup / Conseguir Votos'
+: '🎟️ Share Lineup / Get Votes'}</span>
 </button>
   </div>
 )}
@@ -2105,7 +2214,9 @@ await navigator.share({
           <div className="absolute inset-0 rounded-xl border-2 border-yellow-400 animate-pulse pointer-events-none"></div>
           <div className="relative bg-black rounded-xl p-6 border-2 border-yellow-400">
             <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-yellow-400 drop-shadow-[0_0_12px_yellow]">
-              {userMarket === 'MX' ? 'Los 10 Mejores de Hoy' : "Today's Top 10"}
+              {userMarket === 'MX' ? 'Los 10 Mejores de Hoy' 
+: userMarket === 'BR' ? 'Os 10 Melhores de Hoje'
+: "Today's Top 10"}
             </h2>
             <ul className="flex flex-col gap-4 items-center">
   {lineups.map((lineup, idx) => {
@@ -2121,7 +2232,7 @@ await navigator.share({
   <button
     onClick={() => {
       if (!lineup.id) {
-        alert(userMarket === 'MX' ? "Ups, no se pudo encontrar el lineup para votar." : "Oops, could not find lineup to vote for.");
+        alert(userMarket === 'MX' ? "Ups, no se pudo encontrar el lineup para votar." : userMarket === 'BR' ? "Ops, não foi possível encontrar o lineup para votar." : "Oops, could not find lineup to vote for.");
         return;
       }
       handleFireVote(lineup.id, "Top 10");
@@ -2148,7 +2259,7 @@ await navigator.share({
   <button
     onClick={() => {
       if (!deepCutLineup.id) {
-        alert(userMarket === 'MX' ? "Ups, no se pudo encontrar el lineup Deep Cut para votar." : "Oops, could not find Deep Cut lineup to vote for.");
+        alert(userMarket === 'MX' ? "Ups, no se pudo encontrar el lineup Deep Cut para votar." : userMarket === 'BR' ? "Ops, não foi possível encontrar o lineup Deep Cut para votar." : "Oops, could not find Deep Cut lineup to vote for.");
         return;
       }
       handleFireVote(deepCutLineup.id, "Deep Cut");
@@ -2171,7 +2282,7 @@ await navigator.share({
       <div className="absolute inset-0 rounded-xl border-2 border-blue-400 animate-pulse pointer-events-none"></div>
       <div className="relative bg-black rounded-xl p-6 border-2 border-blue-400">
       <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-blue-400 drop-shadow-[0_0_12px_#60A5FA]">
-  {userMarket === 'MX' ? 'Lanzamientos Recientes' : 'Recent Drops'}
+  {userMarket === 'MX' ? 'Lanzamientos Recientes' : userMarket === 'BR' ? 'Lançamentos Recentes' : 'Recent Drops'}
 </h2>
         <ul className="flex flex-col gap-4 items-center">
           {recentLineups.map((lineup, idx) => {
@@ -2185,7 +2296,7 @@ await navigator.share({
   <button
     onClick={() => {
       if (!lineup.id) {
-        alert(userMarket === 'MX' ? "Ups, no se pudo encontrar el lineup para votar." : "Oops, could not find lineup to vote for.");
+        alert(userMarket === 'MX' ? "Ups, no se pudo encontrar el lineup para votar." : userMarket === 'BR' ? "Ops, não foi possível encontrar o lineup para votar." : "Oops, could not find lineup to vote for.");
         return;
       }
       handleFireVote(lineup.id, "Recent Drop");
@@ -2212,7 +2323,9 @@ await navigator.share({
 
             <div className="relative bg-black rounded-xl p-6 border-2 border-red-400">
               <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-red-400 drop-shadow-[0_0_12px_red]">
-                {userMarket === 'MX' ? 'Lineup Ganadora de Ayer' : "Yesterday's Winning Lineup"}
+                {userMarket === 'MX' ? 'Lineup Ganadora de Ayer' 
+: userMarket === 'BR' ? 'Lineup Vencedora de Ontem'
+: "Yesterday's Winning Lineup"}
               </h2>
               <div className="mb-6 text-base font-extrabold uppercase tracking-widest text-red-400 inline-block px-4 py-1 border-2 border-red-400 rotate-[-2deg] bg-black shadow-md font-mono">
                 {yesterdayPrompt}
@@ -2240,7 +2353,7 @@ await navigator.share({
 {winningPromoter && (
   <div className="mt-2">
     <span className="inline-block bg-red-500 text-white px-4 py-1 rounded-full text-xs font-bold tracking-wide shadow-md">
-  {userMarket === 'MX' ? 'PROMOTOR GANADOR:' : 'WINNING PROMOTER:'} {winningPromoter}
+  {userMarket === 'MX' ? 'PROMOTOR GANADOR:' : userMarket === 'BR' ? 'PROMOTOR VENCEDOR:' : 'WINNING PROMOTER:'} {winningPromoter}
 </span>
   </div>
 )}
@@ -2253,8 +2366,12 @@ await navigator.share({
   className="text-sm text-red-300 underline hover:text-white mb-3"
 >
   {showPastWinners 
-  ? (userMarket === 'MX' ? "▲ Ocultar Ganadores de la Semana Pasada" : "▲ Hide Last Week's Winners")
-  : (userMarket === 'MX' ? "▼ Ganadores de la Semana Pasada" : "▼ Last Week's Winners")}
+  ? (userMarket === 'MX' ? "▲ Ocultar Ganadores de la Semana Pasada" 
+    : userMarket === 'BR' ? "▲ Ocultar Vencedores da Semana Passada"
+    : "▲ Hide Last Week's Winners")
+  : (userMarket === 'MX' ? "▼ Ganadores de la Semana Pasada" 
+    : userMarket === 'BR' ? "▼ Vencedores da Semana Passada"
+    : "▼ Last Week's Winners")}
 </button>
 
     <div
@@ -2350,17 +2467,17 @@ await navigator.share({
         &times;
       </button>
       <h2 className="text-2xl font-bold mb-4">
-  {userMarket === 'MX' ? 'Recibe el Juego Diario y los Ganadores' : 'Get Daily Prompts & Winners'}
+  {userMarket === 'MX' ? 'Recibe el Juego Diario y los Ganadores' : userMarket === 'BR' ? 'Receba Desafios Diários e Vencedores' : 'Get Daily Prompts & Winners'}
 </h2>
       {emailSubmitted ? (
         <p className="text-green-600 font-semibold">
-  {userMarket === 'MX' ? '¡Gracias por suscribirte! 🎉' : 'Thanks for subscribing! 🎉'}
+  {userMarket === 'MX' ? '¡Gracias por suscribirte! 🎉' : userMarket === 'BR' ? 'Obrigado por se inscrever! 🎉' : 'Thanks for subscribing! 🎉'}
 </p>
       ) : (
         <>
           <input
             type="email"
-            placeholder={userMarket === 'MX' ? 'Ingresa tu correo electrónico' : 'Enter your email'}
+            placeholder={userMarket === 'MX' ? 'Ingresa tu correo electrónico' : userMarket === 'BR' ? 'Digite seu e-mail' : 'Enter your email'}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full px-4 py-2 border border-black rounded-md mb-4"
@@ -2369,32 +2486,43 @@ await navigator.share({
             onClick={handleEmailSignup}
             className="w-full bg-black text-yellow-300 py-2 rounded-full font-bold hover:bg-yellow-300 hover:text-black transition"
           >
-            {userMarket === 'MX' ? 'Suscribirse' : 'Subscribe'}
+            {userMarket === 'MX' ? 'Suscribirse' : userMarket === 'BR' ? 'Inscrever-se' : 'Subscribe'}
           </button>
           <p className="mt-3 text-[12px] leading-snug text-gray-600 text-center">
   {userMarket === 'MX' ? (
-    <>
-      Al registrarte, aceptas nuestra{" "}
-      <button
-        type="button"
-        onClick={() => setShowPrivacyPolicy(true)}
-        className="underline hover:text-black"
-      >
-        Política de Privacidad
-      </button>.
-    </>
-  ) : (
-    <>
-      By signing up, you agree to our{" "}
-      <button
-        type="button"
-        onClick={() => setShowPrivacyPolicy(true)}
-        className="underline hover:text-black"
-      >
-        Privacy Policy
-      </button>.
-    </>
-  )}
+  <>
+    Al registrarte, aceptas nuestra{" "}
+    <button
+      type="button"
+      onClick={() => setShowPrivacyPolicy(true)}
+      className="underline hover:text-black"
+    >
+      Política de Privacidad
+    </button>.
+  </>
+) : userMarket === 'BR' ? (
+  <>
+    Ao se inscrever, você concorda com nossa{" "}
+    <button
+      type="button"
+      onClick={() => setShowPrivacyPolicy(true)}
+      className="underline hover:text-black"
+    >
+      Política de Privacidade
+    </button>.
+  </>
+) : (
+  <>
+    By signing up, you agree to our{" "}
+    <button
+      type="button"
+      onClick={() => setShowPrivacyPolicy(true)}
+      className="underline hover:text-black"
+    >
+      Privacy Policy
+    </button>.
+  </>
+)}
 </p>
         </>
       )}
@@ -2414,23 +2542,29 @@ await navigator.share({
       </button>
 
       <h2 className="text-2xl font-bold mb-3">
-  {userMarket === 'MX' ? 'Política de Privacidad' : 'Privacy Policy'}
+  {userMarket === 'MX' ? 'Política de Privacidad' : userMarket === 'BR' ? 'Política de Privacidade' : 'Privacy Policy'}
 </h2>
 
       <p className="text-sm mb-3">
   {userMarket === 'MX' 
-    ? 'Solo recopilamos tu correo electrónico para enviarte el juego diario y los ganadores. No vendemos ni alquilamos tus datos.'
-    : 'We only collect your email to send you the daily prompt and winners. We don\'t sell or rent your data.'}
+  ? 'Solo recopilamos tu correo electrónico para enviarte el juego diario y los ganadores. No vendemos ni alquilamos tus datos.'
+  : userMarket === 'BR'
+  ? 'Coletamos apenas seu e-mail para enviar o desafio diário e os vencedores. Não vendemos ou alugamos seus dados.'
+  : 'We only collect your email to send you the daily prompt and winners. We don\'t sell or rent your data.'}
 </p>
       <p className="text-sm mb-3">
   {userMarket === 'MX'
-    ? 'Puedes cancelar tu suscripción en cualquier momento a través del enlace en nuestros correos.'
-    : 'You can unsubscribe anytime via the link in our emails.'}
+  ? 'Puedes cancelar tu suscripción en cualquier momento a través del enlace en nuestros correos.'
+  : userMarket === 'BR'
+  ? 'Você pode cancelar sua inscrição a qualquer momento através do link em nossos e-mails.'
+  : 'You can unsubscribe anytime via the link in our emails.'}
 </p>
       <p className="text-sm">
   {userMarket === 'MX' 
-    ? <>¿Preguntas? <a href="mailto:support@bestconcertevergame.com" className="underline">support@bestconcertevergame.com</a></>
-    : <>Questions? <a href="mailto:support@bestconcertevergame.com" className="underline">support@bestconcertevergame.com</a></>}
+  ? <>¿Preguntas? <a href="mailto:support@bestconcertevergame.com" className="underline">support@bestconcertevergame.com</a></>
+  : userMarket === 'BR'
+  ? <>Dúvidas? <a href="mailto:support@bestconcertevergame.com" className="underline">support@bestconcertevergame.com</a></>
+  : <>Questions? <a href="mailto:support@bestconcertevergame.com" className="underline">support@bestconcertevergame.com</a></>}
 </p>
 
       <div className="mt-5 text-center">
@@ -2439,7 +2573,7 @@ await navigator.share({
           onClick={() => setShowPrivacyPolicy(false)}
           className="inline-block bg-black text-yellow-300 px-5 py-2 rounded-full font-bold hover:bg-yellow-300 hover:text-black transition"
         >
-          {userMarket === 'MX' ? 'Volver al Registro' : 'Back to Sign Up'}
+          {userMarket === 'MX' ? 'Volver al Registro' : userMarket === 'BR' ? 'Voltar para Inscrição' : 'Back to Sign Up'}
         </button>
       </div>
     </div>
@@ -2455,14 +2589,14 @@ await navigator.share({
       >
         &times;
       </button>
-      <h2 className="text-xl font-bold mb-4">{userMarket === 'MX' ? 'Ingresa Tu Apodo de Promotor' : 'Enter Your Promoter Nickname'}</h2>
+      <h2 className="text-xl font-bold mb-4">{userMarket === 'MX' ? 'Ingresa Tu Apodo de Promotor' : userMarket === 'BR' ? 'Digite Seu Apelido de Promotor' : 'Enter Your Promoter Nickname'}</h2>
       <input
         type="text"
         value={nickname}
         onChange={(e) => setNickname(e.target.value.toUpperCase())}
         maxLength={24}
         className="w-full px-4 py-2 border border-black rounded-md mb-4 uppercase"
-        placeholder={userMarket === 'MX' ? 'APODO EN MAYÚSCULAS' : 'ALL CAPS SCREENNAME'}
+        placeholder={userMarket === 'MX' ? 'APODO EN MAYÚSCULAS' : userMarket === 'BR' ? 'APELIDO EM MAIÚSCULAS' : 'ALL CAPS SCREENNAME'}
       />
       <button
         onClick={async () => {
@@ -2484,7 +2618,7 @@ const { data: existing, error: checkError } = await supabase
   .neq("user_id", userId); // exclude current user in case they're retrying
 
 if (existing && existing.length > 0) {
-  alert(userMarket === 'MX' ? "Ese apodo ya está en uso. Por favor elige otro." : "That nickname is already taken. Please choose another.");
+  alert(userMarket === 'MX' ? "Ese apodo ya está en uso. Por favor elige otro." : userMarket === 'BR' ? "Esse apelido já está em uso. Por favor escolha outro." : "That nickname is already taken. Please choose another.");
   return;
 }
 
@@ -2505,12 +2639,12 @@ if (!error) {
   setNicknameSaved(true);
   setShowNicknameModal(false);
 } else {
-  alert(userMarket === 'MX' ? "Algo salió mal al guardar tu apodo." : "Something went wrong saving your nickname.");
+  alert(userMarket === 'MX' ? "Algo salió mal al guardar tu apodo." : userMarket === 'BR' ? "Algo deu errado ao salvar seu apelido." : "Something went wrong saving your nickname.");
 }
         }}
         className="bg-black text-white px-4 py-2 rounded-full font-bold hover:bg-yellow-300 hover:text-black transition"
 >
-  {userMarket === 'MX' ? 'Guardar Apodo' : 'Save Nickname'}
+  {userMarket === 'MX' ? 'Guardar Apodo' : userMarket === 'BR' ? 'Salvar Apelido' : 'Save Nickname'}
 </button>
     </div>
   </div>
@@ -2523,7 +2657,7 @@ if (!error) {
             <div className="absolute inset-0 -z-10 rounded-xl border-2 border-yellow-400 animate-pulse"></div>
             <div className="relative bg-black rounded-xl p-6 border-2 border-yellow-400">
               <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-yellow-400 drop-shadow-[0_0_12px_yellow]">
-                {userMarket === 'MX' ? '🔥 Mejores Promotores' : '🔥 Top Promoters'}
+                {userMarket === 'MX' ? '🔥 Mejores Promotores' : userMarket === 'BR' ? '🔥 Melhores Promotores' : '🔥 Top Promoters'}
               </h2>
               
               {/* Toggle Tabs */}
@@ -2543,7 +2677,7 @@ if (!error) {
                       : "bg-gray-800 text-yellow-400 hover:bg-gray-700"
                   }`}
                 >
-                  {userMarket === 'MX' ? 'Semanal' : 'Weekly'}
+                  {userMarket === 'MX' ? 'Semanal' : userMarket === 'BR' ? 'Semanal' : 'Weekly'}
                 </button>
                 <button
                   onClick={() => {
@@ -2560,14 +2694,18 @@ if (!error) {
                       : "bg-gray-800 text-yellow-400 hover:bg-gray-700"
                   }`}
                 >
-                  {userMarket === 'MX' ? 'Mensual' : 'Monthly'}
+                  {userMarket === 'MX' ? 'Mensual' : userMarket === 'BR' ? 'Mensal' : 'Monthly'}
                 </button>
               </div>
               
               <p className="text-xs text-yellow-300 mb-4 italic">
   {showMonthlyLeaderboard 
-    ? (userMarket === 'MX' ? "Top 10 Promotores por Votos (Últimos 30 Días)" : "Top 10 Promoters by Votes (Last 30 Days)")
-    : (userMarket === 'MX' ? "Top 10 Promotores por Votos (Últimos 7 Días)" : "Top 10 Promoters by Votes (Last 7 Days)")}
+  ? (userMarket === 'MX' ? "Top 10 Promotores por Votos (Últimos 30 Días)" 
+    : userMarket === 'BR' ? "Top 10 Promotores por Votos (Últimos 30 Dias)"
+    : "Top 10 Promoters by Votes (Last 30 Days)")
+  : (userMarket === 'MX' ? "Top 10 Promotores por Votos (Últimos 7 Días)" 
+    : userMarket === 'BR' ? "Top 10 Promotores por Votos (Últimos 7 Dias)"
+    : "Top 10 Promoters by Votes (Last 7 Days)")}
 </p>
               
               <ol className="flex flex-col gap-2 text-white">
@@ -2590,7 +2728,7 @@ if (!error) {
                       {promoter.nickname}
                     </span>
                     <span className="text-yellow-400 font-bold">
-                      {promoter.totalPoints} {userMarket === 'MX' ? 'votos' : 'votes'}
+                      {promoter.totalPoints} {userMarket === 'MX' ? 'votos' : userMarket === 'BR' ? 'votos' : 'votes'}
                     </span>
                   </li>
                 ))}
@@ -2598,8 +2736,8 @@ if (!error) {
               
               <p className="mt-4 text-[10px] text-yellow-300">
   {showMonthlyLeaderboard 
-    ? (userMarket === 'MX' ? "Tabla de clasificación de 30 días • Establece tu apodo para competir" : "Rolling 30-day leaderboard • Set your nickname to compete")
-    : (userMarket === 'MX' ? "Tabla de clasificación de 7 días • Establece tu apodo para competir" : "Rolling 7-day leaderboard • Set your nickname to compete")}
+    ? (userMarket === 'MX' ? "Tabla de clasificación de 30 días • Establece tu apodo para competir" : userMarket === 'BR' ? "Classificação de 30 dias • Defina seu apelido para competir" : "Rolling 30-day leaderboard • Set your nickname to compete")
+    : (userMarket === 'MX' ? "Tabla de clasificación de 7 días • Establece tu apodo para competir" : userMarket === 'BR' ? "Classificação de 7 dias • Defina seu apelido para competir" : "Rolling 7-day leaderboard • Set your nickname to compete")}
 </p>
             </div>
           </div>
@@ -2612,7 +2750,7 @@ if (!error) {
           <div className="absolute inset-0 -z-10 rounded-xl border-2 border-green-400 animate-pulse"></div>
           <div className="relative bg-black rounded-xl p-6 border-2 border-green-400">
             <h2 className="text-2xl font-bold uppercase tracking-wide mb-4 text-green-400 drop-shadow-[0_0_12px_green]">
-              {userMarket === 'MX' ? 'Tus Mejores Éxitos' : 'Your Greatest Hits'}
+              {userMarket === 'MX' ? 'Tus Mejores Éxitos' : userMarket === 'BR' ? 'Seus Maiores Sucessos' : 'Your Greatest Hits'}
             </h2>
             {nicknameSaved && (
   <div className="text-green-400 italic text-xs uppercase mb-2 tracking-wide">
@@ -2626,19 +2764,19 @@ if (!error) {
       onClick={() => setShowNicknameModal(true)}
       className="bg-green-500 text-black font-bold px-4 py-1 rounded-full text-xs tracking-wide border border-green-300 hover:bg-green-300 transition"
     >
-      {userMarket === 'MX' ? 'Elegir Apodo de Promotor' : 'Choose Promoter Nickname'}
+      {userMarket === 'MX' ? 'Elegir Apodo de Promotor' : userMarket === 'BR' ? 'Escolher Apelido de Promotor' : 'Choose Promoter Nickname'}
     </button>
   </div>
 )}
             <ul className="flex flex-col gap-4 items-center text-white">
-  <li className="text-sm">{userMarket === 'MX' ? '🎤 Lineups Promocionadas (Hasta Ahora)' : '🎤 Promoted Lineups (So Far)'}: <span className="font-bold">{userStats?.total_lineups_submitted ?? "--"}</span></li>
-  <li className="text-sm">{userMarket === 'MX' ? '🏆 Top 10 Históricos' : '🏆 All-Time Top 10 Hits'}: <span className="font-bold">{userStats?.total_top_10s ?? "--"}</span></li>
-  <li className="text-sm">{userMarket === 'MX' ? '🥇 Lineups Ganadoras' : '🥇 Winning Lineups'}: <span className="font-bold">{userStats?.total_wins ?? "--"}</span></li>
-  <li className="text-sm">{userMarket === 'MX' ? '🔊 Nivel dB Más Alto' : '🔊 Highest dB Level'}: <span className="font-bold">{highestDecibel ?? "--"}</span></li>
-  <li className="text-sm">{userMarket === 'MX' ? '🔥 Racha Actual' : '🔥 Current Streak'}: <span className="font-bold">{userStats?.current_streak ?? "--"}</span></li>
-  <li className="text-sm">{userMarket === 'MX' ? '📆 Racha Diaria Más Larga' : '📆 Longest Daily Streak'}: <span className="font-bold">{userStats?.longest_streak ?? "--"}</span></li>
-  <li className="text-sm">{userMarket === 'MX' ? '🌍 Clasificación Global' : '🌍 Global Rank'}: <span className="font-bold">
-  {userStats?.global_rank ? `#${userStats.global_rank}` : (userMarket === 'MX' ? "Aún Sin Clasificar" : "Not Ranked Yet")}
+  <li className="text-sm">{userMarket === 'MX' ? '🎤 Lineups Promocionadas (Hasta Ahora)' : userMarket === 'BR' ? '🎤 Lineups Promovidas (Até Agora)' : '🎤 Promoted Lineups (So Far)'}: <span className="font-bold">{userStats?.total_lineups_submitted ?? "--"}</span></li>
+  <li className="text-sm">{userMarket === 'MX' ? '🏆 Top 10 Históricos' : userMarket === 'BR' ? '🏆 Top 10 de Todos os Tempos' : '🏆 All-Time Top 10 Hits'}: <span className="font-bold">{userStats?.total_top_10s ?? "--"}</span></li>
+  <li className="text-sm">{userMarket === 'MX' ? '🥇 Lineups Ganadoras' : userMarket === 'BR' ? '🥇 Lineups Vencedoras' : '🥇 Winning Lineups'}: <span className="font-bold">{userStats?.total_wins ?? "--"}</span></li>
+  <li className="text-sm">{userMarket === 'MX' ? '🔊 Nivel dB Más Alto' : userMarket === 'BR' ? '🔊 Maior Nível dB' : '🔊 Highest dB Level'}: <span className="font-bold">{highestDecibel ?? "--"}</span></li>
+  <li className="text-sm">{userMarket === 'MX' ? '🔥 Racha Actual' : userMarket === 'BR' ? '🔥 Sequência Atual' : '🔥 Current Streak'}: <span className="font-bold">{userStats?.current_streak ?? "--"}</span></li>
+  <li className="text-sm">{userMarket === 'MX' ? '📆 Racha Diaria Más Larga' : userMarket === 'BR' ? '📆 Maior Sequência Diária' : '📆 Longest Daily Streak'}: <span className="font-bold">{userStats?.longest_streak ?? "--"}</span></li>
+  <li className="text-sm">{userMarket === 'MX' ? '🌍 Clasificación Global' : userMarket === 'BR' ? '🌍 Classificação Global' : '🌍 Global Rank'}: <span className="font-bold">
+  {userStats?.global_rank ? `#${userStats.global_rank}` : (userMarket === 'MX' ? "Aún Sin Clasificar" : userMarket === 'BR' ? "Ainda Não Classificado" : "Not Ranked Yet")}
 </span></li>
 
   {typeof userStats?.global_rank === "number" && (
@@ -2650,18 +2788,18 @@ if (!error) {
           ? "bg-yellow-300 text-black animate-pulse"
           : "bg-green-900 text-green-300"}
       `}
-      title={userMarket === 'MX' ? "¡Haz clic para descargar tu insignia!" : "Click to download your badge!"}
+      title={userMarket === 'MX' ? "¡Haz clic para descargar tu insignia!" : userMarket === 'BR' ? "Clique para baixar seu distintivo!" : "Click to download your badge!"}
     >
       {userStats.global_rank <= 10
-  ? (userMarket === 'MX' ? "🏆 Promotor Élite" : "🏆 Elite Promoter")
+  ? (userMarket === 'MX' ? "🏆 Promotor Élite" : userMarket === 'BR' ? "🏆 Promotor Elite" : "🏆 Elite Promoter")
   : userStats.global_rank <= 50
-  ? (userMarket === 'MX' ? "🌟 Contratador Estrella" : "🌟 Star Booker")
+  ? (userMarket === 'MX' ? "🌟 Contratador Estrella" : userMarket === 'BR' ? "🌟 Contratador Estrela" : "🌟 Star Booker")
   : userStats.global_rank <= 100
-  ? (userMarket === 'MX' ? "🔥 Favorito de los Fans" : "🔥 Fan Favorite")
+  ? (userMarket === 'MX' ? "🔥 Favorito de los Fans" : userMarket === 'BR' ? "🔥 Favorito dos Fãs" : "🔥 Fan Favorite")
   : userStats.global_rank <= 250
-  ? (userMarket === 'MX' ? "🎶 Talento Emergente" : "🎶 Up-And-Comer")
+  ? (userMarket === 'MX' ? "🎶 Talento Emergente" : userMarket === 'BR' ? "🎶 Talento Emergente" : "🎶 Up-And-Comer")
   : userStats.global_rank <= 500
-  ? (userMarket === 'MX' ? "🎤 Acto de Apertura" : "🎤 Opening Act")
+  ? (userMarket === 'MX' ? "🎤 Acto de Apertura" : userMarket === 'BR' ? "🎤 Ato de Abertura" : "🎤 Opening Act")
   : null}
     </span>
   </li>
@@ -2702,10 +2840,10 @@ if (!error) {
 />
 <div className="mt-2 text-xs text-white text-center opacity-80 group-hover:opacity-100 transition">
   {type === "streaker"
-    ? (userMarket === 'MX' ? "Racha" : "Streaker")
+    ? (userMarket === 'MX' ? "Racha" : userMarket === 'BR' ? "Sequência" : "Streaker")
     : type === "hitmaker"
-    ? (userMarket === 'MX' ? "Ganador" : "Hit Maker")
-    : (userMarket === 'MX' ? "Líder de Listas" : "Chart Topper")}
+    ? (userMarket === 'MX' ? "Ganador" : userMarket === 'BR' ? "Campeão" : "Hit Maker")
+    : (userMarket === 'MX' ? "Líder de Listas" : userMarket === 'BR' ? "Líder das Paradas" : "Chart Topper")}
 </div>
 <div className="w-full h-1 mt-2 bg-gray-800 rounded-full overflow-hidden">
   <div
@@ -2724,7 +2862,7 @@ if (!error) {
 </div>
 
             <div className="mt-6">
-  <h3 className="text-green-300 font-bold mb-2 text-lg">{userMarket === 'MX' ? '🔥 Lineup Más Votada' : '🔥 Most Voted Lineup'}</h3>
+  <h3 className="text-green-300 font-bold mb-2 text-lg">{userMarket === 'MX' ? '🔥 Lineup Más Votada' : userMarket === 'BR' ? '🔥 Lineup Mais Votada' : '🔥 Most Voted Lineup'}</h3>
   {mostVotedLineup ? (
     <>
       <div className="flex justify-center gap-4">
@@ -2741,13 +2879,13 @@ if (!error) {
           </div>
         ))}
       </div>
-      <p className="mt-2 text-sm text-green-400">🔥 <span className="font-bold">{mostVotedLineup.votes ?? 0}</span> {userMarket === 'MX' ? 'votos' : 'votes'}</p>
+      <p className="mt-2 text-sm text-green-400">🔥 <span className="font-bold">{mostVotedLineup.votes ?? 0}</span> {userMarket === 'MX' ? 'votos' : userMarket === 'BR' ? 'votos' : 'votes'}</p>
     </>
   ) : (
-    <p className="text-sm text-green-400">{userMarket === 'MX' ? 'Aún sin votos.' : 'No votes yet.'}</p>
+    <p className="text-sm text-green-400">{userMarket === 'MX' ? 'Aún sin votos.' : userMarket === 'BR' ? 'Ainda sem votos.' : 'No votes yet.'}</p>
   )}
   <p className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-[10px] text-green-300">
-  {userMarket === 'MX' ? 'Actualizado 6:30 PM PST' : 'Updated 6:30 PM PST'}</p>
+  {userMarket === 'MX' ? 'Actualizado 6:30 PM PST' : userMarket === 'BR' ? 'Atualizado 18:30 PST' : 'Updated 6:30 PM PST'}
 </div>
       </div>
       </div>
@@ -2759,13 +2897,13 @@ if (!error) {
     className="px-3 py-1.5 rounded-full font-semibold text-xs bg-green-500 text-black shadow-md hover:bg-green-400 hover:scale-105 transition-transform"
     title="Copy a special link you can open on another device to restore your account"
   >
-    {userMarket === 'MX' ? 'Copiar Enlace de Cuenta Para Otros Dispositivos' : 'Copy Account Link For Other Devices'}
+    {userMarket === 'MX' ? 'Copiar Enlace de Cuenta Para Otros Dispositivos' : userMarket === 'BR' ? 'Copiar Link da Conta Para Outros Dispositivos' : 'Copy Account Link For Other Devices'}
   </button>
 </div>
 
 <div className="mt-8 mb-4 text-center text-xs text-gray-400 flex flex-col items-center">
 
-    <p className="mb-1 tracking-wide text-green-400">{userMarket === 'MX' ? 'Impulsado por' : 'Powered by'}</p>
+    <p className="mb-1 tracking-wide text-green-400">{userMarket === 'MX' ? 'Impulsado por' : userMarket === 'BR' ? 'Desenvolvido por' : 'Powered by'}</p>
     <a
       href="https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=bc22a0a934e44b2e"
       target="_blank"
@@ -2806,35 +2944,35 @@ if (!error) {
               <h2 className="text-2xl font-bold text-yellow-400 mb-2">
                 {selectedPromoter?.nickname || "Promoter"}
               </h2>
-              <p className="text-sm text-gray-400">{userMarket === 'MX' ? 'Perfil de Promotor' : 'Promoter Profile'}</p>
+              <p className="text-sm text-gray-400">{userMarket === 'MX' ? 'Perfil de Promotor' : userMarket === 'BR' ? 'Perfil do Promotor' : 'Promoter Profile'}</p>
             </div>
             
             {promoterDetails ? (
               <>
                 <div className="grid grid-cols-2 gap-4 mb-6">
                   <div className="bg-black/50 rounded-lg p-3 border border-yellow-400/30">
-                    <div className="text-yellow-400 text-xs uppercase mb-1">{userMarket === 'MX' ? 'Clasificación Global' : 'Global Rank'}</div>
+                    <div className="text-yellow-400 text-xs uppercase mb-1">{userMarket === 'MX' ? 'Clasificación Global' : userMarket === 'BR' ? 'Classificação Global' : 'Global Rank'}</div>
                     <div className="text-white text-2xl font-bold">
                       #{promoterDetails.global_rank || "N/A"}
                     </div>
                   </div>
                   
                   <div className="bg-black/50 rounded-lg p-3 border border-green-400/30">
-                    <div className="text-green-400 text-xs uppercase mb-1">{userMarket === 'MX' ? 'Victorias Totales' : 'Total Wins'}</div>
+                    <div className="text-green-400 text-xs uppercase mb-1">{userMarket === 'MX' ? 'Victorias Totales' : userMarket === 'BR' ? 'Vitórias Totais' : 'Total Wins'}</div>
                     <div className="text-white text-2xl font-bold">
                       🥇 {promoterDetails.total_wins || 0}
                     </div>
                   </div>
                   
                   <div className="bg-black/50 rounded-lg p-3 border border-purple-400/30">
-                    <div className="text-purple-400 text-xs uppercase mb-1">{userMarket === 'MX' ? 'Top 10 Éxitos' : 'Top 10 Hits'}</div>
+                    <div className="text-purple-400 text-xs uppercase mb-1">{userMarket === 'MX' ? 'Top 10 Éxitos' : userMarket === 'BR' ? 'Top 10 Sucessos' : 'Top 10 Hits'}</div>
                     <div className="text-white text-2xl font-bold">
                       🏆 {promoterDetails.total_top_10s || 0}
                     </div>
                   </div>
                   
                   <div className="bg-black/50 rounded-lg p-3 border border-orange-400/30">
-                    <div className="text-orange-400 text-xs uppercase mb-1">{userMarket === 'MX' ? 'Racha Más Larga' : 'Longest Streak'}</div>
+                    <div className="text-orange-400 text-xs uppercase mb-1">{userMarket === 'MX' ? 'Racha Más Larga' : userMarket === 'BR' ? 'Maior Sequência' : 'Longest Streak'}</div>
                     <div className="text-white text-2xl font-bold">
                       🔥 {promoterDetails.longest_streak || 0}
                     </div>
@@ -2842,7 +2980,7 @@ if (!error) {
                 </div>
                 
                 <div className="mb-6">
-                  <h3 className="text-white font-bold mb-3 text-center">{userMarket === 'MX' ? 'Insignias Ganadas' : 'Badges Earned'}</h3>
+                  <h3 className="text-white font-bold mb-3 text-center">{userMarket === 'MX' ? 'Insignias Ganadas' : userMarket === 'BR' ? 'Distintivos Conquistados' : 'Badges Earned'}</h3>
                   <div className="flex justify-center gap-3">
                     {["streaker", "hitmaker", "charttopper", "dblevel"].map((type) => {
                       const val =
@@ -2890,12 +3028,12 @@ if (!error) {
                           />
                           <div className="text-xs text-gray-400 mt-1">
                             {type === "streaker" 
-  ? (userMarket === 'MX' ? "Racha" : "Streaker")
+  ? (userMarket === 'MX' ? "Racha" : userMarket === 'BR' ? "Sequência" : "Streaker")
   : type === "hitmaker" 
-  ? (userMarket === 'MX' ? "Ganador" : "Hit Maker")
+  ? (userMarket === 'MX' ? "Ganador" : userMarket === 'BR' ? "Campeão" : "Hit Maker")
   : type === "charttopper" 
-  ? (userMarket === 'MX' ? "Líder de Listas" : "Chart Topper")
-  : (userMarket === 'MX' ? "Nivel dB" : "dB Level")}
+  ? (userMarket === 'MX' ? "Líder de Listas" : userMarket === 'BR' ? "Líder das Paradas" : "Chart Topper")
+  : (userMarket === 'MX' ? "Nivel dB" : userMarket === 'BR' ? "Nível dB" : "dB Level")}
                           </div>
                         </div>
                       );
@@ -2910,7 +3048,7 @@ if (!error) {
                       onClick={handleSharePromoterCard}
                       className="bg-yellow-400 hover:bg-yellow-300 text-black font-bold py-3 px-6 rounded-full transition-all hover:scale-105 shadow-lg"
                     >
-                      {userMarket === 'MX' ? '📤 Compartir Mi Tarjeta de Promotor' : '📤 Share My Promoter Card'}
+                      {userMarket === 'MX' ? '📤 Compartir Mi Tarjeta de Promotor' : userMarket === 'BR' ? '📤 Compartilhar Meu Cartão de Promotor' : '📤 Share My Promoter Card'}
                     </button>
                   </div>
                 )}
@@ -2918,7 +3056,7 @@ if (!error) {
                 {promoterDetails.topLineup && (
   <div className="bg-black/50 rounded-lg p-4 border border-yellow-400/30">
     <h3 className="text-yellow-400 font-bold mb-3 text-center">
-      {userMarket === 'MX' ? '🔥 Lineup Más Votada' : '🔥 Most Voted Lineup'}
+      {userMarket === 'MX' ? '🔥 Lineup Más Votada' : userMarket === 'BR' ? '🔥 Lineup Mais Votada' : '🔥 Most Voted Lineup'}
     </h3>
     <div className="flex justify-center gap-3 mb-2">
       {[promoterDetails.topLineup.opener, promoterDetails.topLineup.second_opener, promoterDetails.topLineup.headliner].map((artist, idx) => (
@@ -2935,14 +3073,14 @@ if (!error) {
       ))}
     </div>
     <p className="text-center text-sm text-yellow-400 flex items-center justify-center gap-2">
-  🔥 {promoterDetails.topLineup.votes || 0} {userMarket === 'MX' ? 'votos' : 'votes'}
+  🔥 {promoterDetails.topLineup.votes || 0} {userMarket === 'MX' ? 'votos' : userMarket === 'BR' ? 'votos' : 'votes'}
   {promoterDetails.topLineup.opener?.spotifyId && 
    promoterDetails.topLineup.second_opener?.spotifyId && 
    promoterDetails.topLineup.headliner?.spotifyId && (
     <button
       onClick={() => handleCreateSpotifyPlaylist(promoterDetails.topLineup)}
       className="ml-1 hover:scale-110 transition-transform"
-      title={userMarket === 'MX' ? 'Crear playlist en Spotify' : 'Create Spotify playlist'}
+      title={userMarket === 'MX' ? 'Crear playlist en Spotify' : userMarket === 'BR' ? 'Criar playlist no Spotify' : 'Create Spotify playlist'}
     >
       <svg className="w-5 h-5" viewBox="0 0 24 24" fill="#1DB954">
         <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
@@ -2958,7 +3096,7 @@ if (!error) {
               </>
             ) : (
               <div className="text-center text-gray-400 py-8">
-                {userMarket === 'MX' ? 'Cargando estadísticas...' : 'Loading stats...'}
+                {userMarket === 'MX' ? 'Cargando estadísticas...' : userMarket === 'BR' ? 'Carregando estatísticas...' : 'Loading stats...'}
               </div>
             )}
           </div>
