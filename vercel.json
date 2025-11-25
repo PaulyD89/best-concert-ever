@@ -5,12 +5,28 @@
       "schedule": "0 8 * * *"
     },
     {
-      "path": "/api/cron/submit-bot-lineups",
+      "path": "/api/cron/submit-bot-lineups-mx-1",
       "schedule": "5 0 * * *"
     },
     {
-      "path": "/api/cron/submit-bot-lineups-us",
+      "path": "/api/cron/submit-bot-lineups-us-1",
       "schedule": "10 0 * * *"
+    },
+    {
+      "path": "/api/cron/submit-bot-lineups-mx-2",
+      "schedule": "15 0 * * *"
+    },
+    {
+      "path": "/api/cron/submit-bot-lineups-us-2",
+      "schedule": "20 0 * * *"
+    },
+    {
+      "path": "/api/cron/submit-bot-lineups-mx-3",
+      "schedule": "25 0 * * *"
+    },
+    {
+      "path": "/api/cron/submit-bot-lineups-us-3",
+      "schedule": "30 0 * * *"
     }
   ]
 }
