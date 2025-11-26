@@ -174,9 +174,12 @@ async function getAIArtistSuggestions(promptText, botNumber, previousLineups = [
           role: "user",
           content: `Given this concert lineup prompt for Mexico: "${promptText}"${lockedText}
 
-Suggest ${isLocked ? '2' : '3'} DIFFERENT Mexican or Latin American artists that would be perfect for this theme:
-- opener: A good opening act
-- secondOpener: A strong second act${isLocked ? '' : '\n- headliner: The main headliner (most famous/appropriate)'}
+Suggest ${isLocked ? '2' : '3'} DIFFERENT artists that perfectly match this theme/genre. Prioritize artists that fit the theme, and when possible, prefer Mexican or Latin American artists.
+
+IMPORTANT: Match the theme/genre FIRST, then prefer Mexican/Latin artists when they fit. If the theme requires artists from a specific genre (like disco, rock, jazz, etc.), choose the best artists for that genre - Mexican/Latin if available, but prioritize theme match over geography.
+
+- opener: A good opening act that fits the theme
+- secondOpener: A strong second act that fits the theme${isLocked ? '' : '\n- headliner: The main headliner (most famous/appropriate) that fits the theme'}
 
 These must be real, well-known artists that exist on Spotify. Use their most common/official name.${previousLineupsText}
 
