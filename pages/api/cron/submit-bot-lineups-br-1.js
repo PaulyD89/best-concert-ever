@@ -158,9 +158,12 @@ async function getAIArtistSuggestions(promptText, botNumber, previousLineups = [
           role: "user",
           content: `Given this concert lineup prompt for Brazil: "${promptText}"${lockedText}
 
-Suggest ${isLocked ? '2' : '3'} DIFFERENT Brazilian or Portuguese-speaking artists that would be perfect for this theme:
-- opener: A good opening act
-- secondOpener: A strong second act${isLocked ? '' : '\n- headliner: The main headliner (most famous/appropriate)'}
+You must suggest ${isLocked ? '2' : '3'} DIFFERENT artists that perfectly match this theme/genre. The artists should be Brazilian or Portuguese-speaking AND fit the specific theme described in the prompt.
+
+IMPORTANT: Match the theme/genre FIRST, then prefer Brazilian/Portuguese-speaking artists when possible. If the theme requires artists from a specific genre (like disco, rock, jazz, etc.), prioritize artists known for that genre.
+
+- opener: A good opening act that fits the theme
+- secondOpener: A strong second act that fits the theme${isLocked ? '' : '\n- headliner: The main headliner (most famous/appropriate) that fits the theme'}
 
 These must be real, well-known artists that exist on Spotify. Use their most common/official name.${previousLineupsText}
 
