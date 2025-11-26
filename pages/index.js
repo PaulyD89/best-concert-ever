@@ -2739,6 +2739,17 @@ if (!error) {
     ? (userMarket === 'MX' ? "Tabla de clasificación de 30 días • Establece tu apodo para competir" : userMarket === 'BR' ? "Classificação de 30 dias • Defina seu apelido para competir" : "Rolling 30-day leaderboard • Set your nickname to compete")
     : (userMarket === 'MX' ? "Tabla de clasificación de 7 días • Establece tu apodo para competir" : userMarket === 'BR' ? "Classificação de 7 dias • Defina seu apelido para competir" : "Rolling 7-day leaderboard • Set your nickname to compete")}
 </p>
+{/* December Giveaway Banner - US/Global Only */}
+              {userMarket === 'US' && (
+                <div className="mt-4">
+                  <img 
+                    src="/promotercontest.png" 
+                    alt="December Promoter Giveaway - Win $50"
+                    className="w-full rounded-lg hover:scale-[1.01] transition-transform cursor-pointer"
+                  />
+                </div>
+              )}
+
             </div>
           </div>
         </div>
