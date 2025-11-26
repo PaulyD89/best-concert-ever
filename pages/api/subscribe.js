@@ -25,25 +25,36 @@ export default async function handler(req, res) {
 
     // Determine language based on market
     const isSpanish = market === 'MX';
+    const isPortuguese = market === 'BR';
     
     const subject = isSpanish 
       ? '🎸 ¡Ya estás inscrito!'
+      : isPortuguese
+      ? '🎸 Você está inscrito!'
       : '🎸 You\'re Signed Up!';
     
     const heading = isSpanish
       ? '¡Ya estás inscrito!'
+      : isPortuguese
+      ? 'Você está inscrito!'
       : 'You\'re Signed Up!';
     
     const bodyText = isSpanish
       ? 'Gracias por unirte a <strong>Best. Concert. Ever</strong>.<br />Recibirás una pregunta diaria + la alineación ganadora del día anterior.'
+      : isPortuguese
+      ? 'Obrigado por se juntar ao <strong>Best. Concert. Ever</strong>.<br />Você receberá um desafio diário + a lineup vencedora do dia anterior.'
       : 'Thanks for joining <strong>Best. Concert. Ever</strong>.<br />You\'ll get a daily prompt + the winning lineup from the day before.';
     
     const spotifyText = isSpanish
       ? '<a href="https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=a82160ddef1a4ec0" target="_blank" style="color: #1DB954; text-decoration: underline; font-weight: bold;">Sigue</a> la lista de reproducción de Spotify de <strong>Best. Concert. Ever.</strong> para escuchar sets diarios de cada alineación ganadora.'
+      : isPortuguese
+      ? '<a href="https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=a82160ddef1a4ec0" target="_blank" style="color: #1DB954; text-decoration: underline; font-weight: bold;">Siga</a> a playlist do Spotify de <strong>Best. Concert. Ever.</strong> para ouvir sets diários de cada lineup vencedora.'
       : '<a href="https://open.spotify.com/user/31sfywg7ipefpaaldvcpv3jzuc4i?si=a82160ddef1a4ec0" target="_blank" style="color: #1DB954; text-decoration: underline; font-weight: bold;">Follow</a> the <strong>Best. Concert. Ever.</strong> Spotify playlist for daily sets from each winning lineup.';
     
     const unsubscribeText = isSpanish
       ? 'Puedes cancelar tu suscripción en cualquier momento desde el pie de página de cualquier correo.'
+      : isPortuguese
+      ? 'Você pode cancelar sua inscrição a qualquer momento no rodapé de qualquer e-mail.'
       : 'You can unsubscribe at any time from the footer of any email.';
 
     // Send welcome email
