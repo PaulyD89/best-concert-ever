@@ -2743,7 +2743,7 @@ if (!error) {
               {userMarket === 'US' && (
                 <div className="mt-4">
                   <img 
-                    src="/promotercontest.png" 
+                    src="/promotercontest2.png" 
                     alt="December Promoter Giveaway - Win $50"
                     className="w-full rounded-lg hover:scale-[1.01] transition-transform cursor-pointer"
                   />
