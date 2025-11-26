@@ -1784,7 +1784,7 @@ setIsSubmitting(false);
 
 {/* Market Indicator */}
     <div className="fixed top-4 right-4 bg-black/50 px-3 py-1 rounded-full text-xs text-yellow-400 border border-yellow-400/30 backdrop-blur-sm z-50">
-  🌍 🌍 {userMarket === 'MX' ? 'México' : userMarket === 'BR' ? 'Brasil' : 'Global'}
+  🌍 {userMarket === 'MX' ? 'México' : userMarket === 'BR' ? 'Brasil' : 'Global'}
 </div>
 
 {showHowToPlay && (
