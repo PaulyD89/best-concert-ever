@@ -2885,8 +2885,8 @@ if (!error) {
     <p className="text-sm text-green-400">{userMarket === 'MX' ? 'Aún sin votos.' : userMarket === 'BR' ? 'Ainda sem votos.' : 'No votes yet.'}</p>
   )}
   <p className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-[10px] text-green-300">
-  {userMarket === 'MX' ? 'Actualizado 6:30 PM PST' : userMarket === 'BR' ? 'Atualizado 18:30 PST' : 'Updated 6:30 PM PST'}
-</p>
+  {userMarket === 'MX' ? 'Actualizado 6:30 PM PST' : userMarket === 'BR' ? 'Atualizado 18:30 PST' : 'Updated 6:30 PM PST'}</p>
+</div>
       </div>
       </div>
     </div>
