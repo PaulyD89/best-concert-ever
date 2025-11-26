@@ -1784,7 +1784,7 @@ setIsSubmitting(false);
 
 {/* Market Indicator */}
     <div className="fixed top-4 right-4 bg-black/50 px-3 py-1 rounded-full text-xs text-yellow-400 border border-yellow-400/30 backdrop-blur-sm z-50">
-  🌍 {userMarket === 'MX' ? 'México' : userMarket === 'BR' ? 'Brasil' : 'Global'}
+  {userMarket === 'MX' ? '🇲🇽 México' : userMarket === 'BR' ? '🇧🇷 Brasil' : '🌍 Global'}
 </div>
 
 {showHowToPlay && (
@@ -2192,7 +2192,7 @@ await navigator.share({
       
       className="flex items-center space-x-2 bg-black text-cyan-400 font-bold px-6 py-3 rounded-full border-2 border-cyan-400 hover:text-white hover:border-white hover:shadow-lg transition-all duration-300 shadow-[0_0_15px_rgba(0,255,255,0.7)] uppercase tracking-widest"
 >
-  <span>{userMarket === 'MX' ? '🎟️ Compartir Lineup / Conseguir Votos' 
+  <span>{userMarket === 'MX' ? '🎟️ Compartir Lineup' 
 : userMarket === 'BR' ? '🎟️ Compartilhar Lineup'
 : '🎟️ Share Lineup / Get Votes'}</span>
 </button>
