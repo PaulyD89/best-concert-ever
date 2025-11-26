@@ -189,8 +189,91 @@ const didYouKnowTipsMX = [
   "Consigue un Nivel de Decibeles superior a 90 y obtendrás 10 votos agregados a tu alineación."
 ];
 
+const didYouKnowTipsBR = [
+  "Você pode ganhar mesmo que não seja o primeiro a enviar — os votos também contam!",
+  "Se alguém ganhar com uma lineup que você enviou depois, você recebe crédito com uma Assistência Vencedora.",
+  "Você só tem um voto por dia — faça valer!",
+  "A Lineup Mais Votada e o Vencedor nem sempre são os mesmos.",
+  "Ganhe 25 dias seguidos para desbloquear o distintivo Sequência!",
+  "As sequências são reiniciadas se você perder um dia — não quebre sua sequência!",
+  "Envios antecipados têm mais chances de ganhar mais votos.",
+  "Alguns distintivos são desbloqueados apenas obtendo 10+ votos totais.",
+  "Uma lineup se torna um Deep Cut quando os três artistas têm menos de 250.000 seguidores combinados no Spotify.",
+  "Os desafios são reiniciados exatamente à meia-noite UTC.",
+  "Clicar no seu Ranking de Promotor revela um gráfico especial que você pode compartilhar.",
+  "Se várias pessoas enviarem a lineup vencedora, todos recebem crédito de vitória — mas apenas o primeiro recebe o destaque público.",
+  "Há uma tabela de classificação 'Top 10 Lineups' atualizada em tempo real.",
+  "Lineups vencedoras são destaque no e-mail do dia seguinte.",
+  "Você desbloqueia o distintivo Líder das Paradas depois de chegar ao Top 10 vinte e cinco vezes.",
+  "Chegue ao Top 10 dez vezes para desbloquear seu primeiro distintivo Líder das Paradas.",
+  "Depois de ter cinco lineups vencedoras, você desbloqueará o distintivo Criador de Hits.",
+  "Seu arquivo Greatest Hits armazena suas melhores lineups e estatísticas.",
+  "Os votos são anônimos — ninguém sabe quem votou em quê.",
+  "Você pode enviar lineups no celular ou desktop — é totalmente responsivo.",
+  "Você só pode votar na sua própria lineup depois de enviá-la.",
+  "Use artistas de nicho para potencial Deep Cut.",
+  "Depois de enviar 2 lineups, você pode escolher seu próprio apelido de Promotor.",
+  "Ganhar o dia dá 100 pontos para o seu Ranking Global.",
+  "Alguns desafios apresentam 'Headliners Bloqueados' — fique de olho!",
+  "Você ganha um distintivo ao atingir 10 vitórias totais.",
+  "Quer estatísticas melhores? Envie lineups todos os dias.",
+  "Seu Greatest Hits sempre mostrará sua lineup mais votada.",
+  "Compartilhe sua lineup para obter mais votos — cada emoji de fogo ajuda!",
+  "Não se esqueça de compartilhar sua lineup nas redes sociais — sua lineup recebe votos adicionais para cada pessoa que clicar nela.",
+  "Fogo = amor. O ícone 🔥 alimenta todo o jogo.",
+  "Clique no logo do Spotify para abrir a playlist diária baseada na lineup vencedora.",
+  "Se sua lineup se tornar a playlist do dia — isso é lendário.",
+  "Votos totais, vitórias, assistências e envios são considerados para os marcos.",
+  "Você verá um popup especial quando desbloquear algo grande.",
+  "Perdeu um dia? Não apaga suas estatísticas — mas quebra sua sequência.",
+  "As tabelas de classificação são atualizadas instantaneamente com cada voto.",
+  "A 'Lineup Mais Votada' nem sempre é a vencedora — o tempo importa.",
+  "Você só pode enviar uma lineup por dia.",
+  "Os desafios nunca se repetem — cada dia é completamente novo.",
+  "Colocar uma lineup no Top 10 dá 10 pontos para o seu Ranking Global.",
+  "Compartilhar sua lineup aumenta sua visibilidade para outros eleitores.",
+  "Conseguiu uma vitória? Compartilhe seu gráfico Greatest Hits nas redes sociais!",
+  "Seu cartão Greatest Hits é atualizado todas as noites às 18h30 PST.",
+  "Se sua lineup ficar no Top 10 cinco dias seguidos — hora do distintivo.",
+  "Não precisa se registrar — você pode jogar instantaneamente.",
+  "Envios antecipados têm mais chances de acumular votos de fogo.",
+  "Clique em qualquer um dos artistas da lineup vencedora para ouvi-los no Spotify.",
+  "Você pode reutilizar uma lineup de um dia anterior — mas não há garantia de que ela ganhará novamente.",
+  "Vitórias repetidas com o mesmo trio ganham respeito (mas nenhum distintivo extra).",
+  "Não há lineup 'errada' — apenas gostos diferentes.",
+  "Os eleitores adoram mashups estranhos — não tenha medo de misturar gêneros.",
+  "As melhores lineups geralmente misturam surpresa com nostalgia.",
+  "Não subestime as 2ª Aberturas — elas são frequentemente as principais conquistadoras de votos.",
+  "Você pode ver o vencedor de ontem direto na página inicial.",
+  "Assistências Vencedoras só contam se outra pessoa ganhar com sua lineup exata.",
+  "Votos totais + ordem de envio são usados para desempate.",
+  "Lineups que ganham vários dias são raras — e lendárias.",
+  "Quer viralizar? Tente uma lineup que provoque debate.",
+  "As melhores lineups são inteligentes, nostálgicas e surpreendentes.",
+  "Tente misturar um clássico, um nicho e uma estrela em ascensão.",
+  "Lineups temáticas geralmente se destacam: todos irmãos, todas duplas, todos bateristas.",
+  "Os artistas não precisam estar vivos para serem escolhidos — lendas são bem-vindas.",
+  "Reuniões de bandas? Vá em frente. Elas não precisam estar juntas agora.",
+  "Chegue ao Top 10 do Ranking Global e você será um Promotor de Elite.",
+  "Best Concert Ever é feito para obcecados por música, nerds e superfãs.",
+  "Se você ganhar no seu primeiro dia jogando — você é uma lenda.",
+  "Quer ser a lineup Deep Cut? Envie artistas subestimados.",
+  "Fique atento a desafios especiais ligados a feriados ou história da música.",
+  "Alguns desafios são secretamente curados por artistas ou formadores de opinião.",
+  "Não se esqueça de votar — apenas enviar não ajuda seu ranking.",
+  "Alguns desafios têm um Headliner Bloqueado — não pode ser alterado.",
+  "Seus votos ajudam a desbloquear mais do que apenas vitórias — os distintivos também contam.",
+  "Clique em qualquer artista apresentado em uma lineup vencedora para ouvi-lo no Spotify.",
+  "Se sua lineup entrar na lista Top 10 no final do dia, isso conta para pontos nos seus distintivos.",
+  "Não limpe o cache do seu navegador ou você perderá todas as suas estatísticas anônimas e desbloqueios de distintivos!",
+  "Seu Nível de Decibéis é calculado pelas reproduções de rádio, seguidores nas redes sociais, streams e muito mais de um artista.",
+  "Consiga um Nível de Decibéis acima de 90 e você terá 10 votos adicionados à sua lineup."
+];
+
 function getDailyDidYouKnowTip(market = 'US') {
-  const tips = market === 'MX' ? didYouKnowTipsMX : didYouKnowTips;
+  const tips = market === 'MX' ? didYouKnowTipsMX 
+           : market === 'BR' ? didYouKnowTipsBR 
+           : didYouKnowTips;
   const today = new Date().toISOString().split("T")[0];
   let hash = 0;
   for (let i = 0; i < today.length; i++) {
@@ -1005,7 +1088,7 @@ function buildNewsletterHtml({
                         <tr>
                           <td>
                             <img
-                              src="${market === 'MX' ? 'https://best-concert-ever.vercel.app/email-assets/sabiasque.png?v=20250806' : 'https://best-concert-ever.vercel.app/email-assets/didyouknow.png?v=20250806'}"
+                              src="${market === 'MX' ? 'https://best-concert-ever.vercel.app/email-assets/sabiasque.png?v=20250806' : market === 'BR' ? 'https://best-concert-ever.vercel.app/email-assets/vocesabia.png?v=20250806' : 'https://best-concert-ever.vercel.app/email-assets/didyouknow.png?v=20250806'}"
                               style="
                                 height: 11.25rem;
                                 margin-left: auto;
@@ -1086,7 +1169,7 @@ function buildNewsletterHtml({
                         margin: 16px 0;
                       "
                     >
-                      ${market === 'MX' ? 'Síguenos en redes sociales:' : 'Follow us on social:'}
+                      ${market === 'MX' ? 'Síguenos en redes sociales:' : market === 'BR' ? 'Siga-nos nas redes sociais:' : 'Follow us on social:'}
                     </p>
                     <!-- Follow us on social: -->
 <table align="center" width="100%" border="0" cellpadding="0" cellspacing="0" role="presentation">
@@ -1184,12 +1267,12 @@ function buildNewsletterHtml({
                         margin: 16px 0;
                       "
                     >
-                      ${market === 'MX' ? '¿No quieres recibir estos correos?' : "Don&#x27;t want to receive these emails?"}<!-- -->
+                      ${market === 'MX' ? '¿No quieres recibir estos correos?' : market === 'BR' ? 'Não quer receber estes e-mails?' : "Don&#x27;t want to receive these emails?"}<!-- -->
                       <a
                         href="https://bestconcertevergame.com/unsubscribe"
                         style="color: #067df7; text-decoration-line: none"
                         target="_blank"
-                         href="https://bestconcertevergame.com/unsubscribe">${market === 'MX' ? 'Cancelar suscripción' : 'Unsubscribe'}</a
+                         href="https://bestconcertevergame.com/unsubscribe">${market === 'MX' ? 'Cancelar suscripción' : market === 'BR' ? 'Cancelar inscrição' : 'Unsubscribe'}</a
                       >
                     </p>
                   </td>
@@ -1223,7 +1306,9 @@ export default async function handler(req, res) {
     yesterday.setUTCDate(yesterday.getUTCDate() - 1);
     const yesterdayStr = yesterday.toISOString().split("T")[0];
 
-    const tableName = market === 'MX' ? 'prompts_mx' : 'prompts';
+    const tableName = market === 'MX' ? 'prompts_mx' 
+               : market === 'BR' ? 'prompts_br'
+               : 'prompts';
     const { data: todayData } = await supabase.from(tableName).select("prompt").eq("prompt_date", todayStr).single();
     const { data: yesterdayData } = await supabase.from(tableName).select("prompt").eq("prompt_date", yesterdayStr).single();
 
@@ -1336,6 +1421,8 @@ if (testEmail) {
 
      const subject = market === 'MX' 
   ? `🎺 ¿Cuál es Tu Mejor Concierto de la Historia para "${dailyPrompt}"?`
+  : market === 'BR'
+  ? `🎺 Qual é Seu Melhor Show de Todos os Tempos para "${dailyPrompt}"?`
   : `🎺 What's Your Best Concert Ever for "${dailyPrompt}"?`;
 
 const messages = emails.map((email) => ({
