@@ -27,6 +27,18 @@
     {
       "path": "/api/cron/submit-bot-lineups-us-3",
       "schedule": "30 0 * * *"
+    },
+    {
+      "path": "/api/cron/submit-bot-lineups-br-1",
+      "schedule": "35 0 * * *"
+    },
+    {
+      "path": "/api/cron/submit-bot-lineups-br-2",
+      "schedule": "40 0 * * *"
+    },
+    {
+      "path": "/api/cron/submit-bot-lineups-br-3",
+      "schedule": "45 0 * * *"
     }
   ]
 }
