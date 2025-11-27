@@ -2203,7 +2203,7 @@ await navigator.share({
 {lockedHeadliner && (
   <div className="mb-4">
     <img
-      src="/locked-and-loaded.png"
+      src={userMarket === 'MX' ? '/lockedloadedmx.png' : '/locked-and-loaded.png'}
       alt="Locked & Loaded"
       className="mx-auto w-48 h-auto sparkle-effect"
     />
