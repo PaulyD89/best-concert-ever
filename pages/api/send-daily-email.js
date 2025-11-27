@@ -1023,7 +1023,7 @@ function buildNewsletterHtml({
                         margin: 16px 0;
                       "
                     >
-                      ${market === 'MX' ? '¿Crees que tienes lo necesario para ser el Promotor Musical definitivo?' : 'Think you have what it takes to be the ultimate Music Promoter?'}
+                      ${market === 'MX' ? '¿Crees que tienes lo necesario para ser el Promotor Musical definitivo?' : market === 'BR' ? 'Você acha que tem o que é preciso para ser o Promotor Musical definitivo?' : 'Think you have what it takes to be the ultimate Music Promoter?'}
                     </p>
                     <a
                       href="https://bestconcertevergame.com"
