@@ -80,7 +80,7 @@ export default async function handler(req, res) {
     if (subnetError) {
       console.error('Error checking subnet votes:', subnetError);
       // Don't block the vote if this check fails, just log it
-    } else if (subnetVotes && subnetVotes.length >= 3) {
+    } else if (subnetVotes && subnetVotes.length >= 2) {
       // If 3 or more votes from same subnet for same lineup = likely fraud
       console.log('🚨 FRAUD DETECTED: Multiple votes from subnet', subnet, 'for lineup', lineupId);
       console.log('   Previous IPs from this subnet:', subnetVotes.map(v => v.ip_address).join(', '));
