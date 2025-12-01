@@ -60,6 +60,40 @@ export default async function handler(req, res) {
       });
     }
 
+    // ===================================================
+    // NEW CODE START: Subnet fraud detection
+    // ===================================================
+    
+    // Extract the subnet (first 3 octets of IP address)
+    // Example: "172.59.77.106" becomes "172.59.77"
+    const ipParts = userIP.split('.');
+    const subnet = ipParts.slice(0, 3).join('.');
+
+    // Check how many votes from this subnet for THIS specific lineup today
+    const { data: subnetVotes, error: subnetError } = await supabase
+      .from('vote_attempts')
+      .select('*')
+      .eq('lineup_id', lineupId)
+      .eq('date', today)
+      .ilike('ip_address', `${subnet}.%`);
+
+    if (subnetError) {
+      console.error('Error checking subnet votes:', subnetError);
+      // Don't block the vote if this check fails, just log it
+    } else if (subnetVotes && subnetVotes.length >= 3) {
+      // If 3 or more votes from same subnet for same lineup = likely fraud
+      console.log('🚨 FRAUD DETECTED: Multiple votes from subnet', subnet, 'for lineup', lineupId);
+      console.log('   Previous IPs from this subnet:', subnetVotes.map(v => v.ip_address).join(', '));
+      
+      return res.status(429).json({ 
+        error: 'Suspicious voting pattern detected. Please contact support if this is an error.' 
+      });
+    }
+    
+    // ===================================================
+    // NEW CODE END
+    // ===================================================
+
     // Get current lineup votes
     const { data: lineup, error: lineupError } = await supabase
       .from('lineups')
