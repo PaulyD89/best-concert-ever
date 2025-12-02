@@ -155,6 +155,8 @@ export default function BestConcertEver() {
   const [showPromoterModal, setShowPromoterModal] = useState(false);
   const [promoterDetails, setPromoterDetails] = useState(null);
   const [showContestRules, setShowContestRules] = useState(false);
+  const [winnerInfo, setWinnerInfo] = useState(null);
+  const [showWinnerModal, setShowWinnerModal] = useState(false);
 
 // ============================================
 // MARKET DETECTION
@@ -200,6 +202,36 @@ if (data.country_code === 'MX') {
   }
 }
 
+// ============================================
+// CHECK FOR CONTEST WINNER
+// ============================================
+async function checkForWinnerStatus(userId) {
+  try {
+    const { data, error } = await supabase
+      .from('contest_winners')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('notified', false)
+      .order('created_at', { ascending: false })
+      .limit(1);
+      
+    if (error) {
+      console.error('Error checking winner status:', error);
+      return null;
+    }
+    
+    if (data && data.length > 0) {
+      console.log('🎉 User is a contest winner!', data[0]);
+      return data[0];
+    }
+    
+    return null;
+  } catch (err) {
+    console.error('Winner check failed:', err);
+    return null;
+  }
+}
+
 // Detect market on component mount
 useEffect(() => {
   async function initMarket() {
@@ -227,6 +259,27 @@ useEffect(() => {
   
   initMarket();
 }, []);
+
+// ============================================
+// CHECK IF USER IS A WINNER
+// ============================================
+useEffect(() => {
+  async function checkWinner() {
+    // Wait a bit for market to be set
+    if (!userMarket) return;
+    
+    const userId = localStorage.getItem("bce_user_id");
+    if (!userId) return;
+    
+    const winner = await checkForWinnerStatus(userId);
+    if (winner) {
+      setWinnerInfo(winner);
+      setShowWinnerModal(true);
+    }
+  }
+  
+  checkWinner();
+}, [userMarket]);
 
 // ============================================
 // END MARKET DETECTION
@@ -997,6 +1050,44 @@ const copyRestoreLink = () => {
     : "Couldn't copy automatically. We'll show the link next time.");
   }
 };
+
+// ============================================
+// HANDLE WINNER PRIZE CLAIM
+// ============================================
+async function handleWinnerClaimPrize() {
+  if (!winnerInfo) return;
+  
+  const subject = encodeURIComponent(`Contest Winner - ${winnerInfo.contest_name}`);
+  const body = encodeURIComponent(
+    `Hi Best Concert Ever Team,\n\n` +
+    `I won the ${winnerInfo.contest_name} contest!\n\n` +
+    `Contest Period: ${winnerInfo.contest_period_start} to ${winnerInfo.contest_period_end}\n` +
+    `My User ID: ${winnerInfo.user_id}\n` +
+    `Total Votes: ${winnerInfo.total_votes}\n\n` +
+    `Please send me my ${winnerInfo.prize_description}!\n\n` +
+    `My Name: \n` +
+    `My Email: \n`
+  );
+  
+  // Mark as notified in database so they don't see the modal again
+  await supabase
+    .from('contest_winners')
+    .update({ notified: true })
+    .eq('id', winnerInfo.id);
+  
+  // Open email client with pre-filled message
+  window.location.href = `mailto:paul@bestconcertevergame.com?subject=${subject}&body=${body}`;
+  
+  // Close the modal
+  setShowWinnerModal(false);
+  
+  // Track in analytics
+  if (typeof window !== "undefined" && window.plausible) {
+    window.plausible("Contest Prize Claimed", { 
+      props: { contest: winnerInfo.contest_name } 
+    });
+  }
+}
 
 const handleBadgeClick = () => {
   const rank = userStats?.global_rank;
@@ -3140,12 +3231,86 @@ if (!error) {
           </div>
         </div>
       )}
+      {/* Winner Congratulations Modal */}
+      {showWinnerModal && winnerInfo && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-gradient-to-br from-yellow-400 via-orange-400 to-red-400 rounded-2xl max-w-md w-full p-8 shadow-2xl relative animate-scale-in">
+            
+            {/* Confetti/Celebration Header */}
+            <div className="text-center mb-6">
+              <div className="text-6xl mb-4 animate-bounce">🎉</div>
+              <h2 className="text-3xl font-black text-white mb-2">
+                CONGRATULATIONS!
+              </h2>
+              <div className="text-white text-lg font-bold">
+                You're a Winner!
+              </div>
+            </div>
+
+            {/* Winner Details */}
+            <div className="bg-white/95 rounded-xl p-6 mb-6 shadow-lg">
+              <div className="text-center mb-4">
+                <div className="text-gray-600 text-sm font-semibold mb-1">
+                  {winnerInfo.contest_name}
+                </div>
+                <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-orange-600">
+                  {winnerInfo.prize_description}
+                </div>
+              </div>
+              
+              <div className="border-t border-gray-200 pt-4 space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Contest Period:</span>
+                  <span className="font-bold text-gray-800">
+                    {new Date(winnerInfo.contest_period_start).toLocaleDateString()} - {new Date(winnerInfo.contest_period_end).toLocaleDateString()}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Total Votes:</span>
+                  <span className="font-bold text-gray-800">🔥 {winnerInfo.total_votes.toLocaleString()}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA Button */}
+            <button
+              onClick={handleWinnerClaimPrize}
+              className="w-full bg-black hover:bg-gray-800 text-white font-bold py-4 px-6 rounded-xl transition-all transform hover:scale-105 shadow-lg mb-3"
+            >
+              📧 Send Email to Claim Prize
+            </button>
+            
+            {/* Close button */}
+            <button
+              onClick={() => setShowWinnerModal(false)}
+              className="w-full text-white/80 hover:text-white text-sm font-semibold py-2"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 </div>
 <style jsx global>{`
   @keyframes fade-in {
     from { opacity: 0; }
     to { opacity: 1; }
   }
+
+  @keyframes scale-in {
+    from { 
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to { 
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  .animate-scale-in {
+    animation: scale-in 0.5s ease-out forwards;
+  }
+
   .animate-fade-in {
     animation: fade-in 1s ease-out forwards;
   }
