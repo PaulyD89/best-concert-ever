@@ -3243,7 +3243,7 @@ if (!error) {
                 CONGRATULATIONS!
               </h2>
               <div className="text-white text-lg font-bold">
-                You're a Winner!
+                You&apos;re a Winner!
               </div>
             </div>
 
