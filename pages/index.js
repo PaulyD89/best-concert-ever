@@ -3255,7 +3255,7 @@ if (!error) {
               </div>
               
               <h2 className="text-4xl font-black text-yellow-400 mb-2 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]">
-                CONGRATULATIONS!
+                CONGRATS!
               </h2>
               <div className="text-yellow-300 text-lg font-bold">
                 You&apos;re a Winner!
