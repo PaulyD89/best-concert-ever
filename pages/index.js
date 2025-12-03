@@ -3231,43 +3231,58 @@ if (!error) {
           </div>
         </div>
       )}
+
       {/* Winner Congratulations Modal */}
       {showWinnerModal && winnerInfo && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-gradient-to-br from-yellow-400 via-orange-400 to-red-400 rounded-2xl max-w-md w-full p-8 shadow-2xl relative animate-scale-in">
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-black border-4 border-yellow-400 rounded-2xl max-w-md w-full p-8 shadow-[0_0_40px_rgba(250,204,21,0.6)] relative animate-scale-in">
             
-            {/* Confetti/Celebration Header */}
+            {/* Logo and Header */}
             <div className="text-center mb-6">
-              <div className="text-6xl mb-4 animate-bounce">🎉</div>
-              <h2 className="text-3xl font-black text-white mb-2">
+              {/* Best Concert Ever Logo */}
+              <div className="mb-4 flex justify-center">
+                <img 
+                  src="/bce-logo.png" 
+                  alt="Best Concert Ever" 
+                  className="h-24 w-auto"
+                  onError={(e) => {
+                    // Fallback to trophy emoji if logo doesn't load
+                    e.target.style.display = 'none';
+                    e.target.nextElementSibling.style.display = 'block';
+                  }}
+                />
+                <div className="text-7xl hidden animate-bounce">🏆</div>
+              </div>
+              
+              <h2 className="text-4xl font-black text-yellow-400 mb-2 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]">
                 CONGRATULATIONS!
               </h2>
-              <div className="text-white text-lg font-bold">
+              <div className="text-yellow-300 text-lg font-bold">
                 You&apos;re a Winner!
               </div>
             </div>
 
             {/* Winner Details */}
-            <div className="bg-white/95 rounded-xl p-6 mb-6 shadow-lg">
+            <div className="bg-gradient-to-br from-yellow-400/20 to-yellow-600/20 border-2 border-yellow-400/50 rounded-xl p-6 mb-6 shadow-lg backdrop-blur-sm">
               <div className="text-center mb-4">
-                <div className="text-gray-600 text-sm font-semibold mb-1">
+                <div className="text-yellow-300 text-sm font-semibold mb-2">
                   {winnerInfo.contest_name}
                 </div>
-                <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-orange-600">
+                <div className="text-3xl font-black text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.8)]">
                   {winnerInfo.prize_description}
                 </div>
               </div>
               
-              <div className="border-t border-gray-200 pt-4 space-y-2">
+              <div className="border-t border-yellow-400/30 pt-4 space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Contest Period:</span>
-                  <span className="font-bold text-gray-800">
+                  <span className="text-yellow-200">Contest Period:</span>
+                  <span className="font-bold text-yellow-300">
                     {new Date(winnerInfo.contest_period_start).toLocaleDateString()} - {new Date(winnerInfo.contest_period_end).toLocaleDateString()}
                   </span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">Total Votes:</span>
-                  <span className="font-bold text-gray-800">🔥 {winnerInfo.total_votes.toLocaleString()}</span>
+                  <span className="text-yellow-200">Total Votes:</span>
+                  <span className="font-bold text-yellow-300">🔥 {winnerInfo.total_votes.toLocaleString()}</span>
                 </div>
               </div>
             </div>
@@ -3275,7 +3290,7 @@ if (!error) {
             {/* CTA Button */}
             <button
               onClick={handleWinnerClaimPrize}
-              className="w-full bg-black hover:bg-gray-800 text-white font-bold py-4 px-6 rounded-xl transition-all transform hover:scale-105 shadow-lg mb-3"
+              className="w-full bg-yellow-400 hover:bg-yellow-300 text-black font-bold py-4 px-6 rounded-xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(250,204,21,0.5)] hover:shadow-[0_0_30px_rgba(250,204,21,0.8)] mb-3"
             >
               📧 Send Email to Claim Prize
             </button>
@@ -3283,7 +3298,7 @@ if (!error) {
             {/* Close button */}
             <button
               onClick={() => setShowWinnerModal(false)}
-              className="w-full text-white/80 hover:text-white text-sm font-semibold py-2"
+              className="w-full text-yellow-400/80 hover:text-yellow-400 text-sm font-semibold py-2 transition-colors"
             >
               Close
             </button>
