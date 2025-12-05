@@ -157,6 +157,9 @@ export default function BestConcertEver() {
   const [showContestRules, setShowContestRules] = useState(false);
   const [winnerInfo, setWinnerInfo] = useState(null);
   const [showWinnerModal, setShowWinnerModal] = useState(false);
+  const [showPromptHint, setShowPromptHint] = useState(false);
+  const [promptHint, setPromptHint] = useState(null);
+  const [loadingHint, setLoadingHint] = useState(false);
 
 // ============================================
 // MARKET DETECTION
@@ -1412,6 +1415,31 @@ const fetchHighestDecibel = async () => {
   }
 };
 
+const handleShowHint = async () => {
+  setShowPromptHint(true);
+  
+  // Only fetch if we don't have it cached
+  if (!promptHint) {
+    setLoadingHint(true);
+    try {
+      const response = await fetch(`/api/generate-hint?prompt=${encodeURIComponent(dailyPrompt)}&market=${userMarket}`);
+      const data = await response.json();
+      setPromptHint(data.hint);
+    } catch (error) {
+      console.error("Failed to load hint:", error);
+      // Set fallback based on market
+      if (userMarket === 'MX') {
+        setPromptHint("¡Intenta buscar artistas populares de este género en Spotify!");
+      } else if (userMarket === 'BR') {
+        setPromptHint("Tente procurar artistas populares deste gênero no Spotify!");
+      } else {
+        setPromptHint("Try searching for popular artists in this genre on Spotify!");
+      }
+    }
+    setLoadingHint(false);
+  }
+};
+
   useEffect(() => {
     const bounceTimeout = setTimeout(() => {
       if (typeof window !== 'undefined' && window.plausible) {
@@ -2059,8 +2087,15 @@ lastDecibelScore >= 40 ? (userMarket === 'MX' ? "👌 ¡Lineup decente!" : userM
           <img src="/yellow-top-badge.png" alt="Best Concert Ever Logo" className="w-full h-full object-cover" style={{ objectFit: "cover", objectPosition: "center" }} crossOrigin="anonymous" />
         </div>
 
-        <div className="mt-16 mb-4 text-base font-extrabold uppercase tracking-widest text-black inline-block px-4 py-1 border-2 border-black rotate-[-2deg] bg-white shadow-md font-mono">
+        <div className="relative mt-16 mb-4 text-base font-extrabold uppercase tracking-widest text-black inline-block px-4 py-1 pr-8 border-2 border-black rotate-[-2deg] bg-white shadow-md font-mono">
           {dailyPrompt}
+          <button 
+            onClick={handleShowHint}
+            className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-yellow-400 border-2 border-black text-black font-bold text-xs hover:bg-yellow-300 transition-all hover:scale-110 flex items-center justify-center shadow-md z-10"
+            title={userMarket === 'MX' ? '¿Necesitas una pista?' : userMarket === 'BR' ? 'Precisa de uma dica?' : 'Need a hint?'}
+          >
+            ?
+          </button>
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-4">
@@ -3301,6 +3336,64 @@ if (!error) {
               className="w-full text-yellow-400/80 hover:text-yellow-400 text-sm font-semibold py-2 transition-colors"
             >
               Close
+            </button>
+          </div>
+        </div>
+      )}
+      {/* Prompt Hint Modal */}
+      {showPromptHint && (
+        <div 
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in" 
+          onClick={() => setShowPromptHint(false)}
+        >
+          <div 
+            className="bg-white text-black rounded-2xl p-6 max-w-sm w-full border-4 border-yellow-400 shadow-2xl animate-scale-in" 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-start mb-4">
+              <h3 className="text-xl font-bold">
+                {userMarket === 'MX' ? '💡 Pista del Tema' 
+               : userMarket === 'BR' ? '💡 Dica do Tema'
+               : '💡 Theme Hint'}
+              </h3>
+              <button 
+                onClick={() => setShowPromptHint(false)}
+                className="text-2xl font-bold text-gray-600 hover:text-black leading-none"
+              >
+                ×
+              </button>
+            </div>
+            
+            <p className="text-sm mb-3 font-semibold text-gray-700">
+              {userMarket === 'MX' ? 'Artistas de ejemplo:' 
+             : userMarket === 'BR' ? 'Artistas de exemplo:'
+             : 'Example artists:'}
+            </p>
+            
+            <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-400 rounded-lg p-4 min-h-[80px] flex items-center justify-center">
+              {loadingHint ? (
+                <div className="flex items-center gap-2 text-gray-600">
+                  <span className="text-2xl animate-pulse">🎵</span>
+                  <span className="text-sm font-medium">
+                    {userMarket === 'MX' ? 'Generando sugerencias...' 
+                   : userMarket === 'BR' ? 'Gerando sugestões...'
+                   : 'Generating suggestions...'}
+                  </span>
+                </div>
+              ) : (
+                <p className="text-gray-800 font-semibold text-center leading-relaxed">
+                  {promptHint || (userMarket === 'MX' ? 'Cargando...' : userMarket === 'BR' ? 'Carregando...' : 'Loading...')}
+                </p>
+              )}
+            </div>
+            
+            <button
+              onClick={() => setShowPromptHint(false)}
+              className="w-full mt-4 bg-yellow-400 hover:bg-yellow-300 text-black font-bold py-2 px-4 rounded-lg transition-all"
+            >
+              {userMarket === 'MX' ? '¡Entendido!' 
+             : userMarket === 'BR' ? 'Entendi!'
+             : 'Got it!'}
             </button>
           </div>
         </div>
