@@ -1418,6 +1418,16 @@ const fetchHighestDecibel = async () => {
 const handleShowHint = async () => {
   setShowPromptHint(true);
   
+  // Track hint button click with prompt and market info
+  if (typeof window !== "undefined" && window.plausible) {
+    window.plausible("Hint Button Clicked", {
+      props: { 
+        prompt: dailyPrompt,
+        market: userMarket 
+      }
+    });
+  }
+  
   // Only fetch if we don't have it cached
   if (!promptHint) {
     setLoadingHint(true);
@@ -1425,8 +1435,20 @@ const handleShowHint = async () => {
       const response = await fetch(`/api/generate-hint?prompt=${encodeURIComponent(dailyPrompt)}&market=${userMarket}`);
       const data = await response.json();
       setPromptHint(data.hint);
+      
+      // Track successful hint generation
+      if (typeof window !== "undefined" && window.plausible) {
+        window.plausible("Hint Generated Successfully");
+      }
+      
     } catch (error) {
       console.error("Failed to load hint:", error);
+      
+      // Track hint generation failure
+      if (typeof window !== "undefined" && window.plausible) {
+        window.plausible("Hint Generation Failed");
+      }
+      
       // Set fallback based on market
       if (userMarket === 'MX') {
         setPromptHint("¡Intenta buscar artistas populares de este género en Spotify!");
