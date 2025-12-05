@@ -3343,57 +3343,62 @@ if (!error) {
       {/* Prompt Hint Modal */}
       {showPromptHint && (
         <div 
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in" 
+          className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in" 
           onClick={() => setShowPromptHint(false)}
         >
           <div 
-            className="bg-white text-black rounded-2xl p-6 max-w-sm w-full border-4 border-yellow-400 shadow-2xl animate-scale-in" 
+            className="bg-black border-4 border-yellow-400 rounded-2xl max-w-md w-full p-8 shadow-[0_0_40px_rgba(250,204,21,0.6)] relative animate-scale-in" 
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-start mb-4">
-              <h3 className="text-xl font-bold">
-                {userMarket === 'MX' ? '💡 Pista del Tema' 
-               : userMarket === 'BR' ? '💡 Dica do Tema'
-               : '💡 Theme Hint'}
-              </h3>
-              <button 
-                onClick={() => setShowPromptHint(false)}
-                className="text-2xl font-bold text-gray-600 hover:text-black leading-none"
-              >
-                ×
-              </button>
+            {/* Close button */}
+            <button 
+              onClick={() => setShowPromptHint(false)}
+              className="absolute top-3 right-3 text-yellow-400 hover:text-yellow-300 text-3xl font-bold leading-none transition-colors"
+            >
+              ×
+            </button>
+            
+            {/* Header */}
+            <div className="text-center mb-6">
+              <div className="text-5xl mb-3">💡</div>
+              <h2 className="text-3xl font-black text-yellow-400 mb-2 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]">
+                {userMarket === 'MX' ? 'PISTA DEL TEMA' 
+               : userMarket === 'BR' ? 'DICA DO TEMA'
+               : 'THEME HINT'}
+              </h2>
+              <p className="text-yellow-300 text-sm font-semibold uppercase tracking-wide">
+                {userMarket === 'MX' ? 'Artistas de ejemplo' 
+               : userMarket === 'BR' ? 'Artistas de exemplo'
+               : 'Example Artists'}
+              </p>
             </div>
             
-            <p className="text-sm mb-3 font-semibold text-gray-700">
-              {userMarket === 'MX' ? 'Artistas de ejemplo:' 
-             : userMarket === 'BR' ? 'Artistas de exemplo:'
-             : 'Example artists:'}
-            </p>
-            
-            <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-400 rounded-lg p-4 min-h-[80px] flex items-center justify-center">
+            {/* Artists Box */}
+            <div className="bg-gradient-to-br from-yellow-400/20 to-yellow-600/20 border-2 border-yellow-400/50 rounded-xl p-6 mb-6 shadow-lg backdrop-blur-sm min-h-[100px] flex items-center justify-center">
               {loadingHint ? (
-                <div className="flex items-center gap-2 text-gray-600">
-                  <span className="text-2xl animate-pulse">🎵</span>
-                  <span className="text-sm font-medium">
+                <div className="flex flex-col items-center gap-3 text-yellow-300">
+                  <span className="text-4xl animate-pulse">🎵</span>
+                  <span className="text-sm font-bold">
                     {userMarket === 'MX' ? 'Generando sugerencias...' 
                    : userMarket === 'BR' ? 'Gerando sugestões...'
                    : 'Generating suggestions...'}
                   </span>
                 </div>
               ) : (
-                <p className="text-gray-800 font-semibold text-center leading-relaxed">
+                <p className="text-white font-bold text-center text-lg leading-relaxed">
                   {promptHint || (userMarket === 'MX' ? 'Cargando...' : userMarket === 'BR' ? 'Carregando...' : 'Loading...')}
                 </p>
               )}
             </div>
             
+            {/* Got it Button */}
             <button
               onClick={() => setShowPromptHint(false)}
-              className="w-full mt-4 bg-yellow-400 hover:bg-yellow-300 text-black font-bold py-2 px-4 rounded-lg transition-all"
+              className="w-full bg-yellow-400 hover:bg-yellow-300 text-black font-bold py-3 px-6 rounded-xl transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(250,204,21,0.5)] hover:shadow-[0_0_30px_rgba(250,204,21,0.8)] uppercase text-lg tracking-wide"
             >
-              {userMarket === 'MX' ? '¡Entendido!' 
-             : userMarket === 'BR' ? 'Entendi!'
-             : 'Got it!'}
+              {userMarket === 'MX' ? '¡ENTENDIDO!' 
+             : userMarket === 'BR' ? 'ENTENDI!'
+             : 'GOT IT!'}
             </button>
           </div>
         </div>
