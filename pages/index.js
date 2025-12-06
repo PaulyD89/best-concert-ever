@@ -2109,7 +2109,7 @@ lastDecibelScore >= 40 ? (userMarket === 'MX' ? "👌 ¡Lineup decente!" : userM
           <img src="/yellow-top-badge.png" alt="Best Concert Ever Logo" className="w-full h-full object-cover" style={{ objectFit: "cover", objectPosition: "center" }} crossOrigin="anonymous" />
         </div>
 
-        <div className="relative mt-16 mb-4 text-base font-extrabold uppercase tracking-widest text-black inline-block px-4 py-1 pr-8 border-2 border-black rotate-[-2deg] bg-white shadow-md font-mono">
+        <div className="relative mt-16 mb-4 text-base font-extrabold uppercase tracking-widest text-black inline-block px-4 py-1 border-2 border-black rotate-[-2deg] bg-white shadow-md font-mono">
           {dailyPrompt}
           <button 
             onClick={handleShowHint}
