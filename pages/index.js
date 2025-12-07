@@ -2,36 +2,6 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { translateLabel } from "@/lib/translations";
 
-async function fetchDatabasePrompt(market = 'US') {
-  const today = new Date();
-  const yyyy = today.getUTCFullYear();
-  const mm = String(today.getUTCMonth() + 1).padStart(2, "0");
-  const dd = String(today.getUTCDate()).padStart(2, "0");
-  const formattedDate = `${yyyy}-${mm}-${dd}`;
-
-  // Determine which table to use based on market
-  // GLOBAL users get US prompts for now
-  const tableName = market === 'MX' ? 'prompts_mx' 
-                : market === 'BR' ? 'prompts_br'
-                : 'prompts';
-  
-  console.log(`📅 Fetching prompt from ${tableName} for ${formattedDate}`);
-
-  const { data, error } = await supabase
-    .from(tableName)
-    .select("prompt, locked_headliner_data")
-    .eq("prompt_date", formattedDate)
-    .single();
-
-  if (error || !data) {
-    console.error(`Failed to fetch prompt from ${tableName}:`, error);
-    return null;
-  }
-
-  console.log(`✅ Prompt loaded: ${data.prompt}`);
-  return { prompt: data.prompt, lockedHeadliner: data.locked_headliner_data || null };
-}
-
 const ArtistSearch = ({ label, onSelect, disabled, locked }) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
@@ -316,8 +286,9 @@ useEffect(() => {
 
 if (today >= cutoff) {
   // Pass userMarket to fetch the right prompt
-  const dbPromptData = await fetchDatabasePrompt(userMarket);
-if (dbPromptData) {
+  const response = await fetch(`/api/get-daily-prompt?market=${userMarket || 'US'}`);
+  const dbPromptData = await response.json(); 
+if (dbPromptData && !dbPromptData.error) {
   console.log("✅ Prompt pulled from Supabase DB:", dbPromptData.prompt);
   promptToUse = dbPromptData.prompt;
   if (dbPromptData.lockedHeadliner) {
