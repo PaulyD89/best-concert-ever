@@ -3389,10 +3389,11 @@ if (!error) {
         </div>
       )}
 </div>
-{/* --- VOTE CONFIRMATION MODAL --- */}
+{/* --- VOTE CONFIRMATION MODAL (STYLED CORRECTLY) --- */}
 {pendingVoteId && (
   <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
-    <div className="bg-[#fdf6e3] border-4 border-black rounded-xl p-6 max-w-sm w-full shadow-[0_0_40px_rgba(253,224,71,0.6)] text-center relative">
+    {/* Updated Container: Double Border, Black Text, Shadow-2xl */}
+    <div className="bg-[#fdf6e3] text-black border-[6px] border-black border-double rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center relative">
       
       {/* Icon */}
       <div className="text-5xl mb-4 animate-bounce">🗳️</div>
@@ -3405,7 +3406,7 @@ if (!error) {
       </h3>
       
       {/* BODY TEXT */}
-      <p className="text-sm font-bold text-gray-700 mb-6 leading-relaxed">
+      <p className="text-sm font-bold text-gray-800 mb-6 leading-relaxed">
         {userMarket === 'MX' ? 'Estás viendo un lineup compartido. ¡Vota para ayudarlos a ganar, y luego crea tu propio concierto para ver si puedes vencerlos!' : 
          userMarket === 'BR' ? 'Você está vendo um lineup compartilhado. Vote para ajudá-los a vencer, depois crie seu próprio show para ver se consegue superá-los!' : 
          'You clicked on a shared lineup. Cast your vote to help them win, then build your own dream concert to see if you can beat them!'}
@@ -3418,7 +3419,7 @@ if (!error) {
             performVote(dailyPrompt); // Fire the vote!
             setPendingVoteId(null);   // Close modal
           }}
-          className="w-full py-3 bg-[#fdc800] border-2 border-black rounded-full font-black text-lg hover:scale-105 transition-transform shadow-md flex items-center justify-center gap-2 uppercase"
+          className="w-full py-3 bg-[#fdc800] border-2 border-black rounded-full font-black text-lg hover:scale-105 transition-transform shadow-md flex items-center justify-center gap-2 uppercase text-black"
         >
           <span>🔥</span>
           {userMarket === 'MX' ? 'VOTAR POR ESTE LINEUP' : 
@@ -3429,7 +3430,7 @@ if (!error) {
         {/* CANCEL BUTTON */}
         <button
           onClick={() => setPendingVoteId(null)}
-          className="text-gray-500 text-xs font-bold hover:text-black underline mt-2"
+          className="text-gray-600 text-xs font-bold hover:text-black underline mt-2"
         >
           {userMarket === 'MX' ? 'No, solo quiero jugar' : 
            userMarket === 'BR' ? 'Não, quero apenas jogar' : 
