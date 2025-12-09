@@ -37,10 +37,16 @@ export default async function handler(req, res) {
       });
     }
 
-    console.log(`✅ Prompt loaded: ${data.prompt}`);
-    
-    // Cache for 1 hour (prompts don't change during the day)
-    res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=7200');
+console.log(`✅ Prompt loaded: ${data.prompt}`);
+
+// Calculate seconds until next midnight UTC
+const now = new Date();
+const tomorrow = new Date(now);
+tomorrow.setUTCHours(24, 0, 0, 0); // Next midnight UTC
+const secondsUntilMidnight = Math.floor((tomorrow - now) / 1000);
+
+// Cache until midnight UTC (when prompt changes)
+res.setHeader('Cache-Control', `public, s-maxage=${secondsUntilMidnight}, stale-while-revalidate=300`);
     
     return res.status(200).json({ 
       prompt: data.prompt, 
