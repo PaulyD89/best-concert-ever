@@ -371,240 +371,36 @@ const fetchDeepCutLineup = async (market, prompt) => {
 
 const fetchWeeklyTopPromoters = async () => {
   try {
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-    const dateString = sevenDaysAgo.toISOString();
+    const response = await fetch(`/api/get-leaderboards?market=${userMarket}&timeframe=weekly`);
+    const data = await response.json();
     
-    console.log("📅 Fetching promoters from:", dateString);
-    
-  // Fetch all lineups from last 7 days with pagination
-    let allLineups = [];
-    let from = 0;
-    const pageSize = 1000;
-    let hasMore = true;
-    
-    while (hasMore) {
-      const { data: recentLineups, error: lineupsError } = await supabase
-  .from("lineups")
-  .select("user_id, votes, created_at")
-  .eq("market", userMarket)
-  .gte("created_at", dateString)
-  .range(from, from + pageSize - 1);
-      
-      if (lineupsError) {
-        console.error("❌ Lineups error:", lineupsError);
-        break;
-      }
-      
-      if (!recentLineups || recentLineups.length === 0) {
-        hasMore = false;
-      } else {
-        allLineups = allLineups.concat(recentLineups);
-        from += pageSize;
-        hasMore = recentLineups.length === pageSize;
-      }
+    if (data.leaderboard) {
+      console.log(`✅ Loaded weekly leaderboard (${data.leaderboard.length} promoters)`);
+      return data.leaderboard;
     }
     
-    if (allLineups.length === 0) {
-      console.log("📊 No recent lineups found");
-      return [];
-    }
-    
-    console.log(`📊 [WEEKLY] Found ${allLineups.length} recent lineups`);
-    
-    // Get unique user IDs
-    const uniqueUserIds = [...new Set(allLineups.map(l => l.user_id))];
-    console.log(`👥 Unique users: ${uniqueUserIds.length}`);
-    
-    // Fetch users with nicknames in batches
-    const batchSize = 50;
-    const allUsers = [];
-    
-    for (let i = 0; i < uniqueUserIds.length; i += batchSize) {
-      const batch = uniqueUserIds.slice(i, i + batchSize);
-      const { data, error } = await supabase
-        .from("users")
-        .select("user_id, nickname")
-        .in("user_id", batch)
-        .not("nickname", "is", null);
-      
-      if (!error && data) {
-        allUsers.push(...data);
-      }
-    }
-    
-    console.log(`✅ Found ${allUsers.length} users with nicknames`);
-    
-    if (allUsers.length === 0) {
-      console.log("No users with nicknames");
-      return [];
-    }
-    
-    // Create nickname map
-    const nicknameMap = {};
-    allUsers.forEach(user => {
-      nicknameMap[user.user_id] = user.nickname;
-    });
-    
-    // Aggregate votes per user (only those with nicknames)
-    const userStatsMap = {};
-    
-    allLineups.forEach(lineup => {
-      const userId = lineup.user_id;
-      const nickname = nicknameMap[userId];
-      
-      if (!nickname) return;
-      
-      if (!userStatsMap[userId]) {
-        userStatsMap[userId] = {
-          userId: userId,
-          nickname: nickname,
-          totalPoints: 0,
-          totalVotes: 0,
-          lineupsSubmitted: 0
-        };
-      }
-      
-      const votes = lineup.votes || 0;
-      userStatsMap[userId].totalPoints += votes; // Using votes as points
-      userStatsMap[userId].totalVotes += votes;
-      userStatsMap[userId].lineupsSubmitted += 1;
-    });
-    
-    // Sort and return top 10
-    const usersWithPoints = Object.values(userStatsMap).filter(user => user.totalPoints > 0);
-    console.log(`🔥 Users with points: ${usersWithPoints.length}`);
-    
-    const topPromoters = usersWithPoints
-      .sort((a, b) => b.totalPoints - a.totalPoints)
-      .slice(0, 10);
-    
-    console.log(`🏆 Top 10 promoters:`, topPromoters);
-    
-    return topPromoters;
-    
+    console.warn("⚠️ No weekly leaderboard data available");
+    return [];
   } catch (err) {
-    console.error("❌ Unexpected error:", err);
+    console.error("❌ Error fetching weekly leaderboard:", err);
     return [];
   }
 };
 
 const fetchMonthlyTopPromoters = async () => {
   try {
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    const dateString = thirtyDaysAgo.toISOString();
+    const response = await fetch(`/api/get-leaderboards?market=${userMarket}&timeframe=monthly`);
+    const data = await response.json();
     
-    console.log("📅 Fetching monthly promoters from:", dateString);
-    
-  // Fetch all lineups from last 30 days with pagination
-    let allLineups = [];
-    let from = 0;
-    const pageSize = 1000;
-    let hasMore = true;
-    
-    while (hasMore) {
-      const { data: recentLineups, error: lineupsError } = await supabase
-  .from("lineups")
-  .select("user_id, votes, created_at")
-  .eq("market", userMarket)
-  .gte("created_at", dateString)
-        .range(from, from + pageSize - 1);
-      
-      if (lineupsError) {
-        console.error("❌ Lineups error:", lineupsError);
-        break;
-      }
-      
-      if (!recentLineups || recentLineups.length === 0) {
-        hasMore = false;
-      } else {
-        allLineups = allLineups.concat(recentLineups);
-        from += pageSize;
-        hasMore = recentLineups.length === pageSize;
-      }
+    if (data.leaderboard) {
+      console.log(`✅ Loaded monthly leaderboard (${data.leaderboard.length} promoters)`);
+      return data.leaderboard;
     }
     
-    if (allLineups.length === 0) {
-      console.log("📊 No recent lineups found");
-      return [];
-    }
-    
-    console.log(`📊 [MONTHLY] Found ${allLineups.length} recent lineups`);
-    
-    // Get unique user IDs
-    const uniqueUserIds = [...new Set(allLineups.map(l => l.user_id))];
-    console.log(`👥 Unique users: ${uniqueUserIds.length}`);
-    
-    // Fetch users with nicknames in batches
-    const batchSize = 50;
-    const allUsers = [];
-    
-    for (let i = 0; i < uniqueUserIds.length; i += batchSize) {
-      const batch = uniqueUserIds.slice(i, i + batchSize);
-      const { data, error } = await supabase
-        .from("users")
-        .select("user_id, nickname")
-        .in("user_id", batch)
-        .not("nickname", "is", null);
-      
-      if (!error && data) {
-        allUsers.push(...data);
-      }
-    }
-    
-    console.log(`✅ Found ${allUsers.length} users with nicknames`);
-    
-    if (allUsers.length === 0) {
-      console.log("No users with nicknames");
-      return [];
-    }
-    
-    // Create nickname map
-    const nicknameMap = {};
-    allUsers.forEach(user => {
-      nicknameMap[user.user_id] = user.nickname;
-    });
-    
-    // Aggregate votes per user (only those with nicknames)
-    const userStatsMap = {};
-    
-    allLineups.forEach(lineup => {
-      const userId = lineup.user_id;
-      const nickname = nicknameMap[userId];
-      
-      if (!nickname) return;
-      
-      if (!userStatsMap[userId]) {
-        userStatsMap[userId] = {
-          userId: userId,
-          nickname: nickname,
-          totalPoints: 0,
-          totalVotes: 0,
-          lineupsSubmitted: 0
-        };
-      }
-      
-      const votes = lineup.votes || 0;
-      userStatsMap[userId].totalPoints += votes;
-      userStatsMap[userId].totalVotes += votes;
-      userStatsMap[userId].lineupsSubmitted += 1;
-    });
-    
-    // Sort and return top 10
-    const usersWithPoints = Object.values(userStatsMap).filter(user => user.totalPoints > 0);
-    console.log(`🔥 Users with points: ${usersWithPoints.length}`);
-    
-    const topPromoters = usersWithPoints
-      .sort((a, b) => b.totalPoints - a.totalPoints)
-      .slice(0, 10);
-    
-    console.log(`🏆 Top 10 monthly promoters:`, topPromoters);
-    
-    return topPromoters;
-    
+    console.warn("⚠️ No monthly leaderboard data available");
+    return [];
   } catch (err) {
-    console.error("❌ Unexpected error:", err);
+    console.error("❌ Error fetching monthly leaderboard:", err);
     return [];
   }
 };
