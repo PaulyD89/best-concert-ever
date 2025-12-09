@@ -108,6 +108,7 @@ export default function BestConcertEver() {
   const [showPromptHint, setShowPromptHint] = useState(false);
   const [promptHint, setPromptHint] = useState(null);
   const [loadingHint, setLoadingHint] = useState(false);
+  const [pendingVoteId, setPendingVoteId] = useState(null);
 
 // ============================================
 // MARKET DETECTION
@@ -786,7 +787,20 @@ const handleFireVote = async (lineupId, voteType) => {
 useEffect(() => {
   if (!dailyPrompt || !userMarket) return; // wait for both
   
-  performVote(dailyPrompt);
+  // --- START NEW LOGIC ---
+  // 1. OLD AUTO-VOTE REMOVED:
+  // performVote(dailyPrompt); 
+
+  // 2. NEW CHECK FOR POPUP:
+  const urlParams = new URLSearchParams(window.location.search);
+  const voteId = urlParams.get("vote");
+  const hasVotedToday = localStorage.getItem(`bce-voted-${dailyPrompt}`);
+
+  // Only open the modal if there is a vote ID and they haven't voted yet
+  if (voteId && voteId !== "null" && !hasVotedToday) {
+    setPendingVoteId(voteId);
+  }
+  // --- END NEW LOGIC ---
 
   const fetchRecentLineups = async () => {
     const { data, error } = await supabase
@@ -3375,6 +3389,57 @@ if (!error) {
         </div>
       )}
 </div>
+{/* --- VOTE CONFIRMATION MODAL (STYLED CORRECTLY) --- */}
+{pendingVoteId && (
+  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
+    {/* Updated Container: Double Border, Black Text, Shadow-2xl */}
+    <div className="bg-[#fdf6e3] text-black border-[6px] border-black border-double rounded-2xl p-6 max-w-sm w-full shadow-2xl text-center relative">
+      
+      {/* Icon */}
+      <div className="text-5xl mb-4 animate-bounce">🗳️</div>
+      
+      {/* HEADLINE */}
+      <h3 className="text-2xl font-black uppercase mb-3 leading-none">
+        {userMarket === 'MX' ? '¡VOTO ENTRANTE!' : 
+         userMarket === 'BR' ? 'VOTO RECEBIDO!' : 
+         'INCOMING VOTE!'}
+      </h3>
+      
+      {/* BODY TEXT */}
+      <p className="text-sm font-bold text-gray-800 mb-6 leading-relaxed">
+        {userMarket === 'MX' ? 'Estás viendo un lineup compartido. ¡Vota para ayudarlos a ganar, y luego crea tu propio concierto para ver si puedes vencerlos!' : 
+         userMarket === 'BR' ? 'Você está vendo um lineup compartilhado. Vote para ajudá-los a vencer, depois crie seu próprio show para ver se consegue superá-los!' : 
+         'You clicked on a shared lineup. Cast your vote to help them win, then build your own dream concert to see if you can beat them!'}
+      </p>
+
+      <div className="flex flex-col gap-3">
+        {/* ACTION BUTTON */}
+        <button
+          onClick={() => {
+            performVote(dailyPrompt); // Fire the vote!
+            setPendingVoteId(null);   // Close modal
+          }}
+          className="w-full py-3 bg-[#fdc800] border-2 border-black rounded-full font-black text-lg hover:scale-105 transition-transform shadow-md flex items-center justify-center gap-2 uppercase text-black"
+        >
+          <span>🔥</span>
+          {userMarket === 'MX' ? 'VOTAR POR ESTE LINEUP' : 
+           userMarket === 'BR' ? 'VOTAR NESTE LINEUP' : 
+           'VOTE FOR THIS LINEUP'}
+        </button>
+        
+        {/* CANCEL BUTTON */}
+        <button
+          onClick={() => setPendingVoteId(null)}
+          className="text-gray-600 text-xs font-bold hover:text-black underline mt-2"
+        >
+          {userMarket === 'MX' ? 'No, solo quiero jugar' : 
+           userMarket === 'BR' ? 'Não, quero apenas jogar' : 
+           'No, just let me play'}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 <style jsx global>{`
   @keyframes fade-in {
     from { opacity: 0; }
