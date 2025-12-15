@@ -37,11 +37,79 @@ export default function PressRoom() {
 
         {/* Press Releases Section */}
         <div className="space-y-8">
-          {/* Latest Press Release - November 18, 2025 - Mexico Launch */}
+          
+          {/* Latest Press Release - December 14, 2025 - Brazil Launch */}
           <div className="bg-gradient-to-br from-gray-900/80 to-black/80 border-2 border-yellow-400/30 rounded-xl p-8 backdrop-blur-sm">
             <div className="border-b border-yellow-400/30 pb-4 mb-6">
               <h2 className="text-3xl font-bold text-yellow-400 mb-2">
                 Latest Press Release
+              </h2>
+              <p className="text-sm text-gray-400">
+                December 14, 2025
+              </p>
+            </div>
+            
+            <div className="prose prose-invert max-w-none">
+              <p className="text-xs text-gray-400 uppercase tracking-wide mb-4">For Immediate Release</p>
+              
+              <h3 className="text-2xl font-bold text-white mb-4">
+                Best. Concert. Ever. Launches Beta in Brazil, Bringing the Daily Fantasy Concert Experience to South America’s Biggest Music Market
+              </h3>
+              
+              <p className="text-sm text-gray-400 mb-6">
+                <strong>São Paulo, Brazil / Los Angeles, CA – December 14, 2025</strong>
+              </p>
+              
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                Best. Concert. Ever., the viral daily fantasy concert game where music fans become promoters, today announced its official beta launch in Brazil. Following a successful rollout in Mexico last month, the platform continues its global expansion by delivering a fully localized Portuguese experience to one of the world’s most energetic and socially active music communities.
+              </p>
+              
+              <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-6">
+                A Fully Localized Experience for Brazilian Fans
+              </h4>
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                The Brazil beta is not just a translation—it is a full cultural adaptation. The game now automatically detects users in Brazil, serving a completely Portuguese interface, from the "Atração Principal" (Headliner) slot to the "Como Jogar" (How to Play) guides. Brazilian players will face daily prompts tailored to their unique musical landscape, challenging them to build lineups that might range from legendary MPB icons to the hottest stars in Funk, Sertanejo, and Brazilian Rock.
+              </p>
+              
+              <p className="text-gray-300 mb-4 leading-relaxed italic">
+                &quot;Brazil’s music fandom is legendary for its passion and intensity,&quot; said <strong>Paul Davidson, CEO and Co-Creator of Best. Concert. Ever.</strong> &quot;We knew we couldn&apos;t just launch here; we had to build a home specifically for Brazilian fans.&quot; <strong>Ben Raab, President and Co-Creator</strong>, added, &quot;We&apos;ve seen the energy Brazilian fans bring to live events; now they can bring that same energy to the leaderboards. This beta gives them the tools to settle the debate of who has the best taste in music once and for all.&quot;
+              </p>
+              
+              <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-6">
+                Powered by Data: The &quot;Nível de Decibéis&quot;
+              </h4>
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                The game’s signature analytics feature, the Decibel Level™ (localized as &quot;Nível de Decibéis&quot;), is fully operational for the Brazilian market through the company&apos;s partnership with music intelligence platform Soundcharts. This feature tracks real-time data—including streaming numbers, social media growth, and radio airplay—to award bonus votes to lineups that feature trending artists. Brazilian players can now strategically leverage the buzz of local superstars to boost their scores and climb the rankings.
+              </p>
+              
+              <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-6">
+                Compete to Be the &quot;Melhor Promotor&quot;
+              </h4>
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                With the launch, Brazilian users gain access to their own dedicated Weekly and Monthly Leaderboards. Players can set their unique promoter nicknames and compete for badges including &quot;Promotor Elite&quot; and &quot;Favorito dos Fãs.&quot; The integration allows Brazilian fans to share their lineups directly to social media with Portuguese templates, fueling friendly rivalry across the country.
+              </p>
+
+              <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-6">
+                Availability
+              </h4>
+              <p className="text-gray-300 mb-4 leading-relaxed">
+                The Brazil beta is live now at <strong>www.bestconcertevergame.com</strong>. The platform automatically routes Brazilian visitors to the localized experience based on their location, ensuring seamless access to the new features.
+              </p>
+              
+              <h4 className="text-xl font-bold text-yellow-400 mb-3 mt-8">
+                About Best. Concert. Ever.
+              </h4>
+              <p className="text-gray-300 mb-6 leading-relaxed">
+                Best. Concert. Ever. is the daily fantasy concert game that gamifies music fandom. Each day, players step into the role of concert promoters, building dream lineups of an Opener, 2nd Opener, and Headliner around a themed challenge. Powered by Spotify and integrated with real-time music data from Soundcharts, the game lets fans discover artists, compete for votes, and climb the leaderboards.
+              </p>
+            </div>
+          </div>
+
+          {/* Previous Press Release - November 18, 2025 - Mexico Launch */}
+          <div className="bg-gradient-to-br from-gray-900/80 to-black/80 border-2 border-yellow-400/30 rounded-xl p-8 backdrop-blur-sm">
+            <div className="border-b border-yellow-400/30 pb-4 mb-6">
+              <h2 className="text-3xl font-bold text-yellow-400 mb-2">
+                Previous Press Release
               </h2>
               <p className="text-sm text-gray-400">
                 November 18, 2025
