@@ -287,8 +287,12 @@ useEffect(() => {
 
 if (today >= cutoff) {
   // Pass userMarket to fetch the right prompt
-  const response = await fetch(`/api/get-daily-prompt?market=${userMarket || 'US'}`);
-  const dbPromptData = await response.json(); 
+  // FIX: Added timestamp to bust browser cache and cache: 'no-store'
+  const response = await fetch(
+    `/api/get-daily-prompt?market=${userMarket || 'US'}&t=${new Date().getTime()}`, 
+    { cache: 'no-store' }
+  );
+  const dbPromptData = await response.json();
 if (dbPromptData && !dbPromptData.error) {
   console.log("✅ Prompt pulled from Supabase DB:", dbPromptData.prompt);
   promptToUse = dbPromptData.prompt;

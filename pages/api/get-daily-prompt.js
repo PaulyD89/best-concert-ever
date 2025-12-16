@@ -46,7 +46,7 @@ tomorrow.setUTCHours(24, 0, 0, 0); // Next midnight UTC
 const secondsUntilMidnight = Math.floor((tomorrow - now) / 1000);
 
 // Cache until midnight UTC (when prompt changes)
-res.setHeader('Cache-Control', `public, s-maxage=${secondsUntilMidnight}, stale-while-revalidate=300`);
+res.setHeader('Cache-Control', `public, s-maxage=${secondsUntilMidnight}, must-revalidate`);
     
     return res.status(200).json({ 
       prompt: data.prompt, 
