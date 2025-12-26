@@ -2655,8 +2655,8 @@ if (!error) {
               {userMarket === 'US' && (
                 <div className="mt-4">
                   <img 
-                    src="/promotercontestdec8.png" 
-                    alt="December Promoter Giveaway - Win $50"
+                    src="/bestmercheverad.png" 
+                    alt="Get Best Concert Ever Merch"
                     className="w-full rounded-lg hover:scale-[1.01] transition-transform cursor-pointer"
                     onClick={() => setShowContestRules(true)}
                   />
