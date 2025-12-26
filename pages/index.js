@@ -2651,22 +2651,22 @@ if (!error) {
     ? (userMarket === 'MX' ? "Tabla de clasificación de 30 días • Establece tu apodo para competir" : userMarket === 'BR' ? "Classificação de 30 dias • Defina seu apelido para competir" : "Rolling 30-day leaderboard • Set your nickname to compete")
     : (userMarket === 'MX' ? "Tabla de clasificación de 7 días • Establece tu apodo para competir" : userMarket === 'BR' ? "Classificação de 7 dias • Defina seu apelido para competir" : "Rolling 7-day leaderboard • Set your nickname to compete")}
 </p>
-{/* December Giveaway Banner - US/Global Only */}
+{/* Best Merch Ever Ad - US/Global Only */}
               {userMarket === 'US' && (
                 <div className="mt-4">
-                  <img 
-                    src="/bestmercheverad.png" 
-                    alt="Get Best Concert Ever Merch"
-                    className="w-full rounded-lg hover:scale-[1.01] transition-transform cursor-pointer"
-                    onClick={() => setShowContestRules(true)}
-                  />
+                  <a 
+                    href="https://thirty-bucks-inc-shop.fourthwall.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img 
+                      src="/bestmercheverad.png" 
+                      alt="Best Merch Ever - Shop Now"
+                      className="w-full rounded-lg hover:scale-[1.01] transition-transform cursor-pointer"
+                    />
+                  </a>
                 </div>
               )}
-
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Contest Rules Modal */}
       {showContestRules && (
