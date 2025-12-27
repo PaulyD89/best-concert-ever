@@ -102,6 +102,7 @@ export default function BestConcertEver() {
   const [selectedPromoter, setSelectedPromoter] = useState(null);
   const [showPromoterModal, setShowPromoterModal] = useState(false);
   const [promoterDetails, setPromoterDetails] = useState(null);
+  const [showContestRules, setShowContestRules] = useState(false);
   const [winnerInfo, setWinnerInfo] = useState(null);
   const [showWinnerModal, setShowWinnerModal] = useState(false);
   const [showPromptHint, setShowPromptHint] = useState(false);
@@ -2650,22 +2651,47 @@ if (!error) {
     ? (userMarket === 'MX' ? "Tabla de clasificación de 30 días • Establece tu apodo para competir" : userMarket === 'BR' ? "Classificação de 30 dias • Defina seu apelido para competir" : "Rolling 30-day leaderboard • Set your nickname to compete")
     : (userMarket === 'MX' ? "Tabla de clasificación de 7 días • Establece tu apodo para competir" : userMarket === 'BR' ? "Classificação de 7 dias • Defina seu apelido para competir" : "Rolling 7-day leaderboard • Set your nickname to compete")}
 </p>
-{/* Best Merch Ever Ad - US/Global Only */}
+{/* December Giveaway Banner - US/Global Only */}
               {userMarket === 'US' && (
                 <div className="mt-4">
-                  <a 
-                    href="https://thirty-bucks-inc-shop.fourthwall.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <img 
-                      src="/bestmercheverad.png" 
-                      alt="Best Merch Ever - Shop Now"
-                      className="w-full rounded-lg hover:scale-[1.01] transition-transform cursor-pointer"
-                    />
-                  </a>
+                  <img 
+                    src="/promotercontestdec8.png" 
+                    alt="December Promoter Giveaway - Win $50"
+                    className="w-full rounded-lg hover:scale-[1.01] transition-transform cursor-pointer"
+                    onClick={() => setShowContestRules(true)}
+                  />
                 </div>
               )}
+
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Contest Rules Modal */}
+      {showContestRules && (
+        <div 
+          className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4"
+          onClick={() => setShowContestRules(false)}
+        >
+          <div 
+            className="relative max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowContestRules(false)}
+              className="absolute top-4 right-4 text-white bg-red-600 hover:bg-red-700 rounded-full w-10 h-10 flex items-center justify-center text-2xl font-bold z-10 shadow-lg"
+            >
+              ×
+            </button>
+            <img 
+              src="/contestrulessquare.jpg" 
+              alt="Contest Rules"
+              className="w-full rounded-lg"
+            />
+          </div>
+        </div>
+      )}
 
       {/* YOUR GREATEST HITS SECTION */}
       <div className="mt-12 flex justify-center items-center w-full">
