@@ -2668,6 +2668,11 @@ if (!error) {
                 </div>
               )}
 
+              </div>
+          </div>
+        </div>
+      )}
+
       {/* YOUR GREATEST HITS SECTION */}
       <div className="mt-12 flex justify-center items-center w-full">
         <div className="relative w-full max-w-md text-center">
