@@ -12,7 +12,7 @@ export default function BestConcertEver() {
       </Head>
       <main className="min-h-screen bg-black flex items-center justify-center p-4">
         <img
-          src="/hiatus.png"
+          src="/bcehiatus.png"
           alt="Best. Concert. Ever. is now on hiatus from its year long tour. We'll be back once our concert promoters have secured the next road trip. Until then, thanks to everyone who has played!"
           className="max-w-md w-full h-auto"
         />
